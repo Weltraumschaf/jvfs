@@ -29,12 +29,13 @@ final class JvfsCollections {
      */
     private JvfsCollections() {
         super();
+        throw new UnsupportedOperationException(); // Avoid reflective instantiation.
     }
 
     /**
      * Create new array list with {@link #DEFAULT_LIST_SIZE size}.
      *
-     * @param <>> type of list entries
+     * @param <T> type of list entries
      * @return never {@literal null}, always new instance
      */
     public static <T> List<T> newArrayList() {
@@ -66,7 +67,7 @@ final class JvfsCollections {
 
     /**
      * Creates new hash set.
-     * 
+     *
      * @param <>> type of set entries
      * @return never {@literal null}, always new instance
      */

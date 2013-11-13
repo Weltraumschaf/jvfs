@@ -51,8 +51,26 @@ final class JvfsAssertions {
      */
     private JvfsAssertions() {
         super();
+        throw new UnsupportedOperationException(); // Avoid reflective instantiation.
     }
 
+    /**
+     * Validates that the name is not {@code null} or empty.
+     *
+     * Throws {@link NullPointerException} if {@code null} or
+     * {@link IllegalArgumentException} if empty.
+     *
+     * @param name may be {@code null}
+     */
+    private static void validateName(final String name) {
+        if (null == name) {
+            throw new NullPointerException("Argument name must not be null!");
+        }
+
+        if (name.isEmpty()) {
+            throw new IllegalArgumentException("Argument name must not be empty!");
+        }
+    }
     /**
      * Asserts that given object is not {@literal null}.
      *
@@ -62,40 +80,53 @@ final class JvfsAssertions {
      * @param name name of checked parameter for error message
      */
     static void notNull(final Object o, final String name) {
+        validateName(name);
+
         if (null == o) {
             throw new NullPointerException(String.format(NOT_NULL_MESSAGE, name));
         }
     }
 
     static void lessThan(final int checked, final int reference, final String name) {
+        validateName(name);
+
         if (checked >= reference) {
             throw new IllegalArgumentException(String.format(LESS_THAN_MESSAGE, name, reference));
         }
     }
 
     static void lessThanEqual(int checked, int reference, String name) {
+        validateName(name);
+
         if (checked > reference) {
             throw new IllegalArgumentException(String.format(LESS_THAN_EQUAL_MESSAGE, name, reference));
         }
     }
 
     static void greaterThan(final int checked, final int reference, final String name) {
+        validateName(name);
+
         if (checked <= reference) {
             throw new IllegalArgumentException(String.format(GREATER_THAN_MESSAGE, name, reference));
         }
     }
 
     static void greaterThanEqual(final int checked, final int reference, final String name) {
+        validateName(name);
         greaterThanEqual((long) checked, (long) reference, name);
     }
 
     static void greaterThanEqual(final long checked, final long reference, final String name) {
+        validateName(name);
+
         if (checked < reference) {
             throw new IllegalArgumentException(String.format(GREATER_THAN_EQUAL_MESSAGE, name, reference));
         }
     }
 
     static void isEqual(final Object actual, final Object expected, final String name) {
+        validateName(name);
+
         if (notEqual(actual, expected)) {
             throw new IllegalArgumentException(String.format(EQUAL_MESSAGE, name, expected));
         }

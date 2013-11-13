@@ -50,7 +50,7 @@ public final class JvfsFileSystems {
      */
     private JvfsFileSystems() {
         super();
-        throw new UnsupportedOperationException("Class with only static methods");
+        throw new UnsupportedOperationException(); // Avoid reflective instantiation.
     }
 
     /**
