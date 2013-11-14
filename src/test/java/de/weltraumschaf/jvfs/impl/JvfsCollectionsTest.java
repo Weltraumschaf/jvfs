@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package de.weltraumschaf.jvfs;
+package de.weltraumschaf.jvfs.impl;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -25,7 +25,9 @@ import static org.hamcrest.Matchers.*;
 public class JvfsCollectionsTest {
 
     @Rule
+    //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
+    //CHECKSTYLE:ON
 
     @Test
     public void invokeConstructorByReflectionThrowsException() throws Exception {

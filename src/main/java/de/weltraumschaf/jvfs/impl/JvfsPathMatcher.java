@@ -9,7 +9,7 @@
  *
  * Copyright (C) 2012 "Sven Strittmatter" <weltraumschaf@googlemail.com>
  */
-package de.weltraumschaf.jvfs;
+package de.weltraumschaf.jvfs.impl;
 
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;

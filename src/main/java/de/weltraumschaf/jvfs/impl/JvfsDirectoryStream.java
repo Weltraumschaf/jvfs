@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package de.weltraumschaf.jvfs;
+package de.weltraumschaf.jvfs.impl;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;

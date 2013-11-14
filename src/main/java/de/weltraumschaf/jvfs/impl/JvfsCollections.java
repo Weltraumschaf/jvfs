@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.weltraumschaf.jvfs;
+package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.impl.JvfsAssertions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

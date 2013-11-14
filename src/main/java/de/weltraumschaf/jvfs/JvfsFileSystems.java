@@ -12,6 +12,7 @@
 
 package de.weltraumschaf.jvfs;
 
+import de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider;
 import java.net.URI;
 import java.nio.file.spi.FileSystemProvider;
 
@@ -43,7 +44,7 @@ public final class JvfsFileSystems {
     /**
      * Full qualified class name of provider implementation.
      */
-    private static final String IMPLEMENTATION = "de.weltraumschaf.juberblog.jvfs.JvfsFileSystemProvider";
+    private static final String IMPLEMENTATION = "de.weltraumschaf.juberblog.jvfs.impl.JvfsFileSystemProvider";
 
     /**
      * Hidden for pure static class.

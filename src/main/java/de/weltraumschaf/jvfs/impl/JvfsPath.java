@@ -9,8 +9,15 @@
  *
  * Copyright (C) 2012 "Sven Strittmatter" <weltraumschaf@googlemail.com>
  */
-package de.weltraumschaf.jvfs;
+package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsFileSystems;
+import de.weltraumschaf.jvfs.impl.JvfsFileSystem;
+import de.weltraumschaf.jvfs.impl.JvfsDirectoryStream;
+import de.weltraumschaf.jvfs.impl.JvfsFileAttributeView;
+import de.weltraumschaf.jvfs.impl.JvfsCollections;
+import de.weltraumschaf.jvfs.impl.JvfsFileAttributes;
+import de.weltraumschaf.jvfs.impl.JvfsAssertions;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

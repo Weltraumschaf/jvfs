@@ -9,8 +9,10 @@
  *
  * Copyright (C) 2012 "Sven Strittmatter" <weltraumschaf@googlemail.com>
  */
-package de.weltraumschaf.jvfs;
+package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.impl.JvfsCollections;
+import de.weltraumschaf.jvfs.impl.JvfsAssertions;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
