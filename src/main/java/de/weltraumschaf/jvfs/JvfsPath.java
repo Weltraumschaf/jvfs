@@ -114,13 +114,11 @@ class JvfsPath implements Path {
     @Override
     public Path getFileName() {
         // Root and empty String has no file name
-        if (path.length() == 0 || path.equals(DIR_SEP)) {
+        if (path.isEmpty() || path.equals(DIR_SEP)) {
             return null;
         } else {
             final List<String> tokens = tokenize(this);
-            // Furthest out
-            final Path fileName = new JvfsPath(tokens.get(tokens.size() - 1), this.jvfs);
-            return fileName;
+            return new JvfsPath(tokens.get(tokens.size() - 1), this.jvfs);
         }
     }
 
@@ -155,21 +153,24 @@ class JvfsPath implements Path {
     @Override
     public int getNameCount() {
         String context = this.path;
+
         // Kill trailing slashes
         if (context.endsWith(DIR_SEP)) {
             context = context.substring(0, context.length() - 1);
         }
+
         // Kill preceding slashes
         if (context.startsWith(DIR_SEP)) {
             context = context.substring(1);
         }
+
         // Root
         if (context.length() == 0) {
             return 0;
         }
+
         // Else count names by using the separator
-        final int pathSeparators = this.countOccurrences(context, DIR_SEP, 0);
-        return pathSeparators + 1;
+        return this.countOccurrences(context, DIR_SEP, 0) + 1;
     }
 
     /**
@@ -188,33 +189,40 @@ class JvfsPath implements Path {
 
     @Override
     public Path getName(int index) {
-        // Precondition checks handled by subpath impl
-        return this.subpath(0, index + 1);
+        // Precondition checks handled by subpath implementation.
+        return this.subpath(index, index + 1);
     }
 
     @Override
     public Path subpath(int beginIndex, int endIndex) {
-        JvfsAssertions.lessThan(beginIndex, 0, "beginIndex");
-        JvfsAssertions.lessThan(endIndex, 0, "endIndex");
-        JvfsAssertions.lessThanEqual(endIndex, beginIndex, "endIndex");
+        JvfsAssertions.greaterThanEqual(beginIndex, 0, "beginIndex");
+        JvfsAssertions.greaterThanEqual(endIndex, 0, "endIndex");
+        JvfsAssertions.lessThan(beginIndex, endIndex, "beginIndex");
 
         final List<String> tokens = tokenize(this);
         final int tokenCount = tokens.size();
+
         if (beginIndex >= tokenCount) {
             throw new IllegalArgumentException("Invalid begin index " + endIndex + " for " + this.toString()
                     + "; must be between 0 and " + tokenCount + " exclusive");
         }
+
         if (endIndex > tokenCount) {
             throw new IllegalArgumentException("Invalid end index " + endIndex + " for " + this.toString()
                     + "; must be between 0 and " + tokenCount + " inclusive");
         }
-        final StringBuilder newPathBuilder = new StringBuilder();
-        for (int i = 0; i < endIndex; i++) {
-            newPathBuilder.append(DIR_SEP);
-            newPathBuilder.append(tokens.get(i));
+
+        final StringBuilder buffer = new StringBuilder();
+
+        for (int i = beginIndex; i < endIndex; i++) {
+            if (i > beginIndex) {
+                buffer.append(DIR_SEP);
+            }
+
+            buffer.append(tokens.get(i));
         }
-        final Path newPath = this.fromString(newPathBuilder.toString());
-        return newPath;
+
+        return this.fromString(buffer.toString());
     }
 
     /**
@@ -277,6 +285,7 @@ class JvfsPath implements Path {
         if (this.getFileSystem() != other.getFileSystem()) {
             return false;
         }
+
         final List<String> ourTokens = tokenize(this);
         final List<String> otherTokens = tokenize((JvfsPath) other);
 
@@ -295,6 +304,7 @@ class JvfsPath implements Path {
                 return false;
             }
         }
+
         // Compare all components
         for (int i = numOtherTokens - 1; i >= 0; i--) {
             if (!ourTokens.get(i + differential).equals(otherTokens.get(i))) {
@@ -403,9 +413,15 @@ class JvfsPath implements Path {
 
     @Override
     public URI toUri() {
-        final URI root = JvfsFileSystems.getRootUri();
-        // Compose a new URI location, stripping out the extra "/" root
-        final String location = root.toString() + this.toString().substring(1);
+        String location = JvfsFileSystems.getRootUri().toString();
+
+        // Compose a new URI location, stripping out the extra "/" root idabsolute
+        if (isAbsolute()) {
+            location += this.toString().substring(1);
+        } else {
+            location += this.toString();
+        }
+
         return URI.create(location);
     }
 
