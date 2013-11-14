@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JvfsFileAttributes.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JVFS</a> &gt; <a href="index.html" class="el_package">de.weltraumschaf.jvfs</a> &gt; <span class="el_source">JvfsFileAttributes.java</span></div><h1>JvfsFileAttributes.java</h1><pre class="source lang-java linenums">/*
+ *  LICENSE
+ *
+ * &quot;THE BEER-WARE LICENSE&quot; (Revision 43):
+ * &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt; wrote this file.
+ * As long as you retain this notice you can do whatever you want with
+ * this stuff. If we meet some day, and you think this stuff is worth it,
+ * you can buy me a non alcohol-free beer in return.
+ *
+ * Copyright (C) 2012 &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt;
+ */
+package de.weltraumschaf.jvfs;
+
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Represents the file attributes.
+ *
+ * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
+ */
+<span class="nc bnc" id="L23" title="All 2 branches missed.">final class JvfsFileAttributes implements BasicFileAttributes {</span>
+
+    /**
+     * Wrapped file system entry.
+     */
+    private final JvfsFileEntry entry;
+
+    /**
+     * Dedicated constructor.
+     *
+     * @param entry must not be {@literal null}
+     */
+    JvfsFileAttributes(final JvfsFileEntry entry) {
+<span class="nc" id="L36">        super();</span>
+<span class="nc bnc" id="L37" title="All 4 branches missed.">        assert entry != null : &quot;entry must be specified&quot;;</span>
+<span class="nc" id="L38">        this.entry = entry;</span>
+<span class="nc" id="L39">    }</span>
+
+    /**
+     * Creates a file time based on a long in seconds.
+     *
+     * @param timestamp must be non negative
+     * @return never {@literal null}
+     */
+    private static FileTime createFileTime(final long timestamp) {
+<span class="nc" id="L48">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
+<span class="nc" id="L49">        return FileTime.from(timestamp, TimeUnit.SECONDS);</span>
+    }
+
+    @Override
+    public FileTime lastModifiedTime() {
+<span class="nc" id="L54">        return createFileTime(entry.getLastModifiedTime());</span>
+    }
+
+    @Override
+    public FileTime lastAccessTime() {
+<span class="nc" id="L59">        return createFileTime(entry.getLastAccessTime());</span>
+    }
+
+    @Override
+    public FileTime creationTime() {
+<span class="nc" id="L64">        return createFileTime(entry.getCreationTime());</span>
+    }
+
+    @Override
+    public boolean isRegularFile() {
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        return !isDirectory();</span>
+    }
+
+    @Override
+    public boolean isDirectory() {
+<span class="nc" id="L74">        return entry.isDirectory();</span>
+    }
+
+    @Override
+    public boolean isSymbolicLink() {
+<span class="nc" id="L79">        return entry.isSymbolicLink();</span>
+    }
+
+    @Override
+    public boolean isOther() {
+        // Either a dir or regular file
+<span class="nc" id="L85">        return false;</span>
+    }
+
+    @Override
+    public long size() {
+<span class="nc" id="L90">        return entry.size();</span>
+    }
+
+    @Override
+    public Object fileKey() {
+<span class="nc" id="L95">        return entry.toString();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

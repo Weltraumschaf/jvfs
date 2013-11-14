@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JvfsAssertions.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JVFS</a> &gt; <a href="index.html" class="el_package">de.weltraumschaf.jvfs</a> &gt; <span class="el_source">JvfsAssertions.java</span></div><h1>JvfsAssertions.java</h1><pre class="source lang-java linenums">/*
+ *  LICENSE
+ *
+ * &quot;THE BEER-WARE LICENSE&quot; (Revision 43):
+ * &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt; wrote this file.
+ * As long as you retain this notice you can do whatever you want with
+ * this stuff. If we meet some day, and you think this stuff is worth it,
+ * you can buy me a non alcohol-free beer in return.
+ *
+ * Copyright (C) 2012 &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt;
+ */
+package de.weltraumschaf.jvfs;
+
+/**
+ * Static methods to assert values.
+ *
+ * If the assertion is not satisfied exceptions will be thrown.
+ *
+ * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
+ */
+final class JvfsAssertions {
+
+    /**
+     * Format string of error message for {@link #notNull(java.lang.Object, java.lang.String)}.
+     */
+    private static final String NOT_NULL_MESSAGE = &quot;Parameter '%s' must not be null!&quot;;
+    /**
+     * Format string of error message for {@link #lessThan(int, int, java.lang.String)}.
+     */
+    private static final String LESS_THAN_MESSAGE = &quot;Paramater '%s' must be less than '%d'!&quot;;
+    /**
+     * Format string of error message for {@link #lessThanEqual(int, int, java.lang.String)}.
+     */
+    private static final String LESS_THAN_EQUAL_MESSAGE = &quot;Paramater '%s' must be less than or equal '%d'!&quot;;
+    /**
+     * Format string of error message for {@link #greaterThan(int, int, java.lang.String)}.
+     */
+    private static final String GREATER_THAN_MESSAGE = &quot;Paramater '%s' must be greater than '%d'!&quot;;
+    /**
+     * Format string of error message for {@link #greaterThanEqual(int, int, java.lang.String)}
+     * and {@link #greaterThanEqual(long, long, java.lang.String)}.
+     */
+    private static final String GREATER_THAN_EQUAL_MESSAGE = &quot;Paramater '%s' must be greater than or equal '%d'!&quot;;
+    /**
+     * Format string of error message for {@link #isEqual(java.lang.Object, java.lang.Object, java.lang.String)}.
+     */
+    private static final String EQUAL_MESSAGE = &quot;Parameter '%s' is not equal to '%s'!&quot;;
+
+    /**
+     * Hidden for pure static class.
+     */
+    private JvfsAssertions() {
+<span class="fc" id="L53">        super();</span>
+<span class="fc" id="L54">        throw new UnsupportedOperationException(); // Avoid reflective instantiation.</span>
+    }
+
+    /**
+     * Validates that the name is not {@code null} or empty.
+     *
+     * Throws {@link NullPointerException} if {@code null} or
+     * {@link IllegalArgumentException} if empty.
+     *
+     * @param name may be {@code null}
+     */
+    private static void validateName(final String name) {
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (null == name) {</span>
+<span class="fc" id="L67">            throw new NullPointerException(&quot;Argument name must not be null!&quot;);</span>
+        }
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (name.isEmpty()) {</span>
+<span class="fc" id="L71">            throw new IllegalArgumentException(&quot;Argument name must not be empty!&quot;);</span>
+        }
+<span class="fc" id="L73">    }</span>
+    /**
+     * Asserts that given object is not {@literal null}.
+     *
+     * Throws{@link NullPointerException} if given object is {@literal nul}.
+     *
+     * @param o checked if {@literal null}
+     * @param name name of checked parameter for error message
+     */
+    static void notNull(final Object o, final String name) {
+<span class="fc" id="L83">        validateName(name);</span>
+
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (null == o) {</span>
+<span class="fc" id="L86">            throw new NullPointerException(String.format(NOT_NULL_MESSAGE, name));</span>
+        }
+<span class="fc" id="L88">    }</span>
+
+    static void lessThan(final int checked, final int reference, final String name) {
+<span class="fc" id="L91">        validateName(name);</span>
+
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (checked &gt;= reference) {</span>
+<span class="fc" id="L94">            throw new IllegalArgumentException(String.format(LESS_THAN_MESSAGE, name, reference));</span>
+        }
+<span class="fc" id="L96">    }</span>
+
+    static void lessThanEqual(int checked, int reference, String name) {
+<span class="fc" id="L99">        validateName(name);</span>
+
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (checked &gt; reference) {</span>
+<span class="fc" id="L102">            throw new IllegalArgumentException(String.format(LESS_THAN_EQUAL_MESSAGE, name, reference));</span>
+        }
+<span class="fc" id="L104">    }</span>
+
+    static void greaterThan(final int checked, final int reference, final String name) {
+<span class="fc" id="L107">        validateName(name);</span>
+
+<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (checked &lt;= reference) {</span>
+<span class="fc" id="L110">            throw new IllegalArgumentException(String.format(GREATER_THAN_MESSAGE, name, reference));</span>
+        }
+<span class="fc" id="L112">    }</span>
+
+    static void greaterThanEqual(final int checked, final int reference, final String name) {
+<span class="fc" id="L115">        validateName(name);</span>
+<span class="fc" id="L116">        greaterThanEqual((long) checked, (long) reference, name);</span>
+<span class="fc" id="L117">    }</span>
+
+    static void greaterThanEqual(final long checked, final long reference, final String name) {
+<span class="fc" id="L120">        validateName(name);</span>
+
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (checked &lt; reference) {</span>
+<span class="fc" id="L123">            throw new IllegalArgumentException(String.format(GREATER_THAN_EQUAL_MESSAGE, name, reference));</span>
+        }
+<span class="fc" id="L125">    }</span>
+
+    static void isEqual(final Object actual, final Object expected, final String name) {
+<span class="fc" id="L128">        validateName(name);</span>
+
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        if (notEqual(actual, expected)) {</span>
+<span class="fc" id="L131">            throw new IllegalArgumentException(String.format(EQUAL_MESSAGE, name, expected));</span>
+        }
+<span class="fc" id="L133">    }</span>
+
+    static boolean equal(final Object a, final Object b) {
+<span class="pc bpc" id="L136" title="1 of 6 branches missed.">        return a == b || (a != null &amp;&amp; a.equals(b));</span>
+    }
+
+    static boolean notEqual(final Object a, final Object b) {
+<span class="fc bfc" id="L140" title="All 2 branches covered.">        return !equal(a, b);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

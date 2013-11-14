@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JvfsPathMatcher.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JVFS</a> &gt; <a href="index.html" class="el_package">de.weltraumschaf.jvfs</a> &gt; <span class="el_source">JvfsPathMatcher.java</span></div><h1>JvfsPathMatcher.java</h1><pre class="source lang-java linenums">/*
+ *  LICENSE
+ *
+ * &quot;THE BEER-WARE LICENSE&quot; (Revision 43):
+ * &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt; wrote this file.
+ * As long as you retain this notice you can do whatever you want with
+ * this stuff. If we meet some day, and you think this stuff is worth it,
+ * you can buy me a non alcohol-free beer in return.
+ *
+ * Copyright (C) 2012 &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt;
+ */
+package de.weltraumschaf.jvfs;
+
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+/**
+ *
+ * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
+ */
+final class JvfsPathMatcher implements PathMatcher {
+
+    private static final String GLOB_SYNTAX = &quot;glob&quot;;
+    private static final String REGEX_SYNTAX = &quot;regex&quot;;
+    private static final String GLOB_META_CHARACTERS = &quot;\\*?[{&quot;;
+    private static final String REGEX_META_CHARACTERS = &quot;.^$+{[]|()&quot;;
+<span class="nc" id="L29">    private static char EOL = 0;</span>
+
+    private final Pattern pattern;
+
+<span class="nc" id="L33">    private JvfsPathMatcher(final String expr) {</span>
+<span class="nc" id="L34">        this.pattern = Pattern.compile(expr);</span>
+<span class="nc" id="L35">    }</span>
+
+    @Override
+    public boolean matches(final Path path) {
+<span class="nc" id="L39">        return pattern.matcher(path.toString()).matches();</span>
+    }
+
+    static PathMatcher newMatcher(final String syntaxAndPattern) {
+<span class="nc" id="L43">        final int pos = syntaxAndPattern.indexOf(':');</span>
+
+<span class="nc bnc" id="L45" title="All 4 branches missed.">        if (pos &lt;= 0 || pos == syntaxAndPattern.length()) {</span>
+<span class="nc" id="L46">            throw new IllegalArgumentException(syntaxAndPattern);</span>
+        }
+
+<span class="nc" id="L49">        final String syntax = syntaxAndPattern.substring(0, pos);</span>
+<span class="nc" id="L50">        final String input = syntaxAndPattern.substring(pos + 1);</span>
+        final String expr;
+
+<span class="nc bnc" id="L53" title="All 2 branches missed.">        if (syntax.equals(GLOB_SYNTAX)) {</span>
+<span class="nc" id="L54">            expr = toRegexPattern(input);</span>
+        } else {
+<span class="nc bnc" id="L56" title="All 2 branches missed.">            if (syntax.equals(REGEX_SYNTAX)) {</span>
+<span class="nc" id="L57">                expr = input;</span>
+            } else {
+<span class="nc" id="L59">                throw new UnsupportedOperationException(&quot;Syntax '&quot; + syntax</span>
+                        + &quot;' not recognized&quot;);
+            }
+        }
+
+<span class="nc" id="L64">        return new JvfsPathMatcher(expr);</span>
+    }
+
+    private static boolean isGlobMeta(char c) {
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        return GLOB_META_CHARACTERS.indexOf(c) != -1;</span>
+    }
+
+    private static boolean isRegexMeta(char c) {
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        return REGEX_META_CHARACTERS.indexOf(c) != -1;</span>
+    }
+
+    private static char next(String glob, int i) {
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (i &lt; glob.length()) {</span>
+<span class="nc" id="L77">            return glob.charAt(i);</span>
+        }
+
+<span class="nc" id="L80">        return EOL;</span>
+    }
+
+    /**
+     * Creates a regex pattern from the given glob expression.
+     *
+     * @param globPattern must not be {@literal null}
+     * @return never {@literal null}
+     */
+    private static String toRegexPattern(final String globPattern) {
+<span class="nc" id="L90">        boolean inGroup = false;</span>
+<span class="nc" id="L91">        final StringBuilder regex = new StringBuilder(&quot;^&quot;);</span>
+
+<span class="nc" id="L93">        int i = 0;</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        while (i &lt; globPattern.length()) {</span>
+<span class="nc" id="L95">            char c = globPattern.charAt(i++);</span>
+
+<span class="nc bnc" id="L97" title="All 9 branches missed.">            switch (c) {</span>
+                case '\\':
+                    // escape special characters
+<span class="nc bnc" id="L100" title="All 2 branches missed.">                    if (i == globPattern.length()) {</span>
+<span class="nc" id="L101">                        throw new PatternSyntaxException(&quot;No character to escape&quot;,</span>
+                                globPattern, i - 1);
+                    }
+
+<span class="nc" id="L105">                    final char next = globPattern.charAt(i++);</span>
+
+<span class="nc bnc" id="L107" title="All 4 branches missed.">                    if (isGlobMeta(next) || isRegexMeta(next)) {</span>
+<span class="nc" id="L108">                        regex.append('\\');</span>
+                    }
+
+<span class="nc" id="L111">                    regex.append(next);</span>
+<span class="nc" id="L112">                    break;</span>
+                case '/':
+<span class="nc" id="L114">                    regex.append(c);</span>
+<span class="nc" id="L115">                    break;</span>
+                case '[':
+                    // don't match name separator in class
+<span class="nc" id="L118">                    regex.append(&quot;[[^/]&amp;&amp;[&quot;);</span>
+
+<span class="nc bnc" id="L120" title="All 2 branches missed.">                    if (next(globPattern, i) == '^') {</span>
+                        // escape the regex negation char if it appears
+<span class="nc" id="L122">                        regex.append(&quot;\\^&quot;);</span>
+<span class="nc" id="L123">                        i++;</span>
+                    } else {
+                        // negation
+<span class="nc bnc" id="L126" title="All 2 branches missed.">                        if (next(globPattern, i) == '!') {</span>
+<span class="nc" id="L127">                            regex.append('^');</span>
+<span class="nc" id="L128">                            i++;</span>
+                        }
+
+                        // hyphen allowed at start
+<span class="nc bnc" id="L132" title="All 2 branches missed.">                        if (next(globPattern, i) == '-') {</span>
+<span class="nc" id="L133">                            regex.append('-');</span>
+<span class="nc" id="L134">                            i++;</span>
+                        }
+                    }
+
+<span class="nc" id="L138">                    boolean hasRangeStart = false;</span>
+<span class="nc" id="L139">                    char last = 0;</span>
+
+<span class="nc bnc" id="L141" title="All 2 branches missed.">                    while (i &lt; globPattern.length()) {</span>
+<span class="nc" id="L142">                        c = globPattern.charAt(i++);</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">                        if (c == ']') {</span>
+<span class="nc" id="L144">                            break;</span>
+                        }
+
+<span class="nc bnc" id="L147" title="All 2 branches missed.">                        if (c == '/') {</span>
+<span class="nc" id="L148">                            throw new PatternSyntaxException(&quot;Explicit 'name separator' in class&quot;,</span>
+                                    globPattern, i - 1);
+                        }
+
+                        // TBD: how to specify ']' in a class?
+<span class="nc bnc" id="L153" title="All 8 branches missed.">                        if (c == '\\' || c == '['</span>
+                                || c == '&amp;' &amp;&amp; next(globPattern, i) == '&amp;') {
+                            // escape '\', '[' or &quot;&amp;&amp;&quot; for regex class
+<span class="nc" id="L156">                            regex.append('\\');</span>
+                        }
+
+<span class="nc" id="L159">                        regex.append(c);</span>
+
+<span class="nc bnc" id="L161" title="All 2 branches missed.">                        if (c == '-') {</span>
+<span class="nc bnc" id="L162" title="All 2 branches missed.">                            if (!hasRangeStart) {</span>
+<span class="nc" id="L163">                                throw new PatternSyntaxException(&quot;Invalid range&quot;,</span>
+                                        globPattern, i - 1);
+                            }
+
+<span class="nc bnc" id="L167" title="All 4 branches missed.">                            if ((c = next(globPattern, i++)) == EOL || c == ']') {</span>
+<span class="nc" id="L168">                                break;</span>
+                            }
+
+<span class="nc bnc" id="L171" title="All 2 branches missed.">                            if (c &lt; last) {</span>
+<span class="nc" id="L172">                                throw new PatternSyntaxException(&quot;Invalid range&quot;, globPattern, i - 3);</span>
+                            }
+
+<span class="nc" id="L175">                            regex.append(c);</span>
+<span class="nc" id="L176">                            hasRangeStart = false;</span>
+                        } else {
+<span class="nc" id="L178">                            hasRangeStart = true;</span>
+<span class="nc" id="L179">                            last = c;</span>
+                        }
+                    }
+
+<span class="nc bnc" id="L183" title="All 2 branches missed.">                    if (c != ']') {</span>
+<span class="nc" id="L184">                        throw new PatternSyntaxException(&quot;Missing ']&quot;, globPattern, i - 1);</span>
+                    }
+
+<span class="nc" id="L187">                    regex.append(&quot;]]&quot;);</span>
+<span class="nc" id="L188">                    break;</span>
+                case '{':
+<span class="nc bnc" id="L190" title="All 2 branches missed.">                    if (inGroup) {</span>
+<span class="nc" id="L191">                        throw new PatternSyntaxException(&quot;Cannot nest groups&quot;,</span>
+                                globPattern, i - 1);
+                    }
+
+<span class="nc" id="L195">                    regex.append(&quot;(?:(?:&quot;);</span>
+<span class="nc" id="L196">                    inGroup = true;</span>
+<span class="nc" id="L197">                    break;</span>
+                case '}':
+<span class="nc bnc" id="L199" title="All 2 branches missed.">                    if (inGroup) {</span>
+<span class="nc" id="L200">                        regex.append(&quot;))&quot;);</span>
+<span class="nc" id="L201">                        inGroup = false;</span>
+                    } else {
+<span class="nc" id="L203">                        regex.append('}');</span>
+                    }
+
+<span class="nc" id="L206">                    break;</span>
+                case ',':
+<span class="nc bnc" id="L208" title="All 2 branches missed.">                    if (inGroup) {</span>
+<span class="nc" id="L209">                        regex.append(&quot;)|(?:&quot;);</span>
+                    } else {
+<span class="nc" id="L211">                        regex.append(',');</span>
+                    }
+
+<span class="nc" id="L214">                    break;</span>
+                case '*':
+<span class="nc bnc" id="L216" title="All 2 branches missed.">                    if (next(globPattern, i) == '*') {</span>
+                        // crosses directory boundaries
+<span class="nc" id="L218">                        regex.append(&quot;.*&quot;);</span>
+<span class="nc" id="L219">                        i++;</span>
+                    } else {
+                        // within directory boundary
+<span class="nc" id="L222">                        regex.append(&quot;[^/]*&quot;);</span>
+                    }
+
+<span class="nc" id="L225">                    break;</span>
+                case '?':
+<span class="nc" id="L227">                    regex.append(&quot;[^/]&quot;);</span>
+<span class="nc" id="L228">                    break;</span>
+                default:
+<span class="nc bnc" id="L230" title="All 2 branches missed.">                    if (isRegexMeta(c)) {</span>
+<span class="nc" id="L231">                        regex.append('\\');</span>
+                    }
+
+<span class="nc" id="L234">                    regex.append(c);</span>
+            }
+<span class="nc" id="L236">        }</span>
+
+<span class="nc bnc" id="L238" title="All 2 branches missed.">        if (inGroup) {</span>
+<span class="nc" id="L239">            throw new PatternSyntaxException(&quot;Missing '}&quot;, globPattern, i - 1);</span>
+        }
+
+<span class="nc" id="L242">        return regex.append('$').toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

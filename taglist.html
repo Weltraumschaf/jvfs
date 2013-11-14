@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="Date-Revision-yyyymmdd" content="20131114" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>JVFS Project Site - </title>
+    <title>JVFS Project Site - Tag List report</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-1.3.0.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
@@ -57,7 +57,7 @@
         Weltraumschaf</a>
         </li>
       <li class="divider ">/</li>
-        <li class=""></li>
+        <li class="">Tag List report</li>
                 
                 
                     
@@ -74,10 +74,12 @@
                 <ul class="nav nav-list">
                     <li class="nav-header">JVFS</li>
                                 
-      <li class="active">
+      <li>
     
-            <a href="#"><i class="none"></i>Home</a>
-          </li>
+                          <a href="index.html" title="Home">
+          <i class="none"></i>
+        Home</a>
+            </li>
                               <li class="nav-header">Reports</li>
                                                                                                                                                                                                                 
       <li>
@@ -86,13 +88,83 @@
           <i class="icon-chevron-right"></i>
         Project Information</a>
                   </li>
-                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                
       <li>
     
                           <a href="project-reports.html" title="Project Reports">
-          <i class="icon-chevron-right"></i>
+          <i class="icon-chevron-down"></i>
         Project Reports</a>
-                  </li>
+                    <ul class="nav nav-list">
+                      
+      <li>
+    
+                          <a href="apidocs/index.html" title="JavaDocs">
+          <i class="none"></i>
+        JavaDocs</a>
+            </li>
+                      
+      <li>
+    
+                          <a href="dependency-updates-report.html" title="Dependency Updates Report">
+          <i class="none"></i>
+        Dependency Updates Report</a>
+            </li>
+                      
+      <li>
+    
+                          <a href="plugin-updates-report.html" title="Plugin Updates Report">
+          <i class="none"></i>
+        Plugin Updates Report</a>
+            </li>
+                      
+      <li>
+    
+                          <a href="dev-activity.html" title="Developer Activity">
+          <i class="none"></i>
+        Developer Activity</a>
+            </li>
+                      
+      <li>
+    
+                          <a href="file-activity.html" title="File Activity">
+          <i class="none"></i>
+        File Activity</a>
+            </li>
+                      
+      <li>
+    
+                          <a href="changelog.html" title="Change Log">
+          <i class="none"></i>
+        Change Log</a>
+            </li>
+                      
+      <li>
+    
+                          <a href="jdepend-report.html" title="JDepend">
+          <i class="none"></i>
+        JDepend</a>
+            </li>
+                      
+      <li class="active">
+    
+            <a href="#"><i class="none"></i>Tag List</a>
+          </li>
+                      
+      <li>
+    
+                          <a href="checkstyle.html" title="Checkstyle">
+          <i class="none"></i>
+        Checkstyle</a>
+            </li>
+                      
+      <li>
+    
+                          <a href="findbugs.html" title="FindBugs Report">
+          <i class="none"></i>
+        FindBugs Report</a>
+            </li>
+              </ul>
+        </li>
             </ul>
                 
                     
@@ -113,8 +185,47 @@
                         
         <div id="bodyColumn"  class="span6" >
                                   
-            <h1>Welcome to the JVFS Project</h1>
-<p>JVFS is an in-memory file system based on Java 7 NIO. You can replace the default file system with JVFS for easier unit testing. The implementations focus is on easy to implement and use. There is no performance or memory consumption optimization at the moment.</p>
+            <div class="section">
+<h2>Tag List Report<a name="Tag_List_Report"></a></h2>
+<p>The following document contains the listing of user tags found in the code. Below is the summary of the occurrences per tag.</p>
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>Tag Class</th>
+<th>Total number of occurrences</th>
+<th>Tag strings used by tag class</th></tr>
+<tr class="b">
+<td>Bugs to fix</td>
+<td>0</td>
+<td>fixme</td></tr>
+<tr class="a">
+<td><a href="#tag_class_2">Things to do</a></td>
+<td>1</td>
+<td>todo</td></tr>
+<tr class="b">
+<td><a href="#tag_class_1">This may be considered.</a></td>
+<td>1</td>
+<td>xxx</td></tr></table>
+<p>Each tag is detailed below:</p>
+<div class="section">
+<h3><a name="tag_class_2">Things to do</a><a name="Things_to_do"></a></h3>
+<p><b>Number of occurrences found in the code: 1</b></p>
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>de.weltraumschaf.jvfs.JvfsFileSystem</th>
+<th>Line</th></tr>
+<tr class="b">
+<td>Check parent direcotries.</td>
+<td>211</td></tr></table></div>
+<div class="section">
+<h3><a name="tag_class_1">This may be considered.</a><a name="This_may_be_considered."></a></h3>
+<p><b>Number of occurrences found in the code: 1</b></p>
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>de.weltraumschaf.jvfs.JvfsPath</th>
+<th>Line</th></tr>
+<tr class="b">
+<td>Consider returning own implementation, because File will may be circumvent JVFS.</td>
+<td>439</td></tr></table></div></div>
                   </div>
             </div>
           </div>
