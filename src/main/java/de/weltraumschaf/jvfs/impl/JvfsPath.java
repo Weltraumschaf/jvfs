@@ -12,16 +12,8 @@
 package de.weltraumschaf.jvfs.impl;
 
 import de.weltraumschaf.jvfs.JvfsFileSystems;
-import de.weltraumschaf.jvfs.impl.JvfsFileSystem;
-import de.weltraumschaf.jvfs.impl.JvfsDirectoryStream;
-import de.weltraumschaf.jvfs.impl.JvfsFileAttributeView;
-import de.weltraumschaf.jvfs.impl.JvfsCollections;
-import de.weltraumschaf.jvfs.impl.JvfsFileAttributes;
-import de.weltraumschaf.jvfs.impl.JvfsAssertions;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SeekableByteChannel;
@@ -34,10 +26,10 @@ import java.nio.file.LinkOption;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
@@ -713,7 +705,7 @@ class JvfsPath implements Path {
         jvfs.setTimes(path, mtime, atime, ctime);
     }
 
-    JvfsFileAttributes getAttributes() throws IOException {
+    BasicFileAttributes getAttributes() throws IOException {
         final JvfsFileAttributes attrs = jvfs.getFileAttributes(path);
 
         if (attrs == null) {
@@ -723,12 +715,12 @@ class JvfsPath implements Path {
         return attrs;
     }
 
-    Map<String, Object> readAttributes(final String attributes, final LinkOption[] options) {
+    Map<String, Object> readAttributes(final String attributes, final LinkOption ... options) {
         final JvfsFileAttributeView view = new JvfsFileAttributeView(this);
         return view.readAttributes(attributes);
     }
 
-    void setAttribute(final String attribute, final Object value, final LinkOption[] options) {
+    void setAttribute(final String attribute, final Object value, final LinkOption ... options) {
         final JvfsFileAttributeView view = new JvfsFileAttributeView(this);
         view.setAttribute(attribute, value);
     }

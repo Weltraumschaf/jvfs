@@ -17,10 +17,17 @@ import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystemAlreadyExistsException;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.FileAttributeView;
+import java.util.Map;
+import java.util.Set;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import static org.mockito.Mockito.*;
@@ -64,10 +71,138 @@ public class JvfsFileSystemProviderTest {
     }
 
     @Test
+    public void newFileChannel() throws IOException {
+        final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
+        final Set<OpenOption> opts = JvfsCollections.newHashSet();
+        final FileAttribute<Object> attrs = mock(FileAttribute.class);
+        sut.newFileChannel(path, opts, attrs);
+        verify(path, times(1)).newFileChannel(opts, attrs);
+    }
+
+    @Test
+    public void newByteChannel() throws IOException {
+        final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
+        final Set<OpenOption> opts = JvfsCollections.newHashSet();
+        final FileAttribute<Object> attrs = mock(FileAttribute.class);
+        sut.newByteChannel(path, opts, attrs);
+        verify(path, times(1)).newByteChannel(opts, attrs);
+    }
+
+    @Test
     public void newDirectoryStream() throws IOException {
         final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
         final DirectoryStream.Filter<Path> filter = mock(DirectoryStream.Filter.class);
         sut.newDirectoryStream(path, filter);
         verify(path, times(1)).newDirectoryStream(filter);
     }
+
+    @Test
+    public void createDirectory() throws IOException {
+        final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
+        final FileAttribute<Object> attrs = mock(FileAttribute.class);
+        sut.createDirectory(path, attrs);
+        verify(path, times(1)).createDirectory(attrs);
+    }
+
+    @Test
+    public void delete() throws IOException {
+        final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
+        sut.delete(path);
+        verify(path, times(1)).delete();
+    }
+
+    @Test
+    public void copy() throws IOException {
+        final JvfsPath src = spy(new JvfsPath(mock(JvfsFileSystem.class)));
+        final JvfsPath dst = new JvfsPath(mock(JvfsFileSystem.class));
+        sut.copy(src, dst);
+        verify(src, times(1)).copy(dst);
+    }
+
+    @Test
+    public void move() throws IOException {
+        final JvfsPath src = spy(new JvfsPath(mock(JvfsFileSystem.class)));
+        final JvfsPath dst = new JvfsPath(mock(JvfsFileSystem.class));
+        sut.move(src, dst);
+        verify(src, times(1)).move(dst);
+    }
+
+    @Test
+    public void isSameFile() throws IOException {
+        final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
+        final JvfsPath path2 = new JvfsPath(mock(JvfsFileSystem.class));
+        sut.isSameFile(path, path2);
+        verify(path, times(1)).isSameFile(path2);
+    }
+
+    @Test
+    public void isHidden() throws IOException {
+        final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
+        sut.isHidden(path);
+        verify(path, times(1)).isHidden();
+    }
+
+    @Test
+    public void getFileStore() throws IOException {
+        final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
+        sut.getFileStore(path);
+        verify(path, times(1)).getFileStore();
+    }
+
+    @Test
+    public void checkAccess() throws IOException {
+        final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
+        sut.checkAccess(path);
+        verify(path, times(1)).checkAccess();
+    }
+
+    @Test
+    public void getFileAttributeView() throws IOException {
+        final Path path = new JvfsPath(mock(JvfsFileSystem.class));
+        final FileAttributeView view = sut.getFileAttributeView(path, null);
+        assertThat(view, is(not(nullValue())));
+        assertThat(view, is(instanceOf(JvfsFileAttributeView.class)));
+        assertThat(((JvfsFileAttributeView)view).getPath(), is(sameInstance(path)));
+    }
+
+    @Test
+    public void readAttributes_returnsBasicFileAttribute_nullOnBadType() throws IOException {
+        final Path path = new JvfsPath(mock(JvfsFileSystem.class));
+        assertThat(sut.readAttributes(path, BasicFileAttributesStub.class), is(nullValue()));
+    }
+
+    @Test
+    public void readAttributes_returnsBasicFileAttribute() throws IOException {
+        final JvfsFileSystem fs = mock(JvfsFileSystem.class);
+        final JvfsPath path = spy(new JvfsPath(fs));
+        final JvfsFileAttributes expectedAttrs = new JvfsFileAttributes(JvfsFileEntry.newFile("/"));
+        when(fs.getFileAttributes(anyString())).thenReturn(expectedAttrs);
+        final BasicFileAttributes attrs = sut.readAttributes(path, BasicFileAttributes.class);
+        assertThat(attrs, is(not(nullValue())));
+        assertThat(attrs, is(instanceOf(JvfsFileAttributes.class)));
+        assertThat(attrs, is(sameInstance((BasicFileAttributes) expectedAttrs)));
+        verify(path, times(1)).getAttributes();
+    }
+
+    @Test
+    @Ignore("Not supported yet.")
+    public void readAttributes_returnsMap() throws IOException {
+        final Map<String, Object> expectedAttrs = JvfsCollections.newHashMap();
+        final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
+        when(path.readAttributes("foo")).thenReturn(expectedAttrs);
+        final Map<String, Object> attrs = sut.readAttributes(path, "foo");
+        assertThat(attrs, is(not(nullValue())));
+        assertThat(attrs, is(sameInstance(expectedAttrs)));
+        verify(path, times(1)).readAttributes("foo");
+    }
+
+    @Test
+    @Ignore("Not supported yet.")
+    public void setAttribute() throws IOException {
+        final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
+        sut.setAttribute(path, "foo", "bar");
+        verify(path, times(1)).setAttribute("foo", "bar");
+    }
+
+    private static abstract class BasicFileAttributesStub implements BasicFileAttributes {}
 }

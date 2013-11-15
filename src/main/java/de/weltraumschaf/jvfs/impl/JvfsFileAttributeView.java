@@ -13,6 +13,7 @@
 package de.weltraumschaf.jvfs.impl;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
@@ -53,7 +54,11 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
     }
 
     Map<String, Object> readAttributes(String attributes) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    Path getPath() {
+        return path;
     }
 
 }
