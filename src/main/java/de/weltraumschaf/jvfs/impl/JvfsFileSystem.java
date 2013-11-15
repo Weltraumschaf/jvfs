@@ -328,7 +328,7 @@ class JvfsFileSystem extends FileSystem {
     void createDirectory(final String path, final FileAttribute<?>... attrs) throws IOException {
         checkClosed();
         assertFileExists(path);
-        final List<String> names = JvfsPath.tokenize(path);
+        final List<String> names = JvfsPathUtil.tokenize(path);
         names.remove(names.size() - 1);
         final StringBuilder buf = new StringBuilder();
 

@@ -32,13 +32,11 @@ import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileTime;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 /**
  * Represents a file's location in a file system.
@@ -50,15 +48,15 @@ class JvfsPath implements Path {
     /**
      * Directory separator.
      */
-    private static final String DIR_SEP = JvfsFileSystems.DIR_SEP;
+    static final String DIR_SEP = JvfsFileSystems.DIR_SEP;
     /**
      * Parent directory.
      */
-    private static final String DIR_UP = "..";
+    static final String DIR_UP = "..";
     /**
      * The directory self.
      */
-    private static final String DIR_THIS = ".";
+    static final String DIR_THIS = ".";
 
     /**
      * Internal representation.
@@ -329,7 +327,7 @@ class JvfsPath implements Path {
 
     @Override
     public Path normalize() {
-        final String normalizedString = normalize(tokenize(this), this.isAbsolute());
+        final String normalizedString = JvfsPathUtil.normalize(tokenize(this), this.isAbsolute());
         return new JvfsPath(normalizedString, this.jvfs);
     }
 
@@ -494,7 +492,7 @@ class JvfsPath implements Path {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(new Object[]{jvfs.hashCode(), path.hashCode()});
+        return JvfsObject.hashCode(jvfs.hashCode(), path.hashCode());
     }
 
     @Override
@@ -527,71 +525,7 @@ class JvfsPath implements Path {
      * @return never {@literal null} may be empty collection
      */
     static List<String> tokenize(final JvfsPath path) {
-        return tokenize(path.toString());
-    }
-
-    /**
-     * Splits the given string by the directory separator.
-     *
-     * @param path must not be {@code null}
-     * @return never {@code null}
-     */
-    static List<String> tokenize(final String path) {
-        JvfsAssertions.notNull(path, "path");
-        final StringTokenizer tokenizer = new StringTokenizer(path, DIR_SEP);
-        final List<String> tokens = JvfsCollections.newArrayList();
-
-        while (tokenizer.hasMoreTokens()) {
-            tokens.add(tokenizer.nextToken());
-        }
-
-        return tokens;
-    }
-
-    /**
-     * Normalizes the tokenized view of the path.
-     *
-     * @param tokens must not be {@code null}
-     * @param absolute whether the tokenized path was absolute or not
-     * @return never {@code null}
-     */
-    private static String normalize(final List<String> tokens, boolean absolute) {
-        assert tokens != null : "path must be specified";
-
-        // Remove unnecessary references to this dir
-        if (tokens.contains(DIR_THIS)) {
-            tokens.remove(DIR_THIS);
-            normalize(tokens, absolute);
-        }
-
-        // Remove unnecessary references to the back dir, and its parent
-        final int indexDirBack = tokens.indexOf(DIR_UP);
-
-        if (indexDirBack != -1) {
-            if (indexDirBack > 0) {
-                tokens.remove(indexDirBack);
-                tokens.remove(indexDirBack - 1);
-                normalize(tokens, absolute);
-            } else {
-                throw new IllegalArgumentException("Cannot specify to go back \"../\" past the root");
-            }
-        }
-
-        // Nothing left to do; reconstruct
-        final StringBuilder sb = new StringBuilder();
-
-        if (absolute) {
-            sb.append(DIR_SEP);
-        }
-
-        for (int i = 0; i < tokens.size(); i++) {
-            if (i > 0) {
-                sb.append(DIR_SEP);
-            }
-            sb.append(tokens.get(i));
-        }
-
-        return sb.toString();
+        return JvfsPathUtil.tokenize(path.toString());
     }
 
     /**
