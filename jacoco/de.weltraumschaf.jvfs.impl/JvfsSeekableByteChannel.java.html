@@ -1,113 +1,281 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JvfsSeekableByteChannel.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JVFS</a> &gt; <a href="index.html" class="el_package">de.weltraumschaf.jvfs.impl</a> &gt; <span class="el_source">JvfsSeekableByteChannel.java</span></div><h1>JvfsSeekableByteChannel.java</h1><pre class="source lang-java linenums">/*
- *  LICENSE
+ * JBoss, Home of Professional Open Source
+ * Copyright 2012, Red Hat Middleware LLC, and individual contributors
+ * by the @authors tag. See the copyright.txt in the distribution for a
+ * full listing of individual contributors.
  *
- * &quot;THE BEER-WARE LICENSE&quot; (Revision 43):
- * &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt; wrote this file.
- * As long as you retain this notice you can do whatever you want with
- * this stuff. If we meet some day, and you think this stuff is worth it,
- * you can buy me a non alcohol-free beer in return.
- *
- * Copyright (C) 2012 &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt;
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package de.weltraumschaf.jvfs.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SeekableByteChannel;
-import java.util.List;
 
 /**
- * Implementation of a seekable byte channel.
+ * {@link SeekableByteChannel} implementation backed by an auto-resizing byte array; thread-safe.
  *
- * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
+ * Can hold a maxiumum of {@link Integer#MAX_VALUE} bytes.
+ *
+ * @author &lt;a href=&quot;mailto:alr@jboss.org&quot;&gt;Andrew Lee Rubinger&lt;/a&gt;
  */
-<span class="pc bpc" id="L24" title="1 of 2 branches missed.">final class JvfsSeekableByteChannel implements SeekableByteChannel {</span>
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">final class JvfsSeekableByteChannel implements SeekableByteChannel {</span>
 
     /**
-     * Holds the data.
+     * Current position; guarded by &quot;this&quot;.
      */
-    private List&lt;Byte&gt; data;
+    private int position;
+
     /**
-     * Whether the channel is open or not.
+     * Whether or not this {@link SeekableByteChannel} is open; volatile instead of sync is acceptable because this
+     * field participates in no compound computations or invariants with other instance members.
      */
     private volatile boolean open;
-    /**
-     * Current position in the channel.
-     */
-    private volatile int position;
 
+    /**
+     * Internal buffer for contents; guarded by &quot;this&quot;.
+     */
+    private byte[] contents;
+
+    /**
+     * Creates a new instance with 0 size and 0 position, and open.
+     */
     JvfsSeekableByteChannel() {
-<span class="fc" id="L40">        this(JvfsCollections.&lt;Byte&gt;newArrayList());</span>
-<span class="fc" id="L41">    }</span>
+<span class="fc" id="L55">        this(new byte[0]);</span>
+<span class="fc" id="L56">    }</span>
 
     /**
      * Dedicated constructor.
      *
-     * Initializes {@link #open} with {@literal true}.
+     * @param contents must not be null
      */
-    JvfsSeekableByteChannel(final List&lt;Byte&gt; data) {
-<span class="fc" id="L49">        super();</span>
-<span class="pc bpc" id="L50" title="2 of 4 branches missed.">        assert data != null : &quot;data must be defined&quot;;</span>
-<span class="fc" id="L51">        this.data = data;</span>
-<span class="fc" id="L52">        this.open = true;</span>
-<span class="fc" id="L53">    }</span>
+    JvfsSeekableByteChannel(final byte[] contents) {
+<span class="fc" id="L64">        super();</span>
+<span class="pc bpc" id="L65" title="2 of 4 branches missed.">        assert null != contents : &quot;contents must be defined&quot;;</span>
+<span class="fc" id="L66">        this.open = true;</span>
 
-    @Override
-    public int read(final ByteBuffer dst) throws IOException {
-<span class="nc bnc" id="L57" title="All 2 branches missed.">        for (final Byte b : data.subList(position, data.size())) {</span>
-<span class="nc" id="L58">            dst.put(b);</span>
-<span class="nc" id="L59">            position++;</span>
-<span class="nc" id="L60">        }</span>
-
-<span class="nc" id="L62">        return position;</span>
-    }
-
-    @Override
-    public int write(final ByteBuffer src) throws IOException {
-<span class="nc" id="L67">        JvfsAssertions.notNull(src, &quot;src&quot;);</span>
-
-<span class="nc bnc" id="L69" title="All 2 branches missed.">        while (src.hasRemaining()) {</span>
-<span class="nc" id="L70">            data.add(position, src.get());</span>
-<span class="nc" id="L71">            position++;</span>
-        }
-
-<span class="nc" id="L74">        return position;</span>
-    }
-
-    @Override
-    public long position() throws IOException {
-<span class="nc" id="L79">        return position;</span>
-    }
-
-    @Override
-    public SeekableByteChannel position(final long newPosition) throws IOException {
-<span class="nc" id="L84">        position = (int) newPosition;</span>
-<span class="nc" id="L85">        return this;</span>
-    }
-
-    @Override
-    public long size() throws IOException {
-<span class="fc" id="L90">        return data.size();</span>
-    }
-
-    @Override
-    public SeekableByteChannel truncate(final long size) throws IOException {
-<span class="nc" id="L95">        data = data.subList(0, (int) size);</span>
-<span class="nc" id="L96">        return this;</span>
-    }
+        // Set fields
+<span class="fc" id="L69">        synchronized (this) {</span>
+<span class="fc" id="L70">            this.position = 0;</span>
+<span class="fc" id="L71">            this.contents = contents;</span>
+<span class="pc" id="L72">        }</span>
+<span class="fc" id="L73">    }</span>
 
     @Override
     public boolean isOpen() {
-<span class="nc" id="L101">        return open;</span>
+<span class="fc" id="L77">        return this.open;</span>
     }
 
     @Override
     public void close() throws IOException {
-<span class="nc" id="L106">        open = false; // Ignore already closed.</span>
-<span class="nc" id="L107">    }</span>
+<span class="fc" id="L82">        this.open = false;</span>
+<span class="fc" id="L83">    }</span>
 
+    @Override
+    public int read(final ByteBuffer destination) throws IOException {
+
+        // Precondition checks
+<span class="fc" id="L89">        this.checkClosed();</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (destination == null) {</span>
+<span class="fc" id="L91">            throw new IllegalArgumentException(&quot;Destination buffer must be supplied&quot;);</span>
+        }
+
+        // Init
+<span class="fc" id="L95">        final int spaceInBuffer = destination.remaining();</span>
+        final int numBytesRemainingInContent;
+        final int numBytesToRead;
+
+        // Sync up before getting at shared mutable state
+<span class="fc" id="L100">        synchronized (this) {</span>
+<span class="fc" id="L101">            numBytesRemainingInContent = this.contents.length - this.position;</span>
+
+            // Set position was greater than the size? Just return.
+<span class="fc bfc" id="L104" title="All 2 branches covered.">            if (numBytesRemainingInContent &lt;= 0) {</span>
+<span class="fc" id="L105">                return -1;</span>
+            }
+
+            // We'll read in either the number of bytes remaining in content or the amount of space in the buffer,
+            // whichever is smaller
+<span class="fc bfc" id="L110" title="All 2 branches covered.">            numBytesToRead = numBytesRemainingInContent &gt;= spaceInBuffer ? spaceInBuffer : numBytesRemainingInContent;</span>
+            // Copy a sub-array of the bytes we'll put into the buffer
+<span class="fc" id="L112">            destination.put(this.contents, this.position, numBytesToRead);</span>
+
+            // Set the new position
+<span class="fc" id="L115">            this.position += numBytesToRead;</span>
+<span class="pc" id="L116">        }</span>
+
+        // Return the number of bytes read
+<span class="fc" id="L119">        return numBytesToRead;</span>
+    }
+
+    @Override
+    public int write(final ByteBuffer source) throws IOException {
+
+        // Precondition checks
+<span class="fc" id="L126">        this.checkClosed();</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        if (source == null) {</span>
+<span class="fc" id="L128">            throw new IllegalArgumentException(&quot;Source buffer must be supplied&quot;);</span>
+        }
+
+        // Put the bytes to be written into a byte[]
+<span class="fc" id="L132">        final int totalBytes = source.remaining();</span>
+<span class="fc" id="L133">        final byte[] readContents = new byte[totalBytes];</span>
+<span class="fc" id="L134">        source.get(readContents);</span>
+
+        // Sync up, we're gonna access shared mutable state
+<span class="fc" id="L137">        synchronized (this) {</span>
+
+            // Append the read contents to our internal contents
+<span class="fc" id="L140">            this.contents = this.concat(this.contents, readContents, this.position);</span>
+
+            // Increment the position of this channel
+<span class="fc" id="L143">            this.position += totalBytes;</span>
+
+<span class="pc" id="L145">        }</span>
+
+        // Return the number of bytes read
+<span class="fc" id="L148">        return totalBytes;</span>
+    }
+
+    /**
+     * Creates a new array which is the concatenated result of the two inputs, at the designated position (to be filled
+     * with 0x00) in the case of a gap).
+     *
+     * @param input1 must not be null
+     * @param input2 must not be null
+     * @param pos non negative number
+     * @return never null
+     */
+    private byte[] concat(final byte[] input1, final byte[] input2, final int pos) {
+        // Preconition checks
+<span class="pc bpc" id="L162" title="2 of 4 branches missed.">        assert input1 != null : &quot;Input 1 must be specified&quot;;</span>
+<span class="pc bpc" id="L163" title="2 of 4 branches missed.">        assert input2 != null : &quot;Input 2 must be specified&quot;;</span>
+<span class="pc bpc" id="L164" title="2 of 4 branches missed.">        assert pos &gt;= 0 : &quot;Position must be 0 or higher&quot;;</span>
+        // Allocate a new array of enough space (either current size or position + input2.length, whichever is greater)
+<span class="fc bfc" id="L166" title="All 2 branches covered.">        final int newSize = pos &lt; input1.length ? input1.length + input2.length : pos + input2.length;</span>
+<span class="fc" id="L167">        final byte[] merged = new byte[newSize];</span>
+        // Copy in the contents of input 1 with 0 offset
+<span class="fc" id="L169">        System.arraycopy(input1, 0, merged, 0, input1.length);</span>
+        // Copy in the contents of input2 with offset the length of input 1
+<span class="fc" id="L171">        System.arraycopy(input2, 0, merged, pos, input2.length);</span>
+<span class="fc" id="L172">        return merged;</span>
+    }
+
+    @Override
+    public long position() throws IOException {
+<span class="fc" id="L177">        synchronized (this) {</span>
+<span class="fc" id="L178">            return this.position;</span>
+<span class="nc" id="L179">        }</span>
+    }
+
+    @Override
+    public SeekableByteChannel position(final long newPosition) throws IOException {
+        // Precondition checks
+<span class="fc bfc" id="L185" title="All 4 branches covered.">        if (newPosition &gt; Integer.MAX_VALUE || newPosition &lt; 0) {</span>
+<span class="fc" id="L186">            throw new IllegalArgumentException(&quot;Valid position for this channel is between 0 and &quot; + Integer.MAX_VALUE);</span>
+        }
+<span class="fc" id="L188">        synchronized (this) {</span>
+<span class="fc" id="L189">            this.position = (int) newPosition;</span>
+<span class="pc" id="L190">        }</span>
+<span class="fc" id="L191">        return this;</span>
+    }
+
+    @Override
+    public long size() throws IOException {
+<span class="fc" id="L196">        synchronized (this) {</span>
+<span class="fc" id="L197">            return this.contents.length;</span>
+<span class="nc" id="L198">        }</span>
+    }
+
+    @Override
+    public SeekableByteChannel truncate(final long size) throws IOException {
+
+        // Precondition checks
+<span class="fc bfc" id="L205" title="All 4 branches covered.">        if (size &lt; 0 || size &gt; Integer.MAX_VALUE) {</span>
+<span class="fc" id="L206">            throw new IllegalArgumentException(&quot;This implementation permits a size of 0 to &quot; + Integer.MAX_VALUE</span>
+                    + &quot; inclusive&quot;);
+        }
+
+        // Sync up for mucking w/ shared mutable state
+<span class="fc" id="L211">        synchronized (this) {</span>
+
+<span class="fc" id="L213">            final int newSize = (int) size;</span>
+<span class="fc" id="L214">            final int currentSize = (int) this.size();</span>
+
+            // If the current position is greater than the given size, set to the given size (by API spec)
+<span class="fc bfc" id="L217" title="All 2 branches covered.">            if (this.position &gt; newSize) {</span>
+<span class="fc" id="L218">                this.position = newSize;</span>
+            }
+
+            // If we've been given a size smaller than we currently are
+<span class="fc bfc" id="L222" title="All 2 branches covered.">            if (currentSize &gt; newSize) {</span>
+                // Make new array
+<span class="fc" id="L224">                final byte[] newContents = new byte[newSize];</span>
+                // Copy in the contents up to the new size
+<span class="fc" id="L226">                System.arraycopy(this.contents, 0, newContents, 0, newSize);</span>
+                // Set the new array as our contents
+<span class="fc" id="L228">                this.contents = newContents;</span>
+            }
+            // If we've been given a size greater than we are
+<span class="fc bfc" id="L231" title="All 2 branches covered.">            if (newSize &gt; currentSize) {</span>
+                // Reset the position only
+<span class="fc" id="L233">                this.position = newSize;</span>
+            }
+<span class="pc" id="L235">        }</span>
+
+        // Return this reference
+<span class="fc" id="L238">        return this;</span>
+    }
+
+    /**
+     * Get the bytes as input stream.
+     *
+     * @return never {@code null}
+     */
+    InputStream getContents() {
+        final byte[] copy;
+<span class="fc" id="L248">        synchronized (this) {</span>
+<span class="fc" id="L249">            final int length = this.contents.length;</span>
+<span class="fc" id="L250">            copy = new byte[length];</span>
+<span class="fc" id="L251">            System.arraycopy(this.contents, 0, copy, 0, this.contents.length);</span>
+<span class="pc" id="L252">        }</span>
+
+<span class="fc" id="L254">        return new ByteArrayInputStream(copy);</span>
+    }
+
+    /**
+     * Checks if closed.
+     *
+     * @throws ClosedChannelException if not open
+     */
+    private void checkClosed() throws ClosedChannelException {
+<span class="fc bfc" id="L263" title="All 2 branches covered.">        if (!this.isOpen()) {</span>
+<span class="fc" id="L264">            throw new ClosedChannelException();</span>
+        }
+<span class="fc" id="L266">    }</span>
+
+    /**
+     * Creates deep copy.
+     *
+     * @return never {@code null}
+     */
     JvfsSeekableByteChannel copy() {
-<span class="fc" id="L110">        return new JvfsSeekableByteChannel(JvfsCollections.newArrayList(data));</span>
+<span class="fc" id="L274">        synchronized (this) {</span>
+<span class="fc" id="L275">            final byte[] copy = new byte[contents.length];</span>
+<span class="fc" id="L276">            System.arraycopy(contents, 0, copy, 0, contents.length);</span>
+<span class="fc" id="L277">            return new JvfsSeekableByteChannel(copy);</span>
+<span class="nc" id="L278">        }</span>
     }
 
 }

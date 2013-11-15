@@ -52,57 +52,57 @@ import java.util.concurrent.ExecutorService;
      * @param parent is ignored at the moment
      */
     public JvfsFileSystemProvider(final FileSystemProvider parent) {
-<span class="nc" id="L55">        this();</span>
-<span class="nc" id="L56">    }</span>
+<span class="fc" id="L55">        this();</span>
+<span class="fc" id="L56">    }</span>
 
     @Override
     public String getScheme() {
 <span class="fc" id="L60">        return JvfsFileSystems.PROTOCOL;</span>
     }
 
-    // TODO Test this method.
-    private void checkUri(final URI uri) {
-<span class="pc bpc" id="L65" title="2 of 4 branches missed.">        assert null != uri : &quot;uri must not be null&quot;;</span>
+    void checkUri(final URI uri) {
+<span class="pc bpc" id="L64" title="2 of 4 branches missed.">        assert null != uri : &quot;uri must not be null&quot;;</span>
 
-<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        if (!uri.getScheme().equalsIgnoreCase(getScheme())) {</span>
-<span class="nc" id="L68">            throw new IllegalArgumentException(&quot;URI does not match this provider!&quot;);</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if (!uri.getScheme().equalsIgnoreCase(getScheme())) {</span>
+<span class="nc" id="L67">            throw new IllegalArgumentException(&quot;URI does not match this provider!&quot;);</span>
         }
 
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (uri.getAuthority() != null) {</span>
-<span class="nc" id="L72">            throw new IllegalArgumentException(&quot;Authority component present!&quot;);</span>
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">        if (uri.getAuthority() != null) {</span>
+<span class="nc" id="L71">            throw new IllegalArgumentException(&quot;Authority component present!&quot;);</span>
         }
 
-<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (uri.getPath() == null) {</span>
-<span class="nc" id="L76">            throw new IllegalArgumentException(&quot;Path component is undefined!&quot;);</span>
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        if (uri.getPath() == null) {</span>
+<span class="nc" id="L75">            throw new IllegalArgumentException(&quot;Path component is undefined!&quot;);</span>
         }
 
-<span class="pc bpc" id="L79" title="1 of 2 branches missed.">        if (!uri.getPath().equals(JvfsFileSystems.DIR_SEP)) {</span>
-<span class="nc" id="L80">            throw new IllegalArgumentException(String.format(&quot;Path component should be '%s'&quot;, JvfsFileSystems.DIR_SEP));</span>
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (!uri.getPath().equals(JvfsFileSystems.DIR_SEP)) {</span>
+<span class="nc" id="L79">            throw new IllegalArgumentException(String.format(&quot;Path component should be '%s'&quot;, JvfsFileSystems.DIR_SEP));</span>
         }
 
-<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        if (uri.getQuery() != null) {</span>
-<span class="nc" id="L84">            throw new IllegalArgumentException(&quot;Query component present!&quot;);</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        if (uri.getQuery() != null) {</span>
+<span class="nc" id="L83">            throw new IllegalArgumentException(&quot;Query component present!&quot;);</span>
         }
 
-<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        if (uri.getFragment() != null) {</span>
-<span class="nc" id="L88">            throw new IllegalArgumentException(&quot;Fragment component present!&quot;);</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        if (uri.getFragment() != null) {</span>
+<span class="nc" id="L87">            throw new IllegalArgumentException(&quot;Fragment component present!&quot;);</span>
         }
-<span class="fc" id="L90">    }</span>
+<span class="fc" id="L89">    }</span>
 
     @Override
     public FileSystem newFileSystem(final URI uri, final Map&lt;String, ?&gt; env) throws IOException {
-<span class="fc" id="L94">        checkUri(uri);</span>
-<span class="fc" id="L95">        throw new FileSystemAlreadyExistsException(&quot;JVFS is not supposed to create new file systems!&quot;);</span>
+<span class="fc" id="L93">        checkUri(uri);</span>
+<span class="fc" id="L94">        throw new FileSystemAlreadyExistsException(&quot;JVFS is not supposed to create new file systems!&quot;);</span>
     }
 
     @Override
     public FileSystem getFileSystem(final URI uri) {
-<span class="fc" id="L100">        checkUri(uri);</span>
-<span class="fc" id="L101">        return fileSystem;</span>
+<span class="fc" id="L99">        checkUri(uri);</span>
+<span class="fc" id="L100">        return fileSystem;</span>
     }
 
     @Override
     public Path getPath(final URI uri) {
+<span class="nc" id="L105">        checkUri(uri);</span>
 <span class="nc" id="L106">        return new JvfsPath(uri.getPath(), fileSystem);</span>
     }
 
@@ -226,11 +226,11 @@ import java.util.concurrent.ExecutorService;
      * @param obj must not be {@literal null}
      * @return never {@literal null}
      */
-    private static JvfsPath toJvfsPath(final Path obj) {
+    static JvfsPath toJvfsPath(final Path obj) {
 <span class="fc" id="L230">        JvfsAssertions.notNull(obj, &quot;obj&quot;);</span>
 
-<span class="pc bpc" id="L232" title="1 of 2 branches missed.">        if (!(obj instanceof JvfsPath)) {</span>
-<span class="nc" id="L233">            throw new ProviderMismatchException(&quot;Given path not of type &quot; + JvfsPath.class.getSimpleName() + &quot;!&quot;);</span>
+<span class="fc bfc" id="L232" title="All 2 branches covered.">        if (!(obj instanceof JvfsPath)) {</span>
+<span class="fc" id="L233">            throw new ProviderMismatchException(&quot;Given path not of type &quot; + JvfsPath.class.getSimpleName() + &quot;!&quot;);</span>
         }
 
 <span class="fc" id="L236">        return (JvfsPath) obj;</span>
