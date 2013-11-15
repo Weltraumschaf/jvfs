@@ -24,8 +24,9 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SeekableByteChannel;
 
 /**
- * {@link SeekableByteChannel} implementation backed by an auto-resizing byte array; thread-safe. Can hold a maxiumum of
- * {@link Integer#MAX_VALUE} bytes.
+ * {@link SeekableByteChannel} implementation backed by an auto-resizing byte array; thread-safe.
+ *
+ * Can hold a maxiumum of {@link Integer#MAX_VALUE} bytes.
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
@@ -55,7 +56,7 @@ final class JvfsSeekableByteChannel implements SeekableByteChannel {
     }
 
     /**
-     * Dedicated constrcutor.
+     * Dedicated constructor.
      *
      * @param contents must not be null
      */
