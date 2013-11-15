@@ -55,6 +55,10 @@ final class JvfsCollections {
         return new ArrayList<T>(size);
     }
 
+    public static <T> List<T> newArrayList(final List<T> original) {
+        return new ArrayList<T>(original);
+    }
+
     /**
      * Creates new hash map.
      *

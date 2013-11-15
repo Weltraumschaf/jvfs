@@ -12,7 +12,6 @@
 package de.weltraumschaf.jvfs.impl;
 
 import java.io.IOException;
-import java.nio.channels.SeekableByteChannel;
 
 /**
  * Holds the administrative data of a file entry in the virtual file system.
@@ -24,7 +23,7 @@ final class JvfsFileEntry {
     /**
      * Holds the file data.
      */
-    private final SeekableByteChannel content = new JvfsSeekableByteChannel();
+    private final JvfsSeekableByteChannel content;
     /**
      * Absolute path name of the file system entry.
      */
@@ -70,18 +69,18 @@ final class JvfsFileEntry {
      * @param src must not be {@literal null}
      */
     private JvfsFileEntry(final JvfsFileEntry src) {
-        this(src.path, src.direcotry);
-        this.lastModifiedTime = src.lastModifiedTime;
-        this.lastAccessTime = src.lastAccessTime;
-        this.creationTime = src.creationTime;
-        this.readable = src.readable;
-        this.writable = src.writable;
-        this.executable = src.executable;
-        this.hidden = src.hidden;
+        this(src.path, src.direcotry, src.getContent().copy());
+        this.lastModifiedTime = src.getLastModifiedTime();
+        this.lastAccessTime = src.getLastAccessTime();
+        this.creationTime = src.getCreationTime();
+        this.readable = src.isReadable();
+        this.writable = src.isWritable();
+        this.executable = src.isExecutable();
+        this.hidden = src.isHidden();
     }
 
     /**
-     * Dedicated constructor.
+     *
      *
      * Hidden: Use either {@link #newDir(java.lang.String)} or {@link #newFile(java.lang.String)}.
      *
@@ -89,11 +88,25 @@ final class JvfsFileEntry {
      * @param direcotry {@literal true} if it is a directory, else {@literal false}
      */
     private JvfsFileEntry(final String path, final boolean direcotry) {
+        this(path, direcotry, new JvfsSeekableByteChannel());
+    }
+
+    /**
+     * Dedicated constructor.
+     *
+     * @param path
+     * @param direcotry
+     * @param content
+     */
+    private JvfsFileEntry(final String path, final boolean direcotry, final JvfsSeekableByteChannel content) {
         super();
         assert path != null : "path must not be null";
         assert !path.isEmpty() : "path must not be empty";
+        assert content != null : "content must not be null";
+
         this.path = path;
         this.direcotry = direcotry;
+        this.content = content;
     }
 
     /**
@@ -256,6 +269,22 @@ final class JvfsFileEntry {
         return executable;
     }
 
+    public void setReadable(boolean readable) {
+        this.readable = readable;
+    }
+
+    public void setWritable(boolean writable) {
+        this.writable = writable;
+    }
+
+    public void setExecutable(boolean executable) {
+        this.executable = executable;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
     /**
      * If it has child entries if it is a directory.
      *
@@ -295,7 +324,7 @@ final class JvfsFileEntry {
      *
      * @return never {@literal null}
      */
-    SeekableByteChannel getContent() {
+    JvfsSeekableByteChannel getContent() {
         return content;
     }
 

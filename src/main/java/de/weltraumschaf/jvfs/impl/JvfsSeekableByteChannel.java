@@ -11,8 +11,6 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
-import de.weltraumschaf.jvfs.impl.JvfsCollections;
-import de.weltraumschaf.jvfs.impl.JvfsAssertions;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
@@ -28,7 +26,7 @@ final class JvfsSeekableByteChannel implements SeekableByteChannel {
     /**
      * Holds the data.
      */
-    private List<Byte> data = JvfsCollections.newArrayList();
+    private List<Byte> data;
     /**
      * Whether the channel is open or not.
      */
@@ -38,13 +36,19 @@ final class JvfsSeekableByteChannel implements SeekableByteChannel {
      */
     private volatile int position;
 
+    JvfsSeekableByteChannel() {
+        this(JvfsCollections.<Byte>newArrayList());
+    }
+
     /**
      * Dedicated constructor.
      *
      * Initializes {@link #open} with {@literal true}.
      */
-    JvfsSeekableByteChannel() {
+    JvfsSeekableByteChannel(final List<Byte> data) {
         super();
+        assert data != null : "data must be defined";
+        this.data = data;
         this.open = true;
     }
 
@@ -100,6 +104,10 @@ final class JvfsSeekableByteChannel implements SeekableByteChannel {
     @Override
     public void close() throws IOException {
         open = false; // Ignore already closed.
+    }
+
+    JvfsSeekableByteChannel copy() {
+        return new JvfsSeekableByteChannel(JvfsCollections.newArrayList(data));
     }
 
 }
