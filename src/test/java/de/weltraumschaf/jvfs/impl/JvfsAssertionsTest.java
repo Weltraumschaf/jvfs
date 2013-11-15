@@ -29,7 +29,7 @@ public class JvfsAssertionsTest {
     @Rule
     //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
-    //CHECKSTYLE:ONs
+    //CHECKSTYLE:ON
 
     @Test
     public void invokeConstructorByReflectionThrowsException() throws Exception {

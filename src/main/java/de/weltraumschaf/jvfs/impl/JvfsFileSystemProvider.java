@@ -60,7 +60,10 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
         return JvfsFileSystems.PROTOCOL;
     }
 
-    private void checkUri(URI uri) {
+    // TODO Test this method.
+    private void checkUri(final URI uri) {
+        assert null != uri : "uri must not be null";
+
         if (!uri.getScheme().equalsIgnoreCase(getScheme())) {
             throw new IllegalArgumentException("URI does not match this provider!");
         }
@@ -89,7 +92,7 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
     @Override
     public FileSystem newFileSystem(final URI uri, final Map<String, ?> env) throws IOException {
         checkUri(uri);
-        throw new FileSystemAlreadyExistsException();
+        throw new FileSystemAlreadyExistsException("JVFS is not supposed to create new file systems!");
     }
 
     @Override

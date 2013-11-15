@@ -34,7 +34,9 @@ public class JvfsPathTest {
 
     private static final String DIR_SEP = JvfsFileSystems.DIR_SEP;
     @Rule
+    //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
+    //CHECKSTYLE:ON
     private final JvfsFileSystem fs = mock(JvfsFileSystem.class);
 
     private String createPath(final boolean absolute, final String ... names) {
