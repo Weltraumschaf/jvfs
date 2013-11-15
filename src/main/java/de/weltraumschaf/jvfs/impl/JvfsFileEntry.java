@@ -11,11 +11,8 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
-import de.weltraumschaf.jvfs.impl.JvfsAssertions;
 import java.io.IOException;
 import java.nio.channels.SeekableByteChannel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Holds the administrative data of a file entry in the virtual file system.

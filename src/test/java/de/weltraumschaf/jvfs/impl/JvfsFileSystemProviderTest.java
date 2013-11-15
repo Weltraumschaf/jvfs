@@ -71,6 +71,7 @@ public class JvfsFileSystemProviderTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void newFileChannel() throws IOException {
         final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
         final Set<OpenOption> opts = JvfsCollections.newHashSet();
@@ -80,6 +81,7 @@ public class JvfsFileSystemProviderTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void newByteChannel() throws IOException {
         final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
         final Set<OpenOption> opts = JvfsCollections.newHashSet();
@@ -89,6 +91,7 @@ public class JvfsFileSystemProviderTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void newDirectoryStream() throws IOException {
         final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
         final DirectoryStream.Filter<Path> filter = mock(DirectoryStream.Filter.class);
@@ -97,6 +100,7 @@ public class JvfsFileSystemProviderTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void createDirectory() throws IOException {
         final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
         final FileAttribute<Object> attrs = mock(FileAttribute.class);
