@@ -12,7 +12,6 @@
 
 package de.weltraumschaf.jvfs.impl;
 
-import de.weltraumschaf.jvfs.impl.JvfsAssertions;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
@@ -37,7 +36,7 @@ final class JvfsFileChannel extends FileChannel {
     /**
      * Dedicated constructor.
      *
-     * @param channel must not be {@codenull}
+     * @param channel must not be {@code null}
      */
     JvfsFileChannel(final SeekableByteChannel channel) {
         super();

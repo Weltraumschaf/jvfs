@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
 class JvfsFileSystem extends FileSystem {
 
     /**
-     * Contracted name of the {@link BasicFileAttributeView}.
+     * Contracted name of the {@link java.nio.file.attribute.BasicFileAttributeView}.
      */
     static final String FILE_ATTR_VIEW_BASIC = "basic";
 
@@ -60,7 +60,7 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Organizes the file hierarchy.
      *
-     * The key is the absolute pathname of the file ({@link Entry#path}).
+     * The key is the absolute pathname of the file ({@link JvfsFileEntry#path}).
      */
     private final Map<String, JvfsFileEntry> attic = JvfsCollections.newHashMap();
     /**
@@ -189,7 +189,7 @@ class JvfsFileSystem extends FileSystem {
     }
 
     /**
-     * Checks if the {@link ShrinkWrapFileSystem} is closed, and throws a {@link ClosedFileSystemException} if so.
+     * Checks if the {@link JvfsFileSystem} is closed, and throws a {@link ClosedFileSystemException} if so.
      */
     private void checkClosed() {
         if (!this.isOpen()) {

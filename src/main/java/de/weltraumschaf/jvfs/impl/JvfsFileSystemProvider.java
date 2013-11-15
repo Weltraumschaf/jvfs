@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * Implements the I/O operations.
  *
- * Inspired by implementation of {@link sun.nio.fs.LinuxFileSystemProvider} and ZipFS demo.
+ * Inspired by implementation of {@code sun.nio.fs.LinuxFileSystemProvider} and ZipFS demo.
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */

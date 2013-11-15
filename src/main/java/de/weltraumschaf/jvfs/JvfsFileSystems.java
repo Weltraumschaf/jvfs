@@ -28,7 +28,7 @@ public final class JvfsFileSystems {
      */
     public static final String DIR_SEP = System.getProperty("file.separator");
     /**
-     * Protocol portion of a {@link URI} to JVFS {@link FileSystem}s.
+     * Protocol portion of a {@link URI} to JVFS {@link java.nio.file.FileSystem file systems}.
      */
     public static final String PROTOCOL = "file";
     /**
@@ -38,7 +38,7 @@ public final class JvfsFileSystems {
     /**
      * Name of property to set default file system provider implementations.
      *
-     * @see java.nio.file.FileSystems.DefaultFileSystemHolder.getDefaultProvider():java.nio.file.spi.FileSystemProvider
+     * @see java.nio.file.FileSystems.DefaultFileSystemHolder#getDefaultProvider():java.nio.file.spi.FileSystemProvider
      */
     private static final String IMPLEMENTATION_PROPERTY_NAME = "java.nio.file.spi.DefaultFileSystemProvider";
     /**

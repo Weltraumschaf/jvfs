@@ -66,7 +66,7 @@ class JvfsPath implements Path {
     private final String path;
 
     /**
-     * Owning {@link ShrinkWrapFileSystem}.
+     * Owning {@link JvfsFileSystem}.
      */
     private final JvfsFileSystem jvfs;
 
@@ -176,14 +176,19 @@ class JvfsPath implements Path {
      * Returns the number of occurrences of the specified character in the specified {@link String}, starting at the
      * specified offset.
      *
-     * @param string
+     * @param string must not be {@code null}
      * @param s
      * @param offset
-     * @return
+     * @return non negative number
      */
     private int countOccurrences(final String string, final String s, int offset) {
         assert string != null : "String must be specified";
-        return ((offset = string.indexOf(s, offset)) == -1) ? 0 : 1 + countOccurrences(string, s, offset + 1);
+
+        if ((offset = string.indexOf(s, offset)) == -1) {
+            return 0;
+        } else {
+            return 1 + countOccurrences(string, s, offset + 1);
+        }
     }
 
     @Override
@@ -225,14 +230,14 @@ class JvfsPath implements Path {
     }
 
     /**
-     * Creates a new {@link ShrinkWrapPath} instance from the specified input {@link String}.
+     * Creates a new {@link JvfsPath} instance from the specified input {@link String}.
      *
-     * @param path must not be {@literal null}
+     * @param p must not be {@literal null}
      * @return never {@literal null}
      */
-    private Path fromString(final String path) {
-        JvfsAssertions.notNull(path, "path");
-        return new JvfsPath(path, jvfs);
+    private Path fromString(final String p) {
+        JvfsAssertions.notNull(p, "path");
+        return new JvfsPath(p, jvfs);
     }
 
     @Override
@@ -389,8 +394,8 @@ class JvfsPath implements Path {
     /**
      * {@inheritDoc}
      *
-     * @see java.nio.file.Path#register(java.nio.file.WatchService, java.nio.file.WatchEvent.Kind<?>[],
-     * java.nio.file.WatchEvent.Modifier[])
+     * @see java.nio.file.Path#register(java.nio.file.WatchService, java.nio.file.WatchEvent.Kind,
+     * java.nio.file.WatchEvent.Modifier)
      */
     @Override
     public WatchKey register(
@@ -403,7 +408,7 @@ class JvfsPath implements Path {
     /**
      * {@inheritDoc}
      *
-     * @see java.nio.file.Path#register(java.nio.file.WatchService, java.nio.file.WatchEvent.Kind<?>[])
+     * @see java.nio.file.Path#register(java.nio.file.WatchService, java.nio.file.WatchEvent.Kind)
      */
     @Override
     public WatchKey register(WatchService watcher, WatchEvent.Kind<?>... events) throws IOException {
@@ -450,6 +455,7 @@ class JvfsPath implements Path {
     @Override
     public Iterator<Path> iterator() {
         return new Iterator<Path>() {
+            /** Current position of the iterator. */
             private int index;
 
             @Override
@@ -475,42 +481,22 @@ class JvfsPath implements Path {
         };
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see java.nio.file.Path#compareTo(java.nio.file.Path)
-     */
     @Override
     public int compareTo(final Path other) {
         JvfsAssertions.notNull(other, "other");
         return this.toString().compareTo(other.toString());
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see java.nio.file.Path#toString()
-     */
     @Override
     public String toString() {
         return this.path;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
         return Arrays.hashCode(new Object[]{jvfs.hashCode(), path.hashCode()});
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(final Object obj) {
         if (!(obj instanceof JvfsPath)) {
@@ -544,7 +530,14 @@ class JvfsPath implements Path {
         return tokenize(path.toString());
     }
 
+    /**
+     * Splits the given string by the directory separator.
+     *
+     * @param path must not be {@code null}
+     * @return never {@code null}
+     */
     static List<String> tokenize(final String path) {
+        JvfsAssertions.notNull(path, "path");
         final StringTokenizer tokenizer = new StringTokenizer(path, DIR_SEP);
         final List<String> tokens = JvfsCollections.newArrayList();
 
@@ -558,26 +551,27 @@ class JvfsPath implements Path {
     /**
      * Normalizes the tokenized view of the path.
      *
-     * @param path
-     * @return
+     * @param tokens must not be {@code null}
+     * @param absolute whether the tokenized path was absolute or not
+     * @return never {@code null}
      */
-    private static String normalize(final List<String> path, boolean absolute) {
-        assert path != null : "path must be specified";
+    private static String normalize(final List<String> tokens, boolean absolute) {
+        assert tokens != null : "path must be specified";
 
         // Remove unnecessary references to this dir
-        if (path.contains(DIR_THIS)) {
-            path.remove(DIR_THIS);
-            normalize(path, absolute);
+        if (tokens.contains(DIR_THIS)) {
+            tokens.remove(DIR_THIS);
+            normalize(tokens, absolute);
         }
 
         // Remove unnecessary references to the back dir, and its parent
-        final int indexDirBack = path.indexOf(DIR_UP);
+        final int indexDirBack = tokens.indexOf(DIR_UP);
 
         if (indexDirBack != -1) {
             if (indexDirBack > 0) {
-                path.remove(indexDirBack);
-                path.remove(indexDirBack - 1);
-                normalize(path, absolute);
+                tokens.remove(indexDirBack);
+                tokens.remove(indexDirBack - 1);
+                normalize(tokens, absolute);
             } else {
                 throw new IllegalArgumentException("Cannot specify to go back \"../\" past the root");
             }
@@ -590,18 +584,18 @@ class JvfsPath implements Path {
             sb.append(DIR_SEP);
         }
 
-        for (int i = 0; i < path.size(); i++) {
+        for (int i = 0; i < tokens.size(); i++) {
             if (i > 0) {
                 sb.append(DIR_SEP);
             }
-            sb.append(path.get(i));
+            sb.append(tokens.get(i));
         }
 
         return sb.toString();
     }
 
     /**
-     * Relativizes the paths recursively
+     * Relativizes the paths recursively.
      *
      * @param thisOriginal
      * @param thisCurrent
