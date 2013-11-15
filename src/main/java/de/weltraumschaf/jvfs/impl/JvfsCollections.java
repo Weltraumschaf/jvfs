@@ -55,6 +55,12 @@ final class JvfsCollections {
         return new ArrayList<T>(size);
     }
 
+    /**
+     *
+     * @param <T>
+     * @param original
+     * @return
+     */
     public static <T> List<T> newArrayList(final List<T> original) {
         return new ArrayList<T>(original);
     }

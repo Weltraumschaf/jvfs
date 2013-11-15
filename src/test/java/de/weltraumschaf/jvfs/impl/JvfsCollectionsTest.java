@@ -57,6 +57,18 @@ public class JvfsCollectionsTest {
     }
 
     @Test
+    public void newArrayList_copy() {
+        final List<String> l = JvfsCollections.newArrayList();
+        l.add("foo");
+        l.add("bar");
+        l.add("baz");
+
+        final List<String> copy = JvfsCollections.newArrayList(l);
+        assertThat(copy, is(not(sameInstance(l))));
+        assertThat(copy, contains("foo", "bar", "baz"));
+    }
+
+    @Test
     public void newHashMap() {
         final Map<Object, Object> m = JvfsCollections.newHashMap();
         assertThat(m, is(not(nullValue())));
