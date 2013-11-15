@@ -60,8 +60,7 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
         return JvfsFileSystems.PROTOCOL;
     }
 
-    // TODO Test this method.
-    private void checkUri(final URI uri) {
+    void checkUri(final URI uri) {
         assert null != uri : "uri must not be null";
 
         if (!uri.getScheme().equalsIgnoreCase(getScheme())) {
@@ -103,6 +102,7 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
 
     @Override
     public Path getPath(final URI uri) {
+        checkUri(uri);
         return new JvfsPath(uri.getPath(), fileSystem);
     }
 
@@ -226,7 +226,7 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
      * @param obj must not be {@literal null}
      * @return never {@literal null}
      */
-    private static JvfsPath toJvfsPath(final Path obj) {
+    static JvfsPath toJvfsPath(final Path obj) {
         JvfsAssertions.notNull(obj, "obj");
 
         if (!(obj instanceof JvfsPath)) {

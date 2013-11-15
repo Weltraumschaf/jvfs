@@ -19,9 +19,11 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.ProviderMismatchException;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileAttributeView;
+import java.nio.file.spi.FileSystemProvider;
 import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
@@ -206,6 +208,27 @@ public class JvfsFileSystemProviderTest {
         final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
         sut.setAttribute(path, "foo", "bar");
         verify(path, times(1)).setAttribute("foo", "bar");
+    }
+
+    @Test @Ignore
+    public void getPath() {
+
+    }
+
+    @Test @Ignore
+    public void checkUri() {
+
+    }
+
+    @Test
+    public void constructorForSystemProviderFacotryNeedsParameter() {
+        new JvfsFileSystemProvider(mock(FileSystemProvider.class));
+    }
+
+    @Test
+    public void toJvfsPath() {
+        thrown.expect(ProviderMismatchException.class);
+        JvfsFileSystemProvider.toJvfsPath(mock(Path.class));
     }
 
     private static abstract class BasicFileAttributesStub implements BasicFileAttributes {}
