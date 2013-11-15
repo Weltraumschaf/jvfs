@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JvfsFileChannel.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JVFS</a> &gt; <a href="index.html" class="el_package">de.weltraumschaf.jvfs.impl</a> &gt; <span class="el_source">JvfsFileChannel.java</span></div><h1>JvfsFileChannel.java</h1><pre class="source lang-java linenums">/*
+ *  LICENSE
+ *
+ * &quot;THE BEER-WARE LICENSE&quot; (Revision 43):
+ * &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt; wrote this file.
+ * As long as you retain this notice you can do whatever you want with
+ * this stuff. If we meet some day, and you think this stuff is worth it,
+ * you can buy me a non alcohol-free beer in return.
+ *
+ * Copyright (C) 2012 &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt;
+ */
+
+package de.weltraumschaf.jvfs.impl;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.channels.WritableByteChannel;
+
+/**
+ * Represents a file channel.
+ *
+ * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
+ */
+final class JvfsFileChannel extends FileChannel {
+
+    /**
+     * Wrapped byte channel.
+     */
+    private final SeekableByteChannel channel;
+
+    /**
+     * Dedicated constructor.
+     *
+     * @param channel must not be {@code null}
+     */
+    JvfsFileChannel(final SeekableByteChannel channel) {
+<span class="nc" id="L42">        super();</span>
+<span class="nc" id="L43">        JvfsAssertions.notNull(channel, &quot;channel&quot;);</span>
+<span class="nc" id="L44">        this.channel = channel;</span>
+<span class="nc" id="L45">    }</span>
+
+    @Override
+    public int read(final ByteBuffer dst) throws IOException {
+<span class="nc" id="L49">        return channel.read(dst);</span>
+    }
+
+    @Override
+    public long read(final ByteBuffer[] dsts, final int offset, final int length) throws IOException {
+<span class="nc" id="L54">        JvfsAssertions.notNull(dsts, &quot;dsts&quot;);</span>
+<span class="nc" id="L55">        JvfsAssertions.greaterThan(offset, -1, &quot;offset&quot;);</span>
+<span class="nc" id="L56">        JvfsAssertions.greaterThan(length, -1, &quot;offset&quot;);</span>
+<span class="nc" id="L57">        final int max = Math.max(dsts.length, length);</span>
+<span class="nc" id="L58">        final long start = channel.position();</span>
+
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        for (int i = offset; i &lt; max; ++i) {</span>
+<span class="nc" id="L61">            final ByteBuffer buffer = dsts[i];</span>
+<span class="nc" id="L62">            read(buffer);</span>
+        }
+
+<span class="nc" id="L65">        return channel.position() - start;</span>
+    }
+
+    @Override
+    public int read(ByteBuffer dst, long position) throws IOException {
+<span class="nc" id="L70">        channel.position(position);</span>
+<span class="nc" id="L71">        return channel.read(dst);</span>
+    }
+
+    @Override
+    public int write(final ByteBuffer src) throws IOException {
+<span class="nc" id="L76">        return channel.write(src);</span>
+    }
+
+    @Override
+    public long write(ByteBuffer[] srcs, int offset, int length) throws IOException {
+<span class="nc" id="L81">        JvfsAssertions.notNull(srcs, &quot;srcs&quot;);</span>
+<span class="nc" id="L82">        JvfsAssertions.greaterThan(offset, -1, &quot;offset&quot;);</span>
+<span class="nc" id="L83">        JvfsAssertions.greaterThan(length, -1, &quot;offset&quot;);</span>
+<span class="nc" id="L84">        final int max = Math.max(srcs.length, length);</span>
+<span class="nc" id="L85">        final long start = channel.position();</span>
+
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        for (int i = offset; i &lt; max; ++i) {</span>
+<span class="nc" id="L88">            final ByteBuffer buffer = srcs[i];</span>
+<span class="nc" id="L89">            write(buffer);</span>
+        }
+
+<span class="nc" id="L92">        return channel.position() - start;</span>
+    }
+
+
+    @Override
+    public int write(ByteBuffer src, long position) throws IOException {
+<span class="nc" id="L98">        channel.position(position);</span>
+<span class="nc" id="L99">        return channel.write(src);</span>
+    }
+
+    @Override
+    public long position() throws IOException {
+<span class="nc" id="L104">        return channel.position();</span>
+    }
+
+    @Override
+    public FileChannel position(long newPosition) throws IOException {
+<span class="nc" id="L109">        channel.position(newPosition);</span>
+<span class="nc" id="L110">        return this;</span>
+    }
+
+    @Override
+    public long size() throws IOException {
+<span class="nc" id="L115">        return channel.size();</span>
+    }
+
+    @Override
+    public FileChannel truncate(long size) throws IOException {
+<span class="nc" id="L120">        channel.truncate(size);</span>
+<span class="nc" id="L121">        return this;</span>
+    }
+
+    @Override
+    public void force(boolean metaData) throws IOException {
+<span class="nc" id="L126">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+    }
+
+    @Override
+    public long transferTo(long position, long count, WritableByteChannel target) throws IOException {
+<span class="nc" id="L131">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+    }
+
+    @Override
+    public long transferFrom(ReadableByteChannel src, long position, long count) throws IOException {
+<span class="nc" id="L136">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+    }
+
+    @Override
+    public MappedByteBuffer map(MapMode mode, long position, long size) throws IOException {
+<span class="nc" id="L141">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+    }
+
+    @Override
+    public FileLock lock(long position, long size, boolean shared) throws IOException {
+<span class="nc" id="L146">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+    }
+
+    @Override
+    public FileLock tryLock(long position, long size, boolean shared) throws IOException {
+<span class="nc" id="L151">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+    }
+
+    @Override
+    protected void implCloseChannel() throws IOException {
+<span class="nc bnc" id="L156" title="All 2 branches missed.">        if (!channel.isOpen()) {</span>
+<span class="nc" id="L157">            throw new IllegalStateException(&quot;Channel not open!&quot;);</span>
+        }
+
+<span class="nc" id="L160">        channel.close();</span>
+<span class="nc" id="L161">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

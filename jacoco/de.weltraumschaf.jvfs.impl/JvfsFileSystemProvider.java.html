@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JvfsFileSystemProvider.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JVFS</a> &gt; <a href="index.html" class="el_package">de.weltraumschaf.jvfs.impl</a> &gt; <span class="el_source">JvfsFileSystemProvider.java</span></div><h1>JvfsFileSystemProvider.java</h1><pre class="source lang-java linenums">/*
+ *  LICENSE
+ *
+ * &quot;THE BEER-WARE LICENSE&quot; (Revision 43):
+ * &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt; wrote this file.
+ * As long as you retain this notice you can do whatever you want with
+ * this stuff. If we meet some day, and you think this stuff is worth it,
+ * you can buy me a non alcohol-free beer in return.
+ *
+ * Copyright (C) 2012 &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt;
+ */
+package de.weltraumschaf.jvfs.impl;
+
+import de.weltraumschaf.jvfs.JvfsFileSystems;
+import java.io.IOException;
+import java.net.URI;
+import java.nio.channels.AsynchronousFileChannel;
+import java.nio.channels.FileChannel;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.file.*;
+import java.nio.file.attribute.*;
+import java.nio.file.spi.FileSystemProvider;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+
+/**
+ * Implements the I/O operations.
+ *
+ * Inspired by implementation of {@code sun.nio.fs.LinuxFileSystemProvider} and ZipFS demo.
+ *
+ * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
+ */
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">public final class JvfsFileSystemProvider extends FileSystemProvider {</span>
+
+    /**
+     * The one and only file system.
+     */
+    private final JvfsFileSystem fileSystem;
+
+    /**
+     * Dedicated constructor.
+     */
+    public JvfsFileSystemProvider() {
+<span class="fc" id="L45">        super();</span>
+<span class="fc" id="L46">        fileSystem = new JvfsFileSystem(this);</span>
+<span class="fc" id="L47">    }</span>
+
+    /**
+     * Constructor used by {@link FileSystems} to create default provider.
+     *
+     * @param parent is ignored at the moment
+     */
+    public JvfsFileSystemProvider(final FileSystemProvider parent) {
+<span class="nc" id="L55">        this();</span>
+<span class="nc" id="L56">    }</span>
+
+    @Override
+    public String getScheme() {
+<span class="fc" id="L60">        return JvfsFileSystems.PROTOCOL;</span>
+    }
+
+    // TODO Test this method.
+    private void checkUri(final URI uri) {
+<span class="pc bpc" id="L65" title="2 of 4 branches missed.">        assert null != uri : &quot;uri must not be null&quot;;</span>
+
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        if (!uri.getScheme().equalsIgnoreCase(getScheme())) {</span>
+<span class="nc" id="L68">            throw new IllegalArgumentException(&quot;URI does not match this provider!&quot;);</span>
+        }
+
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (uri.getAuthority() != null) {</span>
+<span class="nc" id="L72">            throw new IllegalArgumentException(&quot;Authority component present!&quot;);</span>
+        }
+
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (uri.getPath() == null) {</span>
+<span class="nc" id="L76">            throw new IllegalArgumentException(&quot;Path component is undefined!&quot;);</span>
+        }
+
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">        if (!uri.getPath().equals(JvfsFileSystems.DIR_SEP)) {</span>
+<span class="nc" id="L80">            throw new IllegalArgumentException(String.format(&quot;Path component should be '%s'&quot;, JvfsFileSystems.DIR_SEP));</span>
+        }
+
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        if (uri.getQuery() != null) {</span>
+<span class="nc" id="L84">            throw new IllegalArgumentException(&quot;Query component present!&quot;);</span>
+        }
+
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        if (uri.getFragment() != null) {</span>
+<span class="nc" id="L88">            throw new IllegalArgumentException(&quot;Fragment component present!&quot;);</span>
+        }
+<span class="fc" id="L90">    }</span>
+
+    @Override
+    public FileSystem newFileSystem(final URI uri, final Map&lt;String, ?&gt; env) throws IOException {
+<span class="fc" id="L94">        checkUri(uri);</span>
+<span class="fc" id="L95">        throw new FileSystemAlreadyExistsException(&quot;JVFS is not supposed to create new file systems!&quot;);</span>
+    }
+
+    @Override
+    public FileSystem getFileSystem(final URI uri) {
+<span class="fc" id="L100">        checkUri(uri);</span>
+<span class="fc" id="L101">        return fileSystem;</span>
+    }
+
+    @Override
+    public Path getPath(final URI uri) {
+<span class="nc" id="L106">        return new JvfsPath(uri.getPath(), fileSystem);</span>
+    }
+
+    @Override
+    public AsynchronousFileChannel newAsynchronousFileChannel(
+            final Path path,
+            final Set&lt;? extends OpenOption&gt; options,
+            final ExecutorService exec,
+            final FileAttribute&lt;?&gt;... attrs)
+            throws IOException {
+<span class="fc" id="L116">        throw new UnsupportedOperationException(&quot;Not supported yet!&quot;);</span>
+    }
+
+    @Override
+    public FileChannel newFileChannel(
+            final Path path,
+            final Set&lt;? extends OpenOption&gt; options,
+            final FileAttribute&lt;?&gt;... attrs) throws IOException {
+<span class="fc" id="L124">        return toJvfsPath(path).newFileChannel(options, attrs);</span>
+    }
+
+    @Override
+    public SeekableByteChannel newByteChannel(
+            final Path path,
+            final Set&lt;? extends OpenOption&gt; options,
+            final FileAttribute&lt;?&gt;... attrs) throws IOException {
+<span class="fc" id="L132">        return toJvfsPath(path).newByteChannel(options, attrs);</span>
+    }
+
+    @Override
+    public DirectoryStream&lt;Path&gt; newDirectoryStream(
+            final Path dir,
+            final DirectoryStream.Filter&lt;? super Path&gt; filter) throws IOException {
+<span class="fc" id="L139">        return toJvfsPath(dir).newDirectoryStream(filter);</span>
+    }
+
+    @Override
+    public void createDirectory(final Path dir, final FileAttribute&lt;?&gt;... attrs) throws IOException {
+<span class="fc" id="L144">        toJvfsPath(dir).createDirectory(attrs);</span>
+<span class="fc" id="L145">    }</span>
+
+    @Override
+    public void delete(final Path path) throws IOException {
+<span class="fc" id="L149">        toJvfsPath(path).delete();</span>
+<span class="fc" id="L150">    }</span>
+
+    @Override
+    public void copy(final Path source, final Path target, final CopyOption... options) throws IOException {
+<span class="fc" id="L154">        toJvfsPath(source).copy(toJvfsPath(target), options);</span>
+<span class="fc" id="L155">    }</span>
+
+    @Override
+    public void move(final Path source, final Path target, final CopyOption... options) throws IOException {
+<span class="fc" id="L159">        toJvfsPath(source).move(toJvfsPath(target), options);</span>
+<span class="fc" id="L160">    }</span>
+
+    @Override
+    public boolean isSameFile(final Path path, final Path path2) throws IOException {
+<span class="fc" id="L164">        return toJvfsPath(path).isSameFile(path2);</span>
+    }
+
+    @Override
+    public boolean isHidden(final Path path) throws IOException {
+<span class="fc" id="L169">        return toJvfsPath(path).isHidden();</span>
+    }
+
+    @Override
+    public FileStore getFileStore(final Path path) throws IOException {
+<span class="fc" id="L174">        return toJvfsPath(path).getFileStore();</span>
+    }
+
+    @Override
+    public void checkAccess(final Path path, final AccessMode... modes) throws IOException {
+<span class="fc" id="L179">        toJvfsPath(path).checkAccess(modes);</span>
+<span class="fc" id="L180">    }</span>
+
+    @Override
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;V extends FileAttributeView&gt; V getFileAttributeView(
+            final Path path,
+            final Class&lt;V&gt; type,
+            final LinkOption... options) {
+<span class="fc" id="L188">        return (V) new JvfsFileAttributeView(toJvfsPath(path));</span>
+    }
+
+    @Override
+    @SuppressWarnings(&quot;unchecked&quot;)
+    public &lt;A extends BasicFileAttributes&gt; A readAttributes(
+            final Path path,
+            final Class&lt;A&gt; type,
+            final LinkOption... options) throws IOException {
+<span class="fc bfc" id="L197" title="All 2 branches covered.">        if (type == BasicFileAttributes.class) {</span>
+<span class="fc" id="L198">            return (A) toJvfsPath(path).getAttributes();</span>
+        }
+
+<span class="fc" id="L201">        return null;</span>
+    }
+
+    @Override
+    public Map&lt;String, Object&gt; readAttributes(
+            final Path path,
+            final String attributes,
+            final LinkOption... options) throws IOException {
+<span class="nc" id="L209">        return toJvfsPath(path).readAttributes(attributes, options);</span>
+    }
+
+    @Override
+    public void setAttribute(
+            final Path path,
+            final String attribute,
+            final Object value,
+            final LinkOption... options) throws IOException {
+<span class="nc" id="L218">        toJvfsPath(path).setAttribute(attribute, value, options);</span>
+<span class="nc" id="L219">    }</span>
+
+    /**
+     * Casts given path to {@link JvfsPath}.
+     *
+     * Throws a {@link ProviderMismatchException} if given object is not instance of {@link JvfsPath}.
+     *
+     * @param obj must not be {@literal null}
+     * @return never {@literal null}
+     */
+    private static JvfsPath toJvfsPath(final Path obj) {
+<span class="fc" id="L230">        JvfsAssertions.notNull(obj, &quot;obj&quot;);</span>
+
+<span class="pc bpc" id="L232" title="1 of 2 branches missed.">        if (!(obj instanceof JvfsPath)) {</span>
+<span class="nc" id="L233">            throw new ProviderMismatchException(&quot;Given path not of type &quot; + JvfsPath.class.getSimpleName() + &quot;!&quot;);</span>
+        }
+
+<span class="fc" id="L236">        return (JvfsPath) obj;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

@@ -12,6 +12,7 @@
 
 package de.weltraumschaf.jvfs;
 
+import de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider;
 import java.net.URI;
 import java.nio.file.spi.FileSystemProvider;
 
@@ -25,9 +26,9 @@ public final class JvfsFileSystems {
     /**
      * OS dependent directory separator.
      */
-<span class="fc" id="L28">    public static final String DIR_SEP = System.getProperty(&quot;file.separator&quot;);</span>
+<span class="fc" id="L29">    public static final String DIR_SEP = System.getProperty(&quot;file.separator&quot;);</span>
     /**
-     * Protocol portion of a {@link URI} to JVFS {@link FileSystem}s.
+     * Protocol portion of a {@link URI} to JVFS {@link java.nio.file.FileSystem file systems}.
      */
     public static final String PROTOCOL = &quot;file&quot;;
     /**
@@ -37,20 +38,20 @@ public final class JvfsFileSystems {
     /**
      * Name of property to set default file system provider implementations.
      *
-     * @see java.nio.file.FileSystems.DefaultFileSystemHolder.getDefaultProvider():java.nio.file.spi.FileSystemProvider
+     * @see java.nio.file.FileSystems.DefaultFileSystemHolder#getDefaultProvider():java.nio.file.spi.FileSystemProvider
      */
     private static final String IMPLEMENTATION_PROPERTY_NAME = &quot;java.nio.file.spi.DefaultFileSystemProvider&quot;;
     /**
      * Full qualified class name of provider implementation.
      */
-    private static final String IMPLEMENTATION = &quot;de.weltraumschaf.juberblog.jvfs.JvfsFileSystemProvider&quot;;
+    private static final String IMPLEMENTATION = &quot;de.weltraumschaf.juberblog.jvfs.impl.JvfsFileSystemProvider&quot;;
 
     /**
      * Hidden for pure static class.
      */
     private JvfsFileSystems() {
-<span class="nc" id="L52">        super();</span>
-<span class="nc" id="L53">        throw new UnsupportedOperationException(); // Avoid reflective instantiation.</span>
+<span class="fc" id="L53">        super();</span>
+<span class="fc" id="L54">        throw new UnsupportedOperationException(); // Avoid reflective instantiation.</span>
     }
 
     /**
@@ -59,7 +60,7 @@ public final class JvfsFileSystems {
      * @return never {@literal null} always new instance
      */
     public static FileSystemProvider newProvider() {
-<span class="nc" id="L62">        return new JvfsFileSystemProvider();</span>
+<span class="fc" id="L63">        return new JvfsFileSystemProvider();</span>
     }
 
     /**
@@ -68,26 +69,26 @@ public final class JvfsFileSystems {
      * @return never {@literal null}
      */
     public static URI getRootUri() {
-<span class="nc" id="L71">        final StringBuilder sb = new StringBuilder();</span>
-<span class="nc" id="L72">        sb.append(PROTOCOL);</span>
-<span class="nc" id="L73">        sb.append(URI_PROTOCOL_SUFFIX);</span>
-<span class="nc" id="L74">        sb.append(DIR_SEP);</span>
-<span class="nc" id="L75">        return URI.create(sb.toString());</span>
+<span class="fc" id="L72">        final StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L73">        sb.append(PROTOCOL);</span>
+<span class="fc" id="L74">        sb.append(URI_PROTOCOL_SUFFIX);</span>
+<span class="fc" id="L75">        sb.append(DIR_SEP);</span>
+<span class="fc" id="L76">        return URI.create(sb.toString());</span>
     }
 
     /**
      * Registers the JVFS implementation of {@link FileSystemProvider} as default file system.
      */
     public static void registerAsDefault() {
-<span class="nc" id="L82">        System.setProperty(IMPLEMENTATION_PROPERTY_NAME, IMPLEMENTATION);</span>
-<span class="nc" id="L83">    }</span>
+<span class="fc" id="L83">        System.setProperty(IMPLEMENTATION_PROPERTY_NAME, IMPLEMENTATION);</span>
+<span class="fc" id="L84">    }</span>
 
     /**
      * Removes the custom implementation.
      */
     public static void unregisterAsDefault() {
-<span class="nc" id="L89">        System.setProperty(IMPLEMENTATION_PROPERTY_NAME, &quot;&quot;);</span>
-<span class="nc" id="L90">    }</span>
+<span class="fc" id="L90">        System.setProperty(IMPLEMENTATION_PROPERTY_NAME, &quot;&quot;);</span>
+<span class="fc" id="L91">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

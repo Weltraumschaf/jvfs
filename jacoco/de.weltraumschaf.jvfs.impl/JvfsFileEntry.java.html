@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JvfsFileEntry.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JVFS</a> &gt; <a href="index.html" class="el_package">de.weltraumschaf.jvfs.impl</a> &gt; <span class="el_source">JvfsFileEntry.java</span></div><h1>JvfsFileEntry.java</h1><pre class="source lang-java linenums">/*
+ *  LICENSE
+ *
+ * &quot;THE BEER-WARE LICENSE&quot; (Revision 43):
+ * &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt; wrote this file.
+ * As long as you retain this notice you can do whatever you want with
+ * this stuff. If we meet some day, and you think this stuff is worth it,
+ * you can buy me a non alcohol-free beer in return.
+ *
+ * Copyright (C) 2012 &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt;
+ */
+package de.weltraumschaf.jvfs.impl;
+
+import java.io.IOException;
+
+/**
+ * Holds the administrative data of a file entry in the virtual file system.
+ *
+ * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
+ */
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">final class JvfsFileEntry {</span>
+
+    /**
+     * Holds the file data.
+     */
+    private final JvfsSeekableByteChannel content;
+    /**
+     * Absolute path name of the file system entry.
+     */
+    private final String path;
+    /**
+     * Whether it is a directory or not.
+     */
+    private final boolean direcotry;
+    /**
+     * Last modification time.
+     */
+    private long lastModifiedTime;
+    /**
+     * Last access time.
+     */
+    private long lastAccessTime;
+    /**
+     * Creation time.
+     */
+    private long creationTime;
+    /**
+     * Whether it is readable.
+     */
+    private boolean readable;
+    /**
+     * Whether it is writable.
+     */
+    private boolean writable;
+    /**
+     * Whether it is executable.
+     */
+    private boolean executable;
+    /**
+     * Whether it is hidden.
+     */
+    private boolean hidden;
+
+    /**
+     * Copy constructor.
+     *
+     * Hidden: Use {@link #copy()} to create a copy of an entry.
+     *
+     * @param src must not be {@literal null}
+     */
+    private JvfsFileEntry(final JvfsFileEntry src) {
+<span class="fc" id="L72">        this(src.path, src.direcotry, src.getContent().copy());</span>
+<span class="fc" id="L73">        this.lastModifiedTime = src.getLastModifiedTime();</span>
+<span class="fc" id="L74">        this.lastAccessTime = src.getLastAccessTime();</span>
+<span class="fc" id="L75">        this.creationTime = src.getCreationTime();</span>
+<span class="fc" id="L76">        this.readable = src.isReadable();</span>
+<span class="fc" id="L77">        this.writable = src.isWritable();</span>
+<span class="fc" id="L78">        this.executable = src.isExecutable();</span>
+<span class="fc" id="L79">        this.hidden = src.isHidden();</span>
+<span class="fc" id="L80">    }</span>
+
+    /**
+     *
+     *
+     * Hidden: Use either {@link #newDir(java.lang.String)} or {@link #newFile(java.lang.String)}.
+     *
+     * @param path must not be {@literal null} or empty
+     * @param direcotry {@literal true} if it is a directory, else {@literal false}
+     */
+    private JvfsFileEntry(final String path, final boolean direcotry) {
+<span class="fc" id="L91">        this(path, direcotry, new JvfsSeekableByteChannel());</span>
+<span class="fc" id="L92">    }</span>
+
+    /**
+     * Dedicated constructor.
+     *
+     * @param path
+     * @param direcotry
+     * @param content
+     */
+    private JvfsFileEntry(final String path, final boolean direcotry, final JvfsSeekableByteChannel content) {
+<span class="fc" id="L102">        super();</span>
+<span class="pc bpc" id="L103" title="2 of 4 branches missed.">        assert path != null : &quot;path must not be null&quot;;</span>
+<span class="pc bpc" id="L104" title="2 of 4 branches missed.">        assert !path.isEmpty() : &quot;path must not be empty&quot;;</span>
+<span class="pc bpc" id="L105" title="2 of 4 branches missed.">        assert content != null : &quot;content must not be null&quot;;</span>
+
+<span class="fc" id="L107">        this.path = path;</span>
+<span class="fc" id="L108">        this.direcotry = direcotry;</span>
+<span class="fc" id="L109">        this.content = content;</span>
+<span class="fc" id="L110">    }</span>
+
+    /**
+     * Creates a new directory entry.
+     *
+     * @param path must not be {@literal null} or empty
+     * @return never {@literal null}
+     */
+    public static JvfsFileEntry newDir(final String path) {
+<span class="fc" id="L119">        return new JvfsFileEntry(path, true);</span>
+    }
+
+    /**
+     * Creates a new file entry.
+     *
+     * @param path must not be {@literal null} or empty
+     * @return never {@literal null}
+     */
+    public static JvfsFileEntry newFile(final String path) {
+<span class="fc" id="L129">        return new JvfsFileEntry(path, false);</span>
+    }
+
+    /**
+     * Creates complete deep copy.
+     *
+     * @return never {@literal null}
+     */
+    public JvfsFileEntry copy() {
+<span class="fc" id="L138">        return new JvfsFileEntry(this);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L143">        return path.hashCode();</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="nc bnc" id="L148" title="All 2 branches missed.">        if (!(obj instanceof JvfsFileEntry)) {</span>
+<span class="nc" id="L149">            return false;</span>
+        }
+
+<span class="nc" id="L152">        final JvfsFileEntry other = (JvfsFileEntry) obj;</span>
+<span class="nc" id="L153">        return path.equals(other.path);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L158">        return path;</span>
+    }
+
+    /**
+     * Get the absolute path.
+     *
+     * @return never {@literal null} or empty
+     */
+    String getPath() {
+<span class="fc" id="L167">        return path;</span>
+    }
+
+    /**
+     * Whether it is a directory.
+     *
+     * @return {@literal true} means it is a directory, {@literal false} means file
+     */
+    boolean isDirectory() {
+<span class="fc" id="L176">        return direcotry;</span>
+    }
+
+    /**
+     * Whether the entry is hidden or not.
+     *
+     * @return {@literal true} if it is hidden, else {@literal false}
+     */
+    boolean isHidden() {
+<span class="fc" id="L185">        return hidden;</span>
+    }
+
+    /**
+     * Get last modification time in seconds.
+     *
+     * @return non negative number
+     */
+    long getLastModifiedTime() {
+<span class="fc" id="L194">        return lastModifiedTime;</span>
+    }
+
+    /**
+     * Set last modification time in seconds.
+     *
+     * @param timestamp must be non negative
+     */
+    void setLastModifiedTime(final long timestamp) {
+<span class="fc" id="L203">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
+<span class="fc" id="L204">        this.lastModifiedTime = timestamp;</span>
+<span class="fc" id="L205">    }</span>
+
+    /**
+     * Get last access time in seconds.
+     *
+     * @return non negative number
+     */
+    long getLastAccessTime() {
+<span class="fc" id="L213">        return lastAccessTime;</span>
+    }
+
+    /**
+     * Set last access time in seconds.
+     *
+     * @param timestamp must be non negative
+     */
+    void setLastAccessTime(final long timestamp) {
+<span class="fc" id="L222">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
+<span class="fc" id="L223">        this.lastAccessTime = timestamp;</span>
+<span class="fc" id="L224">    }</span>
+
+    /**
+     * Get last creation in seconds.
+     *
+     * @return non negative number
+     */
+    long getCreationTime() {
+<span class="fc" id="L232">        return creationTime;</span>
+    }
+
+    /**
+     * Set creation time in seconds.
+     *
+     * @param timestamp must be non negative
+     */
+    void setCreationTime(final long timestamp) {
+<span class="fc" id="L241">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
+<span class="fc" id="L242">        this.creationTime = timestamp;</span>
+<span class="fc" id="L243">    }</span>
+
+    /**
+     * Whether the file is readable.
+     *
+     * @return {@literal true} if readable, else {@literal false}
+     */
+    boolean isReadable() {
+<span class="fc" id="L251">        return readable;</span>
+    }
+
+    /**
+     * Whether the file is writable.
+     *
+     * @return {@literal true} if writable, else {@literal false}
+     */
+    boolean isWritable() {
+<span class="fc" id="L260">        return writable;</span>
+    }
+
+    /**
+     * Whether the file is executable.
+     *
+     * @return {@literal true} if executable, else {@literal false}
+     */
+    boolean isExecutable() {
+<span class="fc" id="L269">        return executable;</span>
+    }
+
+    public void setReadable(boolean readable) {
+<span class="fc" id="L273">        this.readable = readable;</span>
+<span class="fc" id="L274">    }</span>
+
+    public void setWritable(boolean writable) {
+<span class="fc" id="L277">        this.writable = writable;</span>
+<span class="fc" id="L278">    }</span>
+
+    public void setExecutable(boolean executable) {
+<span class="fc" id="L281">        this.executable = executable;</span>
+<span class="fc" id="L282">    }</span>
+
+    public void setHidden(boolean hidden) {
+<span class="fc" id="L285">        this.hidden = hidden;</span>
+<span class="fc" id="L286">    }</span>
+
+    /**
+     * If it has child entries if it is a directory.
+     *
+     * @return {@literal true} if it is an empty directory or file, else {@literal false}
+     */
+    boolean isEmpty() {
+<span class="nc" id="L294">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+    }
+
+    /**
+     * Whether it is a symbolic link.
+     *
+     * @return {@literal true} if it is a symbolic link, else {@literal false}
+     */
+    boolean isSymbolicLink() {
+<span class="nc" id="L303">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+    }
+
+    /**
+     * Get the size of the file content in bytes.
+     *
+     * @return -1 if it is a directory, else size
+     */
+    long size() {
+<span class="fc bfc" id="L312" title="All 2 branches covered.">        if (this.isDirectory()) {</span>
+<span class="fc" id="L313">            return -1L;</span>
+        }
+        try {
+<span class="fc" id="L316">            return content.size();</span>
+<span class="nc" id="L317">        } catch (IOException ex) {</span>
+<span class="nc" id="L318">            return -1L;</span>
+        }
+    }
+
+    /**
+     * Get the file content as seekable byte channel.
+     *
+     * @return never {@literal null}
+     */
+    JvfsSeekableByteChannel getContent() {
+<span class="fc" id="L328">        return content;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JvfsSeekableByteChannel.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JVFS</a> &gt; <a href="index.html" class="el_package">de.weltraumschaf.jvfs.impl</a> &gt; <span class="el_source">JvfsSeekableByteChannel.java</span></div><h1>JvfsSeekableByteChannel.java</h1><pre class="source lang-java linenums">/*
+ *  LICENSE
+ *
+ * &quot;THE BEER-WARE LICENSE&quot; (Revision 43):
+ * &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt; wrote this file.
+ * As long as you retain this notice you can do whatever you want with
+ * this stuff. If we meet some day, and you think this stuff is worth it,
+ * you can buy me a non alcohol-free beer in return.
+ *
+ * Copyright (C) 2012 &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt;
+ */
+package de.weltraumschaf.jvfs.impl;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SeekableByteChannel;
+import java.util.List;
+
+/**
+ * Implementation of a seekable byte channel.
+ *
+ * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
+ */
+<span class="pc bpc" id="L24" title="1 of 2 branches missed.">final class JvfsSeekableByteChannel implements SeekableByteChannel {</span>
+
+    /**
+     * Holds the data.
+     */
+    private List&lt;Byte&gt; data;
+    /**
+     * Whether the channel is open or not.
+     */
+    private volatile boolean open;
+    /**
+     * Current position in the channel.
+     */
+    private volatile int position;
+
+    JvfsSeekableByteChannel() {
+<span class="fc" id="L40">        this(JvfsCollections.&lt;Byte&gt;newArrayList());</span>
+<span class="fc" id="L41">    }</span>
+
+    /**
+     * Dedicated constructor.
+     *
+     * Initializes {@link #open} with {@literal true}.
+     */
+    JvfsSeekableByteChannel(final List&lt;Byte&gt; data) {
+<span class="fc" id="L49">        super();</span>
+<span class="pc bpc" id="L50" title="2 of 4 branches missed.">        assert data != null : &quot;data must be defined&quot;;</span>
+<span class="fc" id="L51">        this.data = data;</span>
+<span class="fc" id="L52">        this.open = true;</span>
+<span class="fc" id="L53">    }</span>
+
+    @Override
+    public int read(final ByteBuffer dst) throws IOException {
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        for (final Byte b : data.subList(position, data.size())) {</span>
+<span class="nc" id="L58">            dst.put(b);</span>
+<span class="nc" id="L59">            position++;</span>
+<span class="nc" id="L60">        }</span>
+
+<span class="nc" id="L62">        return position;</span>
+    }
+
+    @Override
+    public int write(final ByteBuffer src) throws IOException {
+<span class="nc" id="L67">        JvfsAssertions.notNull(src, &quot;src&quot;);</span>
+
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        while (src.hasRemaining()) {</span>
+<span class="nc" id="L70">            data.add(position, src.get());</span>
+<span class="nc" id="L71">            position++;</span>
+        }
+
+<span class="nc" id="L74">        return position;</span>
+    }
+
+    @Override
+    public long position() throws IOException {
+<span class="nc" id="L79">        return position;</span>
+    }
+
+    @Override
+    public SeekableByteChannel position(final long newPosition) throws IOException {
+<span class="nc" id="L84">        position = (int) newPosition;</span>
+<span class="nc" id="L85">        return this;</span>
+    }
+
+    @Override
+    public long size() throws IOException {
+<span class="fc" id="L90">        return data.size();</span>
+    }
+
+    @Override
+    public SeekableByteChannel truncate(final long size) throws IOException {
+<span class="nc" id="L95">        data = data.subList(0, (int) size);</span>
+<span class="nc" id="L96">        return this;</span>
+    }
+
+    @Override
+    public boolean isOpen() {
+<span class="nc" id="L101">        return open;</span>
+    }
+
+    @Override
+    public void close() throws IOException {
+<span class="nc" id="L106">        open = false; // Ignore already closed.</span>
+<span class="nc" id="L107">    }</span>
+
+    JvfsSeekableByteChannel copy() {
+<span class="fc" id="L110">        return new JvfsSeekableByteChannel(JvfsCollections.newArrayList(data));</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>
