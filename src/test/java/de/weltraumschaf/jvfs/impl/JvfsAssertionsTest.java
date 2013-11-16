@@ -237,31 +237,4 @@ public class JvfsAssertionsTest {
         JvfsAssertions.isEqual("foo", "bar", "baz");
     }
 
-    @Test
-    public void equal() {
-        assertThat(JvfsAssertions.equal(null, null), is(true));
-        assertThat(JvfsAssertions.equal("", ""), is(true));
-        assertThat(JvfsAssertions.equal("foo", "foo"), is(true));
-        assertThat(JvfsAssertions.equal(Integer.valueOf(42), Integer.valueOf(42)), is(true));
-
-        assertThat(JvfsAssertions.equal(null, ""), is(false));
-        assertThat(JvfsAssertions.equal("", null), is(false));
-        assertThat(JvfsAssertions.equal("foo", "bar"), is(false));
-        assertThat(JvfsAssertions.equal("23", Integer.valueOf(23)), is(false));
-        assertThat(JvfsAssertions.equal(Integer.valueOf(42), Integer.valueOf(23)), is(false));
-    }
-
-    @Test
-    public void notEqual() {
-        assertThat(JvfsAssertions.notEqual(null, ""), is(true));
-        assertThat(JvfsAssertions.notEqual("", null), is(true));
-        assertThat(JvfsAssertions.notEqual("foo", "bar"), is(true));
-        assertThat(JvfsAssertions.notEqual("23", Integer.valueOf(23)), is(true));
-        assertThat(JvfsAssertions.notEqual(Integer.valueOf(42), Integer.valueOf(23)), is(true));
-
-        assertThat(JvfsAssertions.notEqual(null, null), is(false));
-        assertThat(JvfsAssertions.notEqual("", ""), is(false));
-        assertThat(JvfsAssertions.notEqual("foo", "foo"), is(false));
-        assertThat(JvfsAssertions.notEqual(Integer.valueOf(42), Integer.valueOf(42)), is(false));
-    }
 }

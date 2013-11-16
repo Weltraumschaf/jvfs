@@ -205,32 +205,9 @@ final class JvfsAssertions {
     static void isEqual(final Object actual, final Object expected, final String name) {
         validateName(name);
 
-        if (notEqual(actual, expected)) {
+        if (JvfsObject.notEqual(actual, expected)) {
             throw new IllegalArgumentException(String.format(EQUAL_MESSAGE, name, expected));
         }
     }
 
-    /**
-     * Determines if two objects are {@link Object#equals(java.lang.Object) equal} with
-     * respect of {@code null} values.
-     *
-     * @param a may be {@code null}
-     * @param b may be {@code null}
-     * @return {@code true} if a and b are equal, else {@code false}
-     */
-    static boolean equal(final Object a, final Object b) {
-        return a == b || a != null && a.equals(b);
-    }
-
-    /**
-     * Determines if two objects are not {@link Object#equals(java.lang.Object) equal} with
-     * respect of {@code null} values.
-     *
-     * @param a may be {@code null}
-     * @param b may be {@code null}
-     * @return {@code true} if a and b are not equal, else {@code false}
-     */
-    static boolean notEqual(final Object a, final Object b) {
-        return !equal(a, b);
-    }
 }

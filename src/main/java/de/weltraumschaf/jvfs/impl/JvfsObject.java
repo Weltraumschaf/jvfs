@@ -35,8 +35,32 @@ final class JvfsObject {
      * @param objects must not be {@code null}
      * @return any number
      */
-    public static int hashCode(final Object ... objects) {
+    static int hashCode(final Object ... objects) {
         JvfsAssertions.notNull(objects, "objects");
         return Arrays.hashCode(objects);
+    }
+
+    /**
+     * Determines if two objects are {@link Object#equals(java.lang.Object) equal} with
+     * respect of {@code null} values.
+     *
+     * @param a may be {@code null}
+     * @param b may be {@code null}
+     * @return {@code true} if a and b are equal, else {@code false}
+     */
+    static boolean equal(final Object a, final Object b) {
+        return a == b || a != null && a.equals(b);
+    }
+
+    /**
+     * Determines if two objects are not {@link Object#equals(java.lang.Object) equal} with
+     * respect of {@code null} values.
+     *
+     * @param a may be {@code null}
+     * @param b may be {@code null}
+     * @return {@code true} if a and b are not equal, else {@code false}
+     */
+    static boolean notEqual(final Object a, final Object b) {
+        return !equal(a, b);
     }
 }
