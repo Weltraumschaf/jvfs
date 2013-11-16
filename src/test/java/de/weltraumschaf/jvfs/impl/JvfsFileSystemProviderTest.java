@@ -231,5 +231,7 @@ public class JvfsFileSystemProviderTest {
         JvfsFileSystemProvider.toJvfsPath(mock(Path.class));
     }
 
-    private static abstract class BasicFileAttributesStub implements BasicFileAttributes {}
+    private abstract static class BasicFileAttributesStub implements BasicFileAttributes {
+        // Empty stub to test other type.
+    }
 }

@@ -9,7 +9,6 @@
  *
  * Copyright (C) 2012 "Sven Strittmatter" <weltraumschaf@googlemail.com>
  */
-
 package de.weltraumschaf.jvfs.impl;
 
 import java.util.List;
@@ -21,6 +20,14 @@ import java.util.StringTokenizer;
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
 final class JvfsPathUtil {
+
+    /**
+     * Hidden for pure static class.
+     */
+    private JvfsPathUtil() {
+        super();
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Splits the given string by the directory separator.

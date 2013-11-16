@@ -60,6 +60,23 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
         return JvfsFileSystems.PROTOCOL;
     }
 
+    /**
+     * Checks URI against some rules.
+     *
+     * Rules:
+     * <ul>
+     * <li>the URI scheme matches {@link #getScheme()}</li>
+     * <li>the URI has no authority</li>
+     * <li>the path is not {@code null}</li>
+     * <li>the path component is the root directory</li>
+     * <li>the URI has no query part</li>
+     * <li>the URI has no fragment</li>
+     * </ul>
+     *
+     * Throws {@link IllegalArgumentException} if any rule is not complied.
+     *
+     * @param uri must not be {@code null}
+     */
     void checkUri(final URI uri) {
         assert null != uri : "uri must not be null";
 

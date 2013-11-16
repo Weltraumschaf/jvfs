@@ -193,7 +193,9 @@ public class JvfsPathTest {
         final Path sut = new JvfsPath(createPath(false, "foo", "bar", "baz"), fs);
         assertThat(sut.endsWith(new JvfsPath(createPath(false, "baz"), fs)), is(true));
         assertThat(sut.endsWith(new JvfsPath(createPath(false, "bar" + DIR_SEP + "baz"), fs)), is(true));
-        assertThat(sut.endsWith(new JvfsPath(createPath(false, "foo" + DIR_SEP + "bar" + DIR_SEP + "baz"), fs)), is(true));
+        assertThat(sut.endsWith(
+            new JvfsPath(createPath(false, "foo" + DIR_SEP + "bar" + DIR_SEP + "baz"), fs)),
+            is(true));
         assertThat(sut.endsWith(new JvfsPath(createPath(false, "foo"), fs)), is(false));
     }
 
