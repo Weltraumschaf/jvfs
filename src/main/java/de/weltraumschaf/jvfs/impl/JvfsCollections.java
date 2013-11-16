@@ -95,6 +95,7 @@ final class JvfsCollections {
      * @param a variable arguments or array
      * @return never {@code null}
      */
+    @SafeVarargs
     static <T> List<T> asList(T... a) {
         return Arrays.asList(a);
     }
