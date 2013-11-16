@@ -87,6 +87,15 @@ final class JvfsAssertions {
         }
     }
 
+    /**
+     * Asserts that checked value is less than the reference.
+     *
+     * Throws{@link IllegalArgumentException} if checked value is not less than reference.
+     *
+     * @param checked value to check
+     * @param reference reference to check against
+     * @param name name of checked parameter for error message
+     */
     static void lessThan(final int checked, final int reference, final String name) {
         validateName(name);
 
@@ -95,6 +104,15 @@ final class JvfsAssertions {
         }
     }
 
+    /**
+     * Asserts that checked value is less than or equal the reference.
+     *
+     * Throws{@link IllegalArgumentException} if checked value is not less than or equal reference.
+     *
+     * @param checked value to check
+     * @param reference reference to check against
+     * @param name name of checked parameter for error message
+     */
     static void lessThanEqual(int checked, int reference, String name) {
         validateName(name);
 
@@ -103,6 +121,15 @@ final class JvfsAssertions {
         }
     }
 
+    /**
+     * Asserts that checked value is greater than the reference.
+     *
+     * Throws{@link IllegalArgumentException} if checked value is not greater than reference.
+     *
+     * @param checked value to check
+     * @param reference reference to check against
+     * @param name name of checked parameter for error message
+     */
     static void greaterThan(final int checked, final int reference, final String name) {
         validateName(name);
 
@@ -111,11 +138,29 @@ final class JvfsAssertions {
         }
     }
 
+    /**
+     * Asserts that checked value is greater than or equal the reference.
+     *
+     * Throws{@link IllegalArgumentException} if checked value is not greater than or equal reference.
+     *
+     * @param checked value to check
+     * @param reference reference to check against
+     * @param name name of checked parameter for error message
+     */
     static void greaterThanEqual(final int checked, final int reference, final String name) {
         validateName(name);
         greaterThanEqual((long) checked, (long) reference, name);
     }
 
+    /**
+     * Asserts that checked value is greater than or equal the reference.
+     *
+     * Throws{@link IllegalArgumentException} if checked value is not greater than or equal reference.
+     *
+     * @param checked value to check
+     * @param reference reference to check against
+     * @param name name of checked parameter for error message
+     */
     static void greaterThanEqual(final long checked, final long reference, final String name) {
         validateName(name);
 
@@ -124,6 +169,16 @@ final class JvfsAssertions {
         }
     }
 
+    /**
+     * Asserts that two objects are equal.
+     *
+     * Throws{@link IllegalArgumentException} if checked actual value is not
+     * {@link Object#equals(java.lang.Object) equal} to expected.
+     *
+     * @param actual object to be checked
+     * @param expected object to be checked should be equal
+     * @param name name of checked parameter for error message
+     */
     static void isEqual(final Object actual, final Object expected, final String name) {
         validateName(name);
 
@@ -132,10 +187,26 @@ final class JvfsAssertions {
         }
     }
 
+    /**
+     * Determines if two objects are {@link Object#equals(java.lang.Object) equal} with
+     * respect of {@code null} values.
+     *
+     * @param a may be {@code null}
+     * @param b may be {@code null}
+     * @return {@code true} if a and b are equal, else {@code false}
+     */
     static boolean equal(final Object a, final Object b) {
         return a == b || (a != null && a.equals(b));
     }
 
+    /**
+     * Determines if two objects are not {@link Object#equals(java.lang.Object) equal} with
+     * respect of {@code null} values.
+     *
+     * @param a may be {@code null}
+     * @param b may be {@code null}
+     * @return {@code true} if a and b are not equal, else {@code false}
+     */
     static boolean notEqual(final Object a, final Object b) {
         return !equal(a, b);
     }
