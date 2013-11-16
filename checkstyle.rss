@@ -8,9 +8,9 @@
     <language>en-us</language>
     <copyright>&#169;2013</copyright>
     <item>
-      <title>File: 29,
-             Errors: 63,
-             Warnings: 1,
+      <title>File: 31,
+             Errors: 25,
+             Warnings: 2,
              Infos: 0
       </title>
             <link>http://weltraumschaf.github.io/jvfs//checkstyle.html</link>
@@ -85,6 +85,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="http://weltraumschaf.github.io/jvfs//checkstyle.html#de.weltraumschaf.jvfs.impl.JvfsPathMatcherTest.java">de/weltraumschaf/jvfs/impl/JvfsPathMatcherTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://weltraumschaf.github.io/jvfs//checkstyle.html#de.weltraumschaf.jvfs.impl.JvfsPath.java">de/weltraumschaf/jvfs/impl/JvfsPath.java</a>
                 </td>
                 <td>
@@ -94,7 +108,7 @@
                   0
                 </td>
                 <td>
-                  26
+                  22
                 </td>
               </tr>
                           <tr>
@@ -150,7 +164,7 @@
                   0
                 </td>
                 <td>
-                  13
+                  0
                 </td>
               </tr>
                           <tr>
@@ -192,7 +206,7 @@
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                           <tr>
@@ -245,10 +259,10 @@
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
                 <td>
-                  2
+                  0
                 </td>
               </tr>
                           <tr>
@@ -332,7 +346,7 @@
                   0
                 </td>
                 <td>
-                  1
+                  0
                 </td>
               </tr>
                           <tr>
@@ -360,12 +374,26 @@
                   0
                 </td>
                 <td>
-                  4
+                  0
                 </td>
               </tr>
                           <tr>
                 <td>
                   <a href="http://weltraumschaf.github.io/jvfs//checkstyle.html#de.weltraumschaf.jvfs.impl.JvfsSeekableByteChannel.java">de/weltraumschaf/jvfs/impl/JvfsSeekableByteChannel.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://weltraumschaf.github.io/jvfs//checkstyle.html#de.weltraumschaf.jvfs.impl.JvfsPathUtilTest.java">de/weltraumschaf/jvfs/impl/JvfsPathUtilTest.java</a>
                 </td>
                 <td>
                   0
@@ -399,10 +427,10 @@
                   0
                 </td>
                 <td>
-                  0
+                  2
                 </td>
                 <td>
-                  16
+                  3
                 </td>
               </tr>
                           <tr>

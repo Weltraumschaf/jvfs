@@ -25,7 +25,7 @@ final class JvfsAssertions {
      */
     private static final String NOT_NULL_MESSAGE = &quot;Parameter '%s' must not be null!&quot;;
     /**
-     * Format string of error message for {@link #notEmpty(java.lang.Object, java.lang.String)}.
+     * Format string of error message for {@link #notEmpty(java.lang.String, java.lang.String)}.
      */
     private static final String NOT_EMPTY_MESSAGE = &quot;Parameter '%s' must not be empty!&quot;;
     /**
@@ -102,13 +102,13 @@ final class JvfsAssertions {
      * @param name name of checked parameter for error message
      */
     static void notEmpty(final String o, final String name) {
-<span class="nc" id="L105">        validateName(name);</span>
-<span class="nc" id="L106">        notNull(o, name);</span>
+<span class="fc" id="L105">        validateName(name);</span>
+<span class="fc" id="L106">        notNull(o, name);</span>
 
-<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (o.isEmpty()) {</span>
-<span class="nc" id="L109">            throw new IllegalArgumentException(String.format(NOT_EMPTY_MESSAGE, name));</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (o.isEmpty()) {</span>
+<span class="fc" id="L109">            throw new IllegalArgumentException(String.format(NOT_EMPTY_MESSAGE, name));</span>
         }
-<span class="nc" id="L111">    }</span>
+<span class="fc" id="L111">    }</span>
 
     /**
      * Asserts that checked value is less than the reference.

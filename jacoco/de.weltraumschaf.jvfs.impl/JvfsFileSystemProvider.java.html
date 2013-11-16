@@ -60,124 +60,140 @@ import java.util.concurrent.ExecutorService;
 <span class="fc" id="L60">        return JvfsFileSystems.PROTOCOL;</span>
     }
 
+    /**
+     * Checks URI against some rules.
+     *
+     * Rules:
+     * &lt;ul&gt;
+     * &lt;li&gt;the URI scheme matches {@link #getScheme()}&lt;/li&gt;
+     * &lt;li&gt;the URI has no authority&lt;/li&gt;
+     * &lt;li&gt;the path is not {@code null}&lt;/li&gt;
+     * &lt;li&gt;the path component is the root directory&lt;/li&gt;
+     * &lt;li&gt;the URI has no query part&lt;/li&gt;
+     * &lt;li&gt;the URI has no fragment&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * Throws {@link IllegalArgumentException} if any rule is not complied.
+     *
+     * @param uri must not be {@code null}
+     */
     void checkUri(final URI uri) {
-<span class="pc bpc" id="L64" title="2 of 4 branches missed.">        assert null != uri : &quot;uri must not be null&quot;;</span>
+<span class="pc bpc" id="L81" title="2 of 4 branches missed.">        assert null != uri : &quot;uri must not be null&quot;;</span>
 
-<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if (!uri.getScheme().equalsIgnoreCase(getScheme())) {</span>
-<span class="nc" id="L67">            throw new IllegalArgumentException(&quot;URI does not match this provider!&quot;);</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        if (!uri.getScheme().equalsIgnoreCase(getScheme())) {</span>
+<span class="nc" id="L84">            throw new IllegalArgumentException(&quot;URI does not match this provider!&quot;);</span>
         }
 
-<span class="pc bpc" id="L70" title="1 of 2 branches missed.">        if (uri.getAuthority() != null) {</span>
-<span class="nc" id="L71">            throw new IllegalArgumentException(&quot;Authority component present!&quot;);</span>
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        if (uri.getAuthority() != null) {</span>
+<span class="nc" id="L88">            throw new IllegalArgumentException(&quot;Authority component present!&quot;);</span>
         }
 
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">        if (uri.getPath() == null) {</span>
-<span class="nc" id="L75">            throw new IllegalArgumentException(&quot;Path component is undefined!&quot;);</span>
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">        if (uri.getPath() == null) {</span>
+<span class="nc" id="L92">            throw new IllegalArgumentException(&quot;Path component is undefined!&quot;);</span>
         }
 
-<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (!uri.getPath().equals(JvfsFileSystems.DIR_SEP)) {</span>
-<span class="nc" id="L79">            throw new IllegalArgumentException(String.format(&quot;Path component should be '%s'&quot;, JvfsFileSystems.DIR_SEP));</span>
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">        if (!uri.getPath().equals(JvfsFileSystems.DIR_SEP)) {</span>
+<span class="nc" id="L96">            throw new IllegalArgumentException(String.format(&quot;Path component should be '%s'&quot;, JvfsFileSystems.DIR_SEP));</span>
         }
 
-<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        if (uri.getQuery() != null) {</span>
-<span class="nc" id="L83">            throw new IllegalArgumentException(&quot;Query component present!&quot;);</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">        if (uri.getQuery() != null) {</span>
+<span class="nc" id="L100">            throw new IllegalArgumentException(&quot;Query component present!&quot;);</span>
         }
 
-<span class="pc bpc" id="L86" title="1 of 2 branches missed.">        if (uri.getFragment() != null) {</span>
-<span class="nc" id="L87">            throw new IllegalArgumentException(&quot;Fragment component present!&quot;);</span>
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">        if (uri.getFragment() != null) {</span>
+<span class="nc" id="L104">            throw new IllegalArgumentException(&quot;Fragment component present!&quot;);</span>
         }
-<span class="fc" id="L89">    }</span>
+<span class="fc" id="L106">    }</span>
 
     @Override
     public FileSystem newFileSystem(final URI uri, final Map&lt;String, ?&gt; env) throws IOException {
-<span class="fc" id="L93">        checkUri(uri);</span>
-<span class="fc" id="L94">        throw new FileSystemAlreadyExistsException(&quot;JVFS is not supposed to create new file systems!&quot;);</span>
+<span class="fc" id="L110">        checkUri(uri);</span>
+<span class="fc" id="L111">        throw new FileSystemAlreadyExistsException(&quot;JVFS is not supposed to create new file systems!&quot;);</span>
     }
 
     @Override
     public FileSystem getFileSystem(final URI uri) {
-<span class="fc" id="L99">        checkUri(uri);</span>
-<span class="fc" id="L100">        return fileSystem;</span>
+<span class="fc" id="L116">        checkUri(uri);</span>
+<span class="fc" id="L117">        return fileSystem;</span>
     }
 
     @Override
     public Path getPath(final URI uri) {
-<span class="nc" id="L105">        checkUri(uri);</span>
-<span class="nc" id="L106">        return new JvfsPath(uri.getPath(), fileSystem);</span>
+<span class="nc" id="L122">        return new JvfsPath(uri.getPath(), fileSystem);</span>
     }
 
     @Override
     public AsynchronousFileChannel newAsynchronousFileChannel(
-            final Path path,
-            final Set&lt;? extends OpenOption&gt; options,
-            final ExecutorService exec,
-            final FileAttribute&lt;?&gt;... attrs)
-            throws IOException {
-<span class="fc" id="L116">        throw new UnsupportedOperationException(&quot;Not supported yet!&quot;);</span>
+        final Path path,
+        final Set&lt;? extends OpenOption&gt; options,
+        final ExecutorService exec,
+        final FileAttribute&lt;?&gt;... attrs)
+        throws IOException {
+<span class="fc" id="L132">        throw new UnsupportedOperationException(&quot;Not supported yet!&quot;);</span>
     }
 
     @Override
     public FileChannel newFileChannel(
-            final Path path,
-            final Set&lt;? extends OpenOption&gt; options,
-            final FileAttribute&lt;?&gt;... attrs) throws IOException {
-<span class="fc" id="L124">        return toJvfsPath(path).newFileChannel(options, attrs);</span>
+        final Path path,
+        final Set&lt;? extends OpenOption&gt; options,
+        final FileAttribute&lt;?&gt;... attrs) throws IOException {
+<span class="fc" id="L140">        return toJvfsPath(path).newFileChannel(options, attrs);</span>
     }
 
     @Override
     public SeekableByteChannel newByteChannel(
-            final Path path,
-            final Set&lt;? extends OpenOption&gt; options,
-            final FileAttribute&lt;?&gt;... attrs) throws IOException {
-<span class="fc" id="L132">        return toJvfsPath(path).newByteChannel(options, attrs);</span>
+        final Path path,
+        final Set&lt;? extends OpenOption&gt; options,
+        final FileAttribute&lt;?&gt;... attrs) throws IOException {
+<span class="fc" id="L148">        return toJvfsPath(path).newByteChannel(options, attrs);</span>
     }
 
     @Override
     public DirectoryStream&lt;Path&gt; newDirectoryStream(
-            final Path dir,
-            final DirectoryStream.Filter&lt;? super Path&gt; filter) throws IOException {
-<span class="fc" id="L139">        return toJvfsPath(dir).newDirectoryStream(filter);</span>
+        final Path dir,
+        final DirectoryStream.Filter&lt;? super Path&gt; filter) throws IOException {
+<span class="fc" id="L155">        return toJvfsPath(dir).newDirectoryStream(filter);</span>
     }
 
     @Override
     public void createDirectory(final Path dir, final FileAttribute&lt;?&gt;... attrs) throws IOException {
-<span class="fc" id="L144">        toJvfsPath(dir).createDirectory(attrs);</span>
-<span class="fc" id="L145">    }</span>
+<span class="fc" id="L160">        toJvfsPath(dir).createDirectory(attrs);</span>
+<span class="fc" id="L161">    }</span>
 
     @Override
     public void delete(final Path path) throws IOException {
-<span class="fc" id="L149">        toJvfsPath(path).delete();</span>
-<span class="fc" id="L150">    }</span>
+<span class="fc" id="L165">        toJvfsPath(path).delete();</span>
+<span class="fc" id="L166">    }</span>
 
     @Override
     public void copy(final Path source, final Path target, final CopyOption... options) throws IOException {
-<span class="fc" id="L154">        toJvfsPath(source).copy(toJvfsPath(target), options);</span>
-<span class="fc" id="L155">    }</span>
+<span class="fc" id="L170">        toJvfsPath(source).copy(toJvfsPath(target), options);</span>
+<span class="fc" id="L171">    }</span>
 
     @Override
     public void move(final Path source, final Path target, final CopyOption... options) throws IOException {
-<span class="fc" id="L159">        toJvfsPath(source).move(toJvfsPath(target), options);</span>
-<span class="fc" id="L160">    }</span>
+<span class="fc" id="L175">        toJvfsPath(source).move(toJvfsPath(target), options);</span>
+<span class="fc" id="L176">    }</span>
 
     @Override
     public boolean isSameFile(final Path path, final Path path2) throws IOException {
-<span class="fc" id="L164">        return toJvfsPath(path).isSameFile(path2);</span>
+<span class="fc" id="L180">        return toJvfsPath(path).isSameFile(path2);</span>
     }
 
     @Override
     public boolean isHidden(final Path path) throws IOException {
-<span class="fc" id="L169">        return toJvfsPath(path).isHidden();</span>
+<span class="fc" id="L185">        return toJvfsPath(path).isHidden();</span>
     }
 
     @Override
     public FileStore getFileStore(final Path path) throws IOException {
-<span class="fc" id="L174">        return toJvfsPath(path).getFileStore();</span>
+<span class="fc" id="L190">        return toJvfsPath(path).getFileStore();</span>
     }
 
     @Override
     public void checkAccess(final Path path, final AccessMode... modes) throws IOException {
-<span class="fc" id="L179">        toJvfsPath(path).checkAccess(modes);</span>
-<span class="fc" id="L180">    }</span>
+<span class="fc" id="L195">        toJvfsPath(path).checkAccess(modes);</span>
+<span class="fc" id="L196">    }</span>
 
     @Override
     @SuppressWarnings(&quot;unchecked&quot;)
@@ -185,7 +201,7 @@ import java.util.concurrent.ExecutorService;
             final Path path,
             final Class&lt;V&gt; type,
             final LinkOption... options) {
-<span class="fc" id="L188">        return (V) new JvfsFileAttributeView(toJvfsPath(path));</span>
+<span class="fc" id="L204">        return (V) new JvfsFileAttributeView(toJvfsPath(path));</span>
     }
 
     @Override
@@ -194,11 +210,11 @@ import java.util.concurrent.ExecutorService;
             final Path path,
             final Class&lt;A&gt; type,
             final LinkOption... options) throws IOException {
-<span class="fc bfc" id="L197" title="All 2 branches covered.">        if (type == BasicFileAttributes.class) {</span>
-<span class="fc" id="L198">            return (A) toJvfsPath(path).getAttributes();</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">        if (type == BasicFileAttributes.class) {</span>
+<span class="fc" id="L214">            return (A) toJvfsPath(path).getAttributes();</span>
         }
 
-<span class="fc" id="L201">        return null;</span>
+<span class="fc" id="L217">        return null;</span>
     }
 
     @Override
@@ -206,7 +222,7 @@ import java.util.concurrent.ExecutorService;
             final Path path,
             final String attributes,
             final LinkOption... options) throws IOException {
-<span class="nc" id="L209">        return toJvfsPath(path).readAttributes(attributes, options);</span>
+<span class="nc" id="L225">        return toJvfsPath(path).readAttributes(attributes, options);</span>
     }
 
     @Override
@@ -215,8 +231,8 @@ import java.util.concurrent.ExecutorService;
             final String attribute,
             final Object value,
             final LinkOption... options) throws IOException {
-<span class="nc" id="L218">        toJvfsPath(path).setAttribute(attribute, value, options);</span>
-<span class="nc" id="L219">    }</span>
+<span class="nc" id="L234">        toJvfsPath(path).setAttribute(attribute, value, options);</span>
+<span class="nc" id="L235">    }</span>
 
     /**
      * Casts given path to {@link JvfsPath}.
@@ -227,13 +243,13 @@ import java.util.concurrent.ExecutorService;
      * @return never {@literal null}
      */
     static JvfsPath toJvfsPath(final Path obj) {
-<span class="fc" id="L230">        JvfsAssertions.notNull(obj, &quot;obj&quot;);</span>
+<span class="fc" id="L246">        JvfsAssertions.notNull(obj, &quot;obj&quot;);</span>
 
-<span class="fc bfc" id="L232" title="All 2 branches covered.">        if (!(obj instanceof JvfsPath)) {</span>
-<span class="fc" id="L233">            throw new ProviderMismatchException(&quot;Given path not of type &quot; + JvfsPath.class.getSimpleName() + &quot;!&quot;);</span>
+<span class="fc bfc" id="L248" title="All 2 branches covered.">        if (!(obj instanceof JvfsPath)) {</span>
+<span class="fc" id="L249">            throw new ProviderMismatchException(&quot;Given path not of type &quot; + JvfsPath.class.getSimpleName() + &quot;!&quot;);</span>
         }
 
-<span class="fc" id="L236">        return (JvfsPath) obj;</span>
+<span class="fc" id="L252">        return (JvfsPath) obj;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

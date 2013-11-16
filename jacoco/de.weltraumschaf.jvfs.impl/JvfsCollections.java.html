@@ -6,6 +6,7 @@
 package de.weltraumschaf.jvfs.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,8 +29,8 @@ final class JvfsCollections {
      * Hidden for pure static factory.
      */
     private JvfsCollections() {
-<span class="fc" id="L31">        super();</span>
-<span class="fc" id="L32">        throw new UnsupportedOperationException(); // Avoid reflective instantiation.</span>
+<span class="fc" id="L32">        super();</span>
+<span class="fc" id="L33">        throw new UnsupportedOperationException(); // Avoid reflective instantiation.</span>
     }
 
     /**
@@ -38,8 +39,8 @@ final class JvfsCollections {
      * @param &lt;T&gt; type of list entries
      * @return never {@literal null}, always new instance
      */
-    public static &lt;T&gt; List&lt;T&gt; newArrayList() {
-<span class="fc" id="L42">        return newArrayList(DEFAULT_LIST_SIZE);</span>
+    static &lt;T&gt; List&lt;T&gt; newArrayList() {
+<span class="fc" id="L43">        return newArrayList(DEFAULT_LIST_SIZE);</span>
     }
 
     /**
@@ -49,9 +50,9 @@ final class JvfsCollections {
      * @param size must be non negative
      * @return never {@literal null}, always new instance
      */
-    public static &lt;T&gt; List&lt;T&gt; newArrayList(final int size) {
-<span class="fc" id="L53">        JvfsAssertions.greaterThan(size, -1, &quot;size&quot;);</span>
-<span class="fc" id="L54">        return new ArrayList&lt;T&gt;(size);</span>
+    static &lt;T&gt; List&lt;T&gt; newArrayList(final int size) {
+<span class="fc" id="L54">        JvfsAssertions.greaterThan(size, -1, &quot;size&quot;);</span>
+<span class="fc" id="L55">        return new ArrayList&lt;T&gt;(size);</span>
     }
 
     /**
@@ -61,9 +62,9 @@ final class JvfsCollections {
      * @param original must not be {@code null}
      * @return never {@code null}
      */
-    public static &lt;T&gt; List&lt;T&gt; newArrayList(final List&lt;T&gt; original) {
-<span class="fc" id="L65">        JvfsAssertions.notNull(original, &quot;original&quot;);</span>
-<span class="fc" id="L66">        return new ArrayList&lt;T&gt;(original);</span>
+    static &lt;T&gt; List&lt;T&gt; newArrayList(final List&lt;T&gt; original) {
+<span class="fc" id="L66">        JvfsAssertions.notNull(original, &quot;original&quot;);</span>
+<span class="fc" id="L67">        return new ArrayList&lt;T&gt;(original);</span>
     }
 
     /**
@@ -73,8 +74,8 @@ final class JvfsCollections {
      * @param &lt;V&gt; type of map values
      * @return never {@literal null}, always new instance
      */
-    public static &lt;K, V&gt; Map&lt;K, V&gt; newHashMap() {
-<span class="fc" id="L77">        return new HashMap&lt;K, V&gt;();</span>
+    static &lt;K, V&gt; Map&lt;K, V&gt; newHashMap() {
+<span class="fc" id="L78">        return new HashMap&lt;K, V&gt;();</span>
     }
 
     /**
@@ -83,8 +84,20 @@ final class JvfsCollections {
      * @param &lt;T&gt; type of set entries
      * @return never {@literal null}, always new instance
      */
-    public static &lt;T&gt; Set&lt;T&gt; newHashSet() {
-<span class="fc" id="L87">        return new HashSet&lt;T&gt;();</span>
+    static &lt;T&gt; Set&lt;T&gt; newHashSet() {
+<span class="fc" id="L88">        return new HashSet&lt;T&gt;();</span>
+    }
+
+    /**
+     * Converts given varargs into a list.
+     *
+     * @param &lt;T&gt; &lt;T&gt; type of set entries
+     * @param a variable arguments or array
+     * @return never {@code null}
+     */
+    @SafeVarargs
+    static &lt;T&gt; List&lt;T&gt; asList(T... a) {
+<span class="fc" id="L100">        return Arrays.asList(a);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

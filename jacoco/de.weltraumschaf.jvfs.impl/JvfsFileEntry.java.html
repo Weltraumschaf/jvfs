@@ -140,17 +140,17 @@ import java.io.IOException;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L143">        return path.hashCode();</span>
+<span class="fc" id="L143">        return path.hashCode();</span>
     }
 
     @Override
     public boolean equals(final Object obj) {
-<span class="nc bnc" id="L148" title="All 2 branches missed.">        if (!(obj instanceof JvfsFileEntry)) {</span>
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">        if (!(obj instanceof JvfsFileEntry)) {</span>
 <span class="nc" id="L149">            return false;</span>
         }
 
-<span class="nc" id="L152">        final JvfsFileEntry other = (JvfsFileEntry) obj;</span>
-<span class="nc" id="L153">        return path.equals(other.path);</span>
+<span class="fc" id="L152">        final JvfsFileEntry other = (JvfsFileEntry) obj;</span>
+<span class="fc" id="L153">        return path.equals(other.path);</span>
     }
 
     @Override
@@ -311,7 +311,8 @@ import java.io.IOException;
      * @return {@literal true} if it is an empty directory or file, else {@literal false}
      */
     boolean isEmpty() {
-<span class="nc" id="L314">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+        // TODO Implement is empty functionality.
+<span class="nc" id="L315">        return false;</span>
     }
 
     /**
@@ -320,7 +321,8 @@ import java.io.IOException;
      * @return {@literal true} if it is a symbolic link, else {@literal false}
      */
     boolean isSymbolicLink() {
-<span class="nc" id="L323">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+        // TODO Implement symbolic links.
+<span class="fc" id="L325">        return false;</span>
     }
 
     /**
@@ -329,13 +331,13 @@ import java.io.IOException;
      * @return -1 if it is a directory, else size
      */
     long size() {
-<span class="fc bfc" id="L332" title="All 2 branches covered.">        if (this.isDirectory()) {</span>
-<span class="fc" id="L333">            return -1L;</span>
+<span class="fc bfc" id="L334" title="All 2 branches covered.">        if (this.isDirectory()) {</span>
+<span class="fc" id="L335">            return -1L;</span>
         }
         try {
-<span class="fc" id="L336">            return content.size();</span>
-<span class="nc" id="L337">        } catch (IOException ex) {</span>
-<span class="nc" id="L338">            return -1L;</span>
+<span class="fc" id="L338">            return content.size();</span>
+<span class="nc" id="L339">        } catch (IOException ex) {</span>
+<span class="nc" id="L340">            return -1L;</span>
         }
     }
 
@@ -345,7 +347,7 @@ import java.io.IOException;
      * @return never {@literal null}
      */
     JvfsSeekableByteChannel getContent() {
-<span class="fc" id="L348">        return content;</span>
+<span class="fc" id="L350">        return content;</span>
     }
 
 }
