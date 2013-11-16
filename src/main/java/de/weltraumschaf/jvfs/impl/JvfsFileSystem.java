@@ -359,26 +359,16 @@ class JvfsFileSystem extends FileSystem {
 
         final JvfsFileEntry entry = get(path);
 
-        if (r) {
-            if (!entry.isReadable()) {
-                throw new AccessDeniedException(path);
-            }
+        if (r && !entry.isReadable()) {
+            throw new AccessDeniedException(path);
         }
 
-        if (w) {
-            if (isReadOnly()) {
-                throw new AccessDeniedException(path);
-            }
-
-            if (!entry.isWritable()) {
-                throw new AccessDeniedException(path);
-            }
+        if (w && (isReadOnly() || !entry.isWritable())) {
+            throw new AccessDeniedException(path);
         }
 
-        if (x) {
-            if (!entry.isExecutable()) {
-                throw new AccessDeniedException(path);
-            }
+        if (x && !entry.isExecutable()) {
+            throw new AccessDeniedException(path);
         }
     }
 
