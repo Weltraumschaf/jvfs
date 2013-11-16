@@ -3,7 +3,7 @@
 
     <groupId>de.weltraumschaf</groupId>
     <artifactId>jvfs</artifactId>
-    <version>0.1.0-alpha</version>
+    <version>0.1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>JVFS</name>
@@ -44,7 +44,7 @@
         <connection>scm:git:git://github.com/Weltraumschaf/jvfs</connection>
         <developerConnection>scm:git:git@github.com:Weltraumschaf/jvfs.git</developerConnection>
         <url>https://github.com/Weltraumschaf/jvfs.git</url>
-        <tag>0.1.0-alpha</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
