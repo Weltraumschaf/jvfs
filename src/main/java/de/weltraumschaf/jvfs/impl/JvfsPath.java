@@ -171,21 +171,23 @@ class JvfsPath implements Path {
     }
 
     /**
-     * Returns the number of occurrences of the specified character in the specified {@link String}, starting at the
+     * Returns the number of occurrences of the specified string in the specified {@link String}, starting at the
      * specified offset.
      *
      * @param string must not be {@code null}
-     * @param s
-     * @param offset
+     * @param searchedFor must not be {@code null}
+     * @param offset not negative
      * @return non negative number
      */
-    private int countOccurrences(final String string, final String s, int offset) {
-        assert string != null : "String must be specified";
+    private int countOccurrences(final String string, final String searchedFor, int offset) {
+        assert string != null : "string must be specified";
+        assert searchedFor != null : "searchedFor must be specified";
+        assert offset >= 0 : "offset must not be negative";
 
-        if ((offset = string.indexOf(s, offset)) == -1) {
+        if ((offset = string.indexOf(searchedFor, offset)) == -1) {
             return 0;
         } else {
-            return 1 + countOccurrences(string, s, offset + 1);
+            return 1 + countOccurrences(string, searchedFor, offset + 1);
         }
     }
 
@@ -529,21 +531,25 @@ class JvfsPath implements Path {
     /**
      * Relativizes the paths recursively.
      *
-     * @param thisOriginal
-     * @param thisCurrent
-     * @param otherOriginal
-     * @param otherCurrent
-     * @param backupCount
+     * @param thisOriginal must not be {@code null}
+     * @param thisCurrent must not be {@code null}
+     * @param otherOriginal must not be {@code null}
+     * @param otherCurrent must not be {@code null}
+     * @param backupCount must not be negative
      * @return never {@code null}
      */
-    private static JvfsPath relativizeCommonRoot(final JvfsPath thisOriginal, final Path thisCurrent,
-            final Path otherOriginal, Path otherCurrent, final int backupCount) {
+    private static JvfsPath relativizeCommonRoot(
+        final JvfsPath thisOriginal,
+        final Path thisCurrent,
+        final Path otherOriginal,
+        Path otherCurrent,
+        final int backupCount) {
         // Preconditions
-        assert thisOriginal != null;
-        assert thisCurrent != null;
-        assert otherOriginal != null;
-        assert otherCurrent != null;
-        assert backupCount >= 0;
+        assert thisOriginal != null : "thisOriginal must be defined";
+        assert thisCurrent != null : "thisCurrent must be defined";
+        assert otherOriginal != null : "otherOriginal must be defined";
+        assert otherCurrent != null : "otherCurrent must be defined";
+        assert backupCount >= 0 : "backupCount must not be negative";
 
         // Do we yet have a common root?
         if (!otherCurrent.startsWith(thisCurrent)) {
@@ -586,8 +592,8 @@ class JvfsPath implements Path {
     /**
      * Create new file channel.
      *
-     * @param options
-     * @param attrs
+     * @param options options specifying how the file is opened
+     * @param attrs an optional list of file attributes to set atomically when creating the file
      * @return never {@code null}
      * @throws IOException if path does not exist
      */
@@ -599,8 +605,8 @@ class JvfsPath implements Path {
     /**
      * Create new byte channel.
      *
-     * @param options
-     * @param attrs
+     * @param options options specifying how the file is opened
+     * @param attrs an optional list of file attributes to set atomically when creating the file
      * @return never {@code null}
      */
     SeekableByteChannel newByteChannel(final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) {
@@ -610,7 +616,7 @@ class JvfsPath implements Path {
     /**
      * Create new directory channel.
      *
-     * @param filter
+     * @param filter the directory stream filter
      * @return never {@code null}
      */
     DirectoryStream<Path> newDirectoryStream(final DirectoryStream.Filter<? super Path> filter) {
@@ -620,7 +626,7 @@ class JvfsPath implements Path {
     /**
      * Create directory.
      *
-     * @param attrs
+     * @param attrs an optional list of file attributes to set atomically when creating the directory
      * @throws IOException if path does not exist
      */
     void createDirectory(final FileAttribute<?>... attrs) throws IOException {
@@ -640,7 +646,7 @@ class JvfsPath implements Path {
      * Copy path.
      *
      * @param target must not be {@code null}
-     * @param options
+     * @param options options specifying how the copy should be done
      * @throws IOException if path does not exist
      */
     void copy(final JvfsPath target, final CopyOption... options) throws IOException {
@@ -652,7 +658,7 @@ class JvfsPath implements Path {
      * Move path.
      *
      * @param target must not be {@code null}
-     * @param options
+     * @param options options specifying how the move should be done
      * @throws IOException if path does not exist
      */
     void move(final JvfsPath target, final CopyOption... options) throws IOException {
@@ -660,22 +666,54 @@ class JvfsPath implements Path {
         jvfs.move(path, target.toString(), options);
     }
 
+    /**
+     * Tests if two paths locate the same file.
+     *
+     * @param other may be {@code null}
+     * @return {@code true} if {@link Object#equals(java.lang.Object) equal}, else {@code false}
+     */
     boolean isSameFile(final Path other) {
         return equals(other);
     }
 
+    /**
+     * Tells whether or not a file is considered <em>hidden</em>.
+     *
+     * @return {@code true} if the file is considered hidden
+     * @throws IOException if path does not exist
+     */
     boolean isHidden() throws IOException {
         return jvfs.isHidden(path);
     }
 
+    /**
+     * Get the file store.
+     *
+     * @return never {@code nul}
+     */
     FileStore getFileStore() {
         return jvfs.getFileStore();
     }
 
+    /**
+     * Checks the existence, and optionally the accessibility, of a file.
+     *
+     * @param modes The access modes to check; may have zero elements
+     * @throws IOException if path does not exist
+     */
     void checkAccess(final AccessMode... modes) throws IOException {
         jvfs.checkAccess(path, modes);
     }
 
+    /**
+     * Updates any or all of the file's last modified time, last access time,
+     * and create time attributes.
+     *
+     * @param mtime may be {@code null}, attribute is untouched if {@code null}
+     * @param atime may be {@code null}, attribute is untouched if {@code null}
+     * @param ctime may be {@code null}, attribute is untouched if {@code null}
+     * @throws IOException if path does not exist
+     */
     void setTimes(final FileTime mtime, final FileTime atime, final FileTime ctime) throws IOException {
         jvfs.setTimes(path, mtime, atime, ctime);
     }
