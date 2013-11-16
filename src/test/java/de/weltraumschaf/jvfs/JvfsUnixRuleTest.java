@@ -25,13 +25,17 @@ public class JvfsUnixRuleTest {
     @Test
     public void beforeAndAfter() throws Throwable {
         final JvfsUnixRuleStub sut = new JvfsUnixRuleStub();
-        assertThat(System.getProperty(JvfsFileSystems.IMPLEMENTATION_PROPERTY_NAME), is(equalTo("")));
+        assertThat(
+            System.getProperty(JvfsFileSystems.IMPLEMENTATION_PROPERTY_NAME),
+            is(anyOf(nullValue(), equalTo((Object) ""))));
         sut.before();
         assertThat(
                 System.getProperty(JvfsFileSystems.IMPLEMENTATION_PROPERTY_NAME),
                 is(equalTo(JvfsFileSystems.IMPLEMENTATION_CLASS_NAME)));
         sut.after();
-        assertThat(System.getProperty(JvfsFileSystems.IMPLEMENTATION_PROPERTY_NAME), is(equalTo("")));
+        assertThat(
+            System.getProperty(JvfsFileSystems.IMPLEMENTATION_PROPERTY_NAME),
+            is(anyOf(nullValue(), equalTo((Object) ""))));
     }
 
     /**
