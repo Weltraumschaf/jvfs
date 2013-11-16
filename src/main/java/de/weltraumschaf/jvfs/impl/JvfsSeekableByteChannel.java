@@ -79,6 +79,7 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
 
     @Override
     public void close() throws IOException {
+        // XXX: Consider if necessary.
         this.open = false;
     }
 
@@ -87,6 +88,8 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
 
         // Precondition checks
         this.checkClosed();
+//        position(0); // XXX Consider not reusing channel and return always new channelswith position 0.
+
         if (destination == null) {
             throw new IllegalArgumentException("Destination buffer must be supplied");
         }
@@ -124,6 +127,8 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
 
         // Precondition checks
         this.checkClosed();
+//        position(0); // XXX Consider not reusing channel and return always new channelswith position 0.
+
         if (source == null) {
             throw new IllegalArgumentException("Source buffer must be supplied");
         }
