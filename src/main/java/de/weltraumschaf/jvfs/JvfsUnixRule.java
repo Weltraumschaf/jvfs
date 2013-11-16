@@ -18,13 +18,14 @@ import org.junit.rules.ExternalResource;
  *
  * <pre>
  * public static class HasUnixJvfs {
- * 	&#064;Rule
- * 	public JvfsUnixRule folder= new JvfsUnixRule();
+ *      &#064;Rule
+ *      public JvfsUnixRule folder= new JvfsUnixRule();
  *
- * 	&#064;Test
- * 	public void testSomething() throws IOException {
- * 		// Nothing special to do here.
- * 	}
+ *      &#064;Test
+ *      public void testSomething() throws IOException {
+ *          // Nothing special to do here.
+ *      }
+ *
  * }
  * </pre>
  *
