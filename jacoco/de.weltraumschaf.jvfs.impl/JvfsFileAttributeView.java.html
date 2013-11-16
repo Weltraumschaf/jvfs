@@ -20,45 +20,73 @@ import java.nio.file.attribute.FileTime;
 import java.util.Map;
 
 /**
+ * Implementation of a basic file attributes view.
  *
  * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
  */
-<span class="pc bpc" id="L26" title="1 of 2 branches missed.">final class JvfsFileAttributeView implements BasicFileAttributeView {</span>
+<span class="pc bpc" id="L27" title="1 of 2 branches missed.">final class JvfsFileAttributeView implements BasicFileAttributeView {</span>
 
+    /**
+     * To get attributes from.
+     */
     private final JvfsPath path;
 
+    /**
+     * Dedicated constructor.
+     *
+     * @param path must not be {@code null}
+     */
     JvfsFileAttributeView(final JvfsPath path) {
-<span class="fc" id="L31">        super();</span>
-<span class="pc bpc" id="L32" title="2 of 4 branches missed.">        assert path != null : &quot;path must be specified&quot;;</span>
-<span class="fc" id="L33">        this.path = path;</span>
-<span class="fc" id="L34">    }</span>
+<span class="fc" id="L40">        super();</span>
+<span class="pc bpc" id="L41" title="2 of 4 branches missed.">        assert path != null : &quot;path must be specified&quot;;</span>
+<span class="fc" id="L42">        this.path = path;</span>
+<span class="fc" id="L43">    }</span>
 
     @Override
     public String name() {
-<span class="nc" id="L38">        return JvfsFileSystem.FILE_ATTR_VIEW_BASIC;</span>
+<span class="fc" id="L47">        return JvfsFileSystem.FILE_ATTR_VIEW_BASIC;</span>
     }
 
     @Override
     public BasicFileAttributes readAttributes() throws IOException {
-<span class="nc" id="L43">        return path.getAttributes();</span>
+<span class="fc" id="L52">        return path.getAttributes();</span>
     }
 
     @Override
     public void setTimes(final FileTime lastModifiedTime, final FileTime lastAccessTime, final FileTime createTime)
         throws IOException {
-<span class="nc" id="L49">        path.setTimes(lastModifiedTime, lastAccessTime, createTime);</span>
-<span class="nc" id="L50">    }</span>
+<span class="fc" id="L58">        path.setTimes(lastModifiedTime, lastAccessTime, createTime);</span>
+<span class="fc" id="L59">    }</span>
 
+    /**
+     * Sets the value of a file attribute.
+     *
+     * @param attribute must not be {@code nul} or empty
+     * @param value must not be {@code nul} or empty
+     */
     void setAttribute(final String attribute, final Object value) {
-<span class="nc" id="L53">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+<span class="nc" id="L68">        JvfsAssertions.notEmpty(attribute, &quot;attribute&quot;);</span>
+<span class="nc" id="L69">        JvfsAssertions.notNull(value, &quot;value&quot;);</span>
+<span class="nc" id="L70">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
     }
 
+    /**
+     * Reads a set of file attributes as a bulk operation.
+     *
+     * @param attributes must not be {@code nul} or empty
+     * @return may be {@code null}
+     */
     Map&lt;String, Object&gt; readAttributes(String attributes) {
-<span class="nc" id="L57">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+<span class="nc" id="L80">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
     }
 
+    /**
+     * Get the path from which the attributes are viewed.
+     *
+     * @return never {@code null}
+     */
     Path getPath() {
-<span class="fc" id="L61">        return path;</span>
+<span class="fc" id="L89">        return path;</span>
     }
 
 }

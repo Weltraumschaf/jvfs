@@ -25,6 +25,10 @@ final class JvfsAssertions {
      */
     private static final String NOT_NULL_MESSAGE = &quot;Parameter '%s' must not be null!&quot;;
     /**
+     * Format string of error message for {@link #notEmpty(java.lang.Object, java.lang.String)}.
+     */
+    private static final String NOT_EMPTY_MESSAGE = &quot;Parameter '%s' must not be empty!&quot;;
+    /**
      * Format string of error message for {@link #lessThan(int, int, java.lang.String)}.
      */
     private static final String LESS_THAN_MESSAGE = &quot;Paramater '%s' must be less than '%d'!&quot;;
@@ -50,8 +54,8 @@ final class JvfsAssertions {
      * Hidden for pure static class.
      */
     private JvfsAssertions() {
-<span class="fc" id="L53">        super();</span>
-<span class="fc" id="L54">        throw new UnsupportedOperationException(); // Avoid reflective instantiation.</span>
+<span class="fc" id="L57">        super();</span>
+<span class="fc" id="L58">        throw new UnsupportedOperationException(); // Avoid reflective instantiation.</span>
     }
 
     /**
@@ -63,81 +67,171 @@ final class JvfsAssertions {
      * @param name may be {@code null}
      */
     private static void validateName(final String name) {
-<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (null == name) {</span>
-<span class="fc" id="L67">            throw new NullPointerException(&quot;Argument name must not be null!&quot;);</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (null == name) {</span>
+<span class="fc" id="L71">            throw new NullPointerException(&quot;Argument name must not be null!&quot;);</span>
         }
 
-<span class="fc bfc" id="L70" title="All 2 branches covered.">        if (name.isEmpty()) {</span>
-<span class="fc" id="L71">            throw new IllegalArgumentException(&quot;Argument name must not be empty!&quot;);</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (name.isEmpty()) {</span>
+<span class="fc" id="L75">            throw new IllegalArgumentException(&quot;Argument name must not be empty!&quot;);</span>
         }
-<span class="fc" id="L73">    }</span>
+<span class="fc" id="L77">    }</span>
+
     /**
      * Asserts that given object is not {@literal null}.
      *
-     * Throws{@link NullPointerException} if given object is {@literal nul}.
+     * Throws {@link NullPointerException} if given object is {@literal null}.
      *
      * @param o checked if {@literal null}
      * @param name name of checked parameter for error message
      */
     static void notNull(final Object o, final String name) {
-<span class="fc" id="L83">        validateName(name);</span>
+<span class="fc" id="L88">        validateName(name);</span>
 
-<span class="fc bfc" id="L85" title="All 2 branches covered.">        if (null == o) {</span>
-<span class="fc" id="L86">            throw new NullPointerException(String.format(NOT_NULL_MESSAGE, name));</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (null == o) {</span>
+<span class="fc" id="L91">            throw new NullPointerException(String.format(NOT_NULL_MESSAGE, name));</span>
         }
-<span class="fc" id="L88">    }</span>
+<span class="fc" id="L93">    }</span>
 
+    /**
+     * Asserts that given string is not {@literal null} or empty.
+     *
+     * Throws {@link NullPointerException} if given String is {@literal null}.
+     * Throws {@link IllegalArgumentException} if given string is empty.
+     *
+     * @param o checked if {@literal null} or empty
+     * @param name name of checked parameter for error message
+     */
+    static void notEmpty(final String o, final String name) {
+<span class="nc" id="L105">        validateName(name);</span>
+<span class="nc" id="L106">        notNull(o, name);</span>
+
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (o.isEmpty()) {</span>
+<span class="nc" id="L109">            throw new IllegalArgumentException(String.format(NOT_EMPTY_MESSAGE, name));</span>
+        }
+<span class="nc" id="L111">    }</span>
+
+    /**
+     * Asserts that checked value is less than the reference.
+     *
+     * Throws {@link IllegalArgumentException} if checked value is not less than reference.
+     *
+     * @param checked value to check
+     * @param reference reference to check against
+     * @param name name of checked parameter for error message
+     */
     static void lessThan(final int checked, final int reference, final String name) {
-<span class="fc" id="L91">        validateName(name);</span>
+<span class="fc" id="L123">        validateName(name);</span>
 
-<span class="fc bfc" id="L93" title="All 2 branches covered.">        if (checked &gt;= reference) {</span>
-<span class="fc" id="L94">            throw new IllegalArgumentException(String.format(LESS_THAN_MESSAGE, name, reference));</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        if (checked &gt;= reference) {</span>
+<span class="fc" id="L126">            throw new IllegalArgumentException(String.format(LESS_THAN_MESSAGE, name, reference));</span>
         }
-<span class="fc" id="L96">    }</span>
+<span class="fc" id="L128">    }</span>
 
+    /**
+     * Asserts that checked value is less than or equal the reference.
+     *
+     * Throws {@link IllegalArgumentException} if checked value is not less than or equal reference.
+     *
+     * @param checked value to check
+     * @param reference reference to check against
+     * @param name name of checked parameter for error message
+     */
     static void lessThanEqual(int checked, int reference, String name) {
-<span class="fc" id="L99">        validateName(name);</span>
+<span class="fc" id="L140">        validateName(name);</span>
 
-<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (checked &gt; reference) {</span>
-<span class="fc" id="L102">            throw new IllegalArgumentException(String.format(LESS_THAN_EQUAL_MESSAGE, name, reference));</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (checked &gt; reference) {</span>
+<span class="fc" id="L143">            throw new IllegalArgumentException(String.format(LESS_THAN_EQUAL_MESSAGE, name, reference));</span>
         }
-<span class="fc" id="L104">    }</span>
+<span class="fc" id="L145">    }</span>
 
+    /**
+     * Asserts that checked value is greater than the reference.
+     *
+     * Throws {@link IllegalArgumentException} if checked value is not greater than reference.
+     *
+     * @param checked value to check
+     * @param reference reference to check against
+     * @param name name of checked parameter for error message
+     */
     static void greaterThan(final int checked, final int reference, final String name) {
-<span class="fc" id="L107">        validateName(name);</span>
+<span class="fc" id="L157">        validateName(name);</span>
 
-<span class="fc bfc" id="L109" title="All 2 branches covered.">        if (checked &lt;= reference) {</span>
-<span class="fc" id="L110">            throw new IllegalArgumentException(String.format(GREATER_THAN_MESSAGE, name, reference));</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        if (checked &lt;= reference) {</span>
+<span class="fc" id="L160">            throw new IllegalArgumentException(String.format(GREATER_THAN_MESSAGE, name, reference));</span>
         }
-<span class="fc" id="L112">    }</span>
+<span class="fc" id="L162">    }</span>
 
+    /**
+     * Asserts that checked value is greater than or equal the reference.
+     *
+     * Throws {@link IllegalArgumentException} if checked value is not greater than or equal reference.
+     *
+     * @param checked value to check
+     * @param reference reference to check against
+     * @param name name of checked parameter for error message
+     */
     static void greaterThanEqual(final int checked, final int reference, final String name) {
-<span class="fc" id="L115">        validateName(name);</span>
-<span class="fc" id="L116">        greaterThanEqual((long) checked, (long) reference, name);</span>
-<span class="fc" id="L117">    }</span>
+<span class="fc" id="L174">        validateName(name);</span>
+<span class="fc" id="L175">        greaterThanEqual((long) checked, (long) reference, name);</span>
+<span class="fc" id="L176">    }</span>
 
+    /**
+     * Asserts that checked value is greater than or equal the reference.
+     *
+     * Throws {@link IllegalArgumentException} if checked value is not greater than or equal reference.
+     *
+     * @param checked value to check
+     * @param reference reference to check against
+     * @param name name of checked parameter for error message
+     */
     static void greaterThanEqual(final long checked, final long reference, final String name) {
-<span class="fc" id="L120">        validateName(name);</span>
+<span class="fc" id="L188">        validateName(name);</span>
 
-<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (checked &lt; reference) {</span>
-<span class="fc" id="L123">            throw new IllegalArgumentException(String.format(GREATER_THAN_EQUAL_MESSAGE, name, reference));</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">        if (checked &lt; reference) {</span>
+<span class="fc" id="L191">            throw new IllegalArgumentException(String.format(GREATER_THAN_EQUAL_MESSAGE, name, reference));</span>
         }
-<span class="fc" id="L125">    }</span>
+<span class="fc" id="L193">    }</span>
 
+    /**
+     * Asserts that two objects are equal.
+     *
+     * Throws {@link IllegalArgumentException} if checked actual value is not
+     * {@link Object#equals(java.lang.Object) equal} to expected.
+     *
+     * @param actual object to be checked
+     * @param expected object to be checked should be equal
+     * @param name name of checked parameter for error message
+     */
     static void isEqual(final Object actual, final Object expected, final String name) {
-<span class="fc" id="L128">        validateName(name);</span>
+<span class="fc" id="L206">        validateName(name);</span>
 
-<span class="fc bfc" id="L130" title="All 2 branches covered.">        if (notEqual(actual, expected)) {</span>
-<span class="fc" id="L131">            throw new IllegalArgumentException(String.format(EQUAL_MESSAGE, name, expected));</span>
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        if (notEqual(actual, expected)) {</span>
+<span class="fc" id="L209">            throw new IllegalArgumentException(String.format(EQUAL_MESSAGE, name, expected));</span>
         }
-<span class="fc" id="L133">    }</span>
+<span class="fc" id="L211">    }</span>
 
+    /**
+     * Determines if two objects are {@link Object#equals(java.lang.Object) equal} with
+     * respect of {@code null} values.
+     *
+     * @param a may be {@code null}
+     * @param b may be {@code null}
+     * @return {@code true} if a and b are equal, else {@code false}
+     */
     static boolean equal(final Object a, final Object b) {
-<span class="pc bpc" id="L136" title="1 of 6 branches missed.">        return a == b || (a != null &amp;&amp; a.equals(b));</span>
+<span class="pc bpc" id="L222" title="1 of 6 branches missed.">        return a == b || a != null &amp;&amp; a.equals(b);</span>
     }
 
+    /**
+     * Determines if two objects are not {@link Object#equals(java.lang.Object) equal} with
+     * respect of {@code null} values.
+     *
+     * @param a may be {@code null}
+     * @param b may be {@code null}
+     * @return {@code true} if a and b are not equal, else {@code false}
+     */
     static boolean notEqual(final Object a, final Object b) {
-<span class="fc bfc" id="L140" title="All 2 branches covered.">        return !equal(a, b);</span>
+<span class="fc bfc" id="L234" title="All 2 branches covered.">        return !equal(a, b);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

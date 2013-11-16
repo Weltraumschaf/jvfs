@@ -19,7 +19,15 @@ import java.util.Arrays;
  *
  * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
  */
-<span class="nc" id="L22">public class JvfsObject {</span>
+final class JvfsObject {
+
+    /**
+     * Hidden for pure static class.
+     */
+    private JvfsObject() {
+<span class="nc" id="L28">        super();</span>
+<span class="nc" id="L29">        throw new UnsupportedOperationException();</span>
+    }
 
     /**
      * Handy method to calculate hash code.
@@ -28,8 +36,8 @@ import java.util.Arrays;
      * @return any number
      */
     public static int hashCode(final Object ... objects) {
-<span class="nc" id="L31">        JvfsAssertions.notNull(objects, &quot;objects&quot;);</span>
-<span class="nc" id="L32">        return Arrays.hashCode(objects);</span>
+<span class="nc" id="L39">        JvfsAssertions.notNull(objects, &quot;objects&quot;);</span>
+<span class="nc" id="L40">        return Arrays.hashCode(objects);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

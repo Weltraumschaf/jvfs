@@ -197,210 +197,327 @@ import java.util.concurrent.TimeUnit;
         }
 <span class="nc" id="L198">    }</span>
 
+    /**
+     * Throws {@link NoSuchFileException} if file does not exist.
+     *
+     * @param path must not be {@code null} or empty
+     * @throws NoSuchFileException if file does not exists
+     */
     private void assertFileExists(final String path) throws NoSuchFileException {
-<span class="nc bnc" id="L201" title="All 2 branches missed.">        if (!contains(path)) {</span>
-<span class="nc" id="L202">            throw new NoSuchFileException(path);</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">        if (!contains(path)) {</span>
+<span class="nc" id="L208">            throw new NoSuchFileException(path);</span>
         }
-<span class="nc" id="L204">    }</span>
+<span class="nc" id="L210">    }</span>
 
+    /**
+     * Get a file entry.
+     *
+     * @param path must not be {@code null} or empty
+     * @return may be {@code null} if not exists
+     */
     JvfsFileEntry get(final String path) {
-<span class="nc" id="L207">        checkClosed();</span>
-<span class="nc" id="L208">        return attic.get(path);</span>
+<span class="nc" id="L219">        JvfsAssertions.notEmpty(path, &quot;path&quot;);</span>
+<span class="nc" id="L220">        checkClosed();</span>
+<span class="nc" id="L221">        return attic.get(path);</span>
     }
 
+    /**
+     * Add a file entry.
+     *
+     * @param entry must not be {@code null}
+     */
     void add(final JvfsFileEntry entry) {
+<span class="nc" id="L230">        JvfsAssertions.notNull(entry, &quot;entry&quot;);</span>
         // TODO Check parent direcotries.
-<span class="nc" id="L213">        attic.put(entry.getPath(), entry);</span>
-<span class="nc" id="L214">    }</span>
+<span class="nc" id="L232">        attic.put(entry.getPath(), entry);</span>
+<span class="nc" id="L233">    }</span>
 
+    /**
+     * Whether the file system contains a file entry.
+     *
+     * @param path must not be {@code null} or empty
+     * @return {@code true} if entry exists, else {@code false}
+     */
     boolean contains(final String path) {
-<span class="nc" id="L217">        checkClosed();</span>
-<span class="nc" id="L218">        return attic.containsKey(path);</span>
+<span class="nc" id="L242">        JvfsAssertions.notEmpty(path, &quot;path&quot;);</span>
+<span class="nc" id="L243">        checkClosed();</span>
+<span class="nc" id="L244">        return attic.containsKey(path);</span>
     }
 
-    FileChannel newFileChannel(final String path, final Set&lt;? extends OpenOption&gt; options, final FileAttribute&lt;?&gt;... attrs) throws IOException {
-<span class="nc" id="L222">        checkClosed();</span>
-<span class="nc bnc" id="L223" title="All 4 branches missed.">        final boolean forWrite = (options.contains(StandardOpenOption.WRITE) || options.contains(StandardOpenOption.APPEND));</span>
+    /**
+     * Create new file channel.
+     *
+     * @param path must not be {@code null} or empty
+     * @param options
+     * @param attrs
+     * @return
+     * @throws IOException
+     */
+    FileChannel newFileChannel(
+        final String path,
+        final Set&lt;? extends OpenOption&gt; options,
+        final FileAttribute&lt;?&gt;... attrs) throws IOException {
+<span class="nc" id="L260">        JvfsAssertions.notEmpty(path, &quot;path&quot;);</span>
+<span class="nc" id="L261">        checkClosed();</span>
+<span class="nc bnc" id="L262" title="All 4 branches missed.">        final boolean forWrite = options.contains(StandardOpenOption.WRITE)</span>
+            || options.contains(StandardOpenOption.APPEND);
 
-<span class="nc bnc" id="L225" title="All 2 branches missed.">        if (forWrite) {</span>
-<span class="nc bnc" id="L226" title="All 2 branches missed.">            if (isReadOnly()) {</span>
-<span class="nc" id="L227">                throw new ReadOnlyFileSystemException();</span>
+<span class="nc bnc" id="L265" title="All 2 branches missed.">        if (forWrite) {</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">            if (isReadOnly()) {</span>
+<span class="nc" id="L267">                throw new ReadOnlyFileSystemException();</span>
             }
 
-<span class="nc bnc" id="L230" title="All 2 branches missed.">            if (contains(path)) {</span>
-<span class="nc bnc" id="L231" title="All 2 branches missed.">                if (options.contains(StandardOpenOption.CREATE_NEW)) {</span>
-<span class="nc" id="L232">                    throw new FileAlreadyExistsException(path);</span>
+<span class="nc bnc" id="L270" title="All 2 branches missed.">            if (contains(path)) {</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">                if (options.contains(StandardOpenOption.CREATE_NEW)) {</span>
+<span class="nc" id="L272">                    throw new FileAlreadyExistsException(path);</span>
                 }
 
-<span class="nc bnc" id="L235" title="All 2 branches missed.">                if (get(path).isDirectory()) {</span>
-<span class="nc" id="L236">                    throw new FileAlreadyExistsException(&quot;directory &lt;&quot; + path + &quot;&gt; exists&quot;);</span>
+<span class="nc bnc" id="L275" title="All 2 branches missed.">                if (get(path).isDirectory()) {</span>
+<span class="nc" id="L276">                    throw new FileAlreadyExistsException(&quot;directory &lt;&quot; + path + &quot;&gt; exists&quot;);</span>
                 }
             } else {
-<span class="nc bnc" id="L239" title="All 2 branches missed.">                if (!options.contains(StandardOpenOption.CREATE_NEW)) {</span>
-<span class="nc" id="L240">                    throw new NoSuchFileException(path);</span>
+<span class="nc bnc" id="L279" title="All 2 branches missed.">                if (!options.contains(StandardOpenOption.CREATE_NEW)) {</span>
+<span class="nc" id="L280">                    throw new NoSuchFileException(path);</span>
                 }
             }
         } else {
-<span class="nc bnc" id="L244" title="All 2 branches missed.">            if (contains(path)) {</span>
-<span class="nc bnc" id="L245" title="All 2 branches missed.">                if (get(path).isDirectory()) {</span>
-<span class="nc" id="L246">                    throw new NoSuchFileException(path);</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">            if (contains(path)) {</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">                if (get(path).isDirectory()) {</span>
+<span class="nc" id="L286">                    throw new NoSuchFileException(path);</span>
                 }
             } else {
-<span class="nc" id="L249">                throw new NoSuchFileException(path);</span>
+<span class="nc" id="L289">                throw new NoSuchFileException(path);</span>
             }
         }
 
         final JvfsFileEntry entry;
 
-<span class="nc bnc" id="L255" title="All 2 branches missed.">        if (contains(path)) {</span>
-<span class="nc" id="L256">            entry = get(path);</span>
+<span class="nc bnc" id="L295" title="All 2 branches missed.">        if (contains(path)) {</span>
+<span class="nc" id="L296">            entry = get(path);</span>
         } else {
-<span class="nc" id="L258">            entry = JvfsFileEntry.newFile(path);</span>
+<span class="nc" id="L298">            entry = JvfsFileEntry.newFile(path);</span>
 //            add(entry);
         }
 
-<span class="nc" id="L262">        return new JvfsFileChannel(entry.getContent());</span>
+<span class="nc" id="L302">        return new JvfsFileChannel(entry.getContent());</span>
     }
 
+    /**
+     * Create a new byte channel.
+     *
+     * @param path must not be {@code null} or empty
+     * @param options
+     * @param attrs
+     * @return never {@code null}
+     */
     SeekableByteChannel newByteChannel(final String path, final Set&lt;? extends OpenOption&gt; options, final FileAttribute&lt;?&gt;... attrs) {
-<span class="nc" id="L266">        checkClosed();</span>
+<span class="nc" id="L314">        checkClosed();</span>
         final JvfsFileEntry entry;
 
-<span class="nc bnc" id="L269" title="All 2 branches missed.">        if (contains(path)) {</span>
-<span class="nc" id="L270">            entry = get(path);</span>
+<span class="nc bnc" id="L317" title="All 2 branches missed.">        if (contains(path)) {</span>
+<span class="nc" id="L318">            entry = get(path);</span>
         } else {
-<span class="nc" id="L272">            entry = JvfsFileEntry.newFile(path);</span>
-<span class="nc" id="L273">            add(entry);</span>
+<span class="nc" id="L320">            entry = JvfsFileEntry.newFile(path);</span>
+<span class="nc" id="L321">            add(entry);</span>
         }
 
-<span class="nc" id="L276">        return entry.getContent();</span>
+<span class="nc" id="L324">        return entry.getContent();</span>
     }
 
-    void checkAccess(final String pathname, final AccessMode... modes) throws IOException {
-<span class="nc" id="L280">        checkClosed();</span>
-<span class="nc" id="L281">        assertFileExists(pathname);</span>
+    /**
+     * check file permissions.
+     *
+     * @param path must not be {@code null} or empty
+     * @param modes
+     * @throws IOException if path does not exist
+     */
+    void checkAccess(final String path, final AccessMode... modes) throws IOException {
+<span class="nc" id="L335">        checkClosed();</span>
+<span class="nc" id="L336">        assertFileExists(path);</span>
 
-<span class="nc" id="L283">        boolean r = false;</span>
-<span class="nc" id="L284">        boolean w = false;</span>
-<span class="nc" id="L285">        boolean x = false;</span>
+<span class="nc" id="L338">        boolean r = false;</span>
+<span class="nc" id="L339">        boolean w = false;</span>
+<span class="nc" id="L340">        boolean x = false;</span>
 
-<span class="nc bnc" id="L287" title="All 2 branches missed.">        for (AccessMode mode : modes) {</span>
-<span class="nc bnc" id="L288" title="All 4 branches missed.">            switch (mode) {</span>
+<span class="nc bnc" id="L342" title="All 2 branches missed.">        for (AccessMode mode : modes) {</span>
+<span class="nc bnc" id="L343" title="All 4 branches missed.">            switch (mode) {</span>
                 case READ:
-<span class="nc" id="L290">                    r = true;</span>
-<span class="nc" id="L291">                    break;</span>
+<span class="nc" id="L345">                    r = true;</span>
+<span class="nc" id="L346">                    break;</span>
                 case WRITE:
-<span class="nc" id="L293">                    w = true;</span>
-<span class="nc" id="L294">                    break;</span>
+<span class="nc" id="L348">                    w = true;</span>
+<span class="nc" id="L349">                    break;</span>
                 case EXECUTE:
-<span class="nc" id="L296">                    x = true;</span>
-<span class="nc" id="L297">                    break;</span>
+<span class="nc" id="L351">                    x = true;</span>
+<span class="nc" id="L352">                    break;</span>
                 default:
-<span class="nc" id="L299">                    throw new UnsupportedOperationException();</span>
+<span class="nc" id="L354">                    throw new UnsupportedOperationException();</span>
             }
         }
 
-<span class="nc" id="L303">        final JvfsFileEntry entry = get(pathname);</span>
+<span class="nc" id="L358">        final JvfsFileEntry entry = get(path);</span>
 
-<span class="nc bnc" id="L305" title="All 2 branches missed.">        if (r) {</span>
-<span class="nc bnc" id="L306" title="All 2 branches missed.">            if (!entry.isReadable()) {</span>
-<span class="nc" id="L307">                throw new AccessDeniedException(pathname);</span>
+<span class="nc bnc" id="L360" title="All 2 branches missed.">        if (r) {</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">            if (!entry.isReadable()) {</span>
+<span class="nc" id="L362">                throw new AccessDeniedException(path);</span>
             }
         }
 
-<span class="nc bnc" id="L311" title="All 2 branches missed.">        if (w) {</span>
-<span class="nc bnc" id="L312" title="All 2 branches missed.">            if (isReadOnly()) {</span>
-<span class="nc" id="L313">                throw new AccessDeniedException(pathname);</span>
+<span class="nc bnc" id="L366" title="All 2 branches missed.">        if (w) {</span>
+<span class="nc bnc" id="L367" title="All 2 branches missed.">            if (isReadOnly()) {</span>
+<span class="nc" id="L368">                throw new AccessDeniedException(path);</span>
             }
 
-<span class="nc bnc" id="L316" title="All 2 branches missed.">            if (!entry.isWritable()) {</span>
-<span class="nc" id="L317">                throw new AccessDeniedException(pathname);</span>
+<span class="nc bnc" id="L371" title="All 2 branches missed.">            if (!entry.isWritable()) {</span>
+<span class="nc" id="L372">                throw new AccessDeniedException(path);</span>
             }
         }
 
-<span class="nc bnc" id="L321" title="All 2 branches missed.">        if (x) {</span>
-<span class="nc bnc" id="L322" title="All 2 branches missed.">            if (!entry.isExecutable()) {</span>
-<span class="nc" id="L323">                throw new AccessDeniedException(pathname);</span>
+<span class="nc bnc" id="L376" title="All 2 branches missed.">        if (x) {</span>
+<span class="nc bnc" id="L377" title="All 2 branches missed.">            if (!entry.isExecutable()) {</span>
+<span class="nc" id="L378">                throw new AccessDeniedException(path);</span>
             }
         }
-<span class="nc" id="L326">    }</span>
-
-    void createDirectory(final String path, final FileAttribute&lt;?&gt;... attrs) throws IOException {
-<span class="nc" id="L329">        checkClosed();</span>
-<span class="nc" id="L330">        assertFileExists(path);</span>
-<span class="nc" id="L331">        final List&lt;String&gt; names = JvfsPathUtil.tokenize(path);</span>
-<span class="nc" id="L332">        names.remove(names.size() - 1);</span>
-<span class="nc" id="L333">        final StringBuilder buf = new StringBuilder();</span>
-
-<span class="nc bnc" id="L335" title="All 2 branches missed.">        for (final String name : names) {</span>
-<span class="nc" id="L336">            buf.append(JvfsFileSystems.DIR_SEP).append(name);</span>
-
-<span class="nc bnc" id="L338" title="All 2 branches missed.">            if (!contains(buf.toString())) {</span>
-<span class="nc" id="L339">                final JvfsFileEntry directory = JvfsFileEntry.newDir(buf.toString());</span>
-<span class="nc" id="L340">                add(directory);</span>
-            }
-<span class="nc" id="L342">        }</span>
-<span class="nc" id="L343">    }</span>
-
-    void delete(final String path) throws IOException {
-<span class="nc" id="L346">        checkClosed();</span>
-<span class="nc" id="L347">        assertFileExists(path);</span>
-<span class="nc" id="L348">        final JvfsFileEntry entry = get(path);</span>
-
-<span class="nc bnc" id="L350" title="All 4 branches missed.">        if (entry.isDirectory() &amp;&amp; entry.isEmpty()) {</span>
-<span class="nc" id="L351">            throw new DirectoryNotEmptyException(path);</span>
-        }
-
-<span class="nc" id="L354">        attic.remove(path);</span>
-<span class="nc" id="L355">    }</span>
-
-    JvfsFileAttributes getFileAttributes(final String path) throws IOException {
-<span class="nc" id="L358">        checkClosed();</span>
-<span class="nc" id="L359">        assertFileExists(path);</span>
-<span class="nc" id="L360">        return new JvfsFileAttributes(get(path));</span>
-    }
-
-    void setTimes(final String path, final FileTime mtime, final FileTime atime, final FileTime ctime) throws IOException {
-<span class="nc" id="L364">        checkClosed();</span>
-<span class="nc" id="L365">        assertFileExists(path);</span>
-<span class="nc" id="L366">        final JvfsFileEntry entry = get(path);</span>
-<span class="nc" id="L367">        entry.setLastModifiedTime(mtime.to(TimeUnit.SECONDS));</span>
-<span class="nc" id="L368">        entry.setLastAccessTime(atime.to(TimeUnit.SECONDS));</span>
-<span class="nc" id="L369">        entry.setCreationTime(ctime.to(TimeUnit.SECONDS));</span>
-<span class="nc" id="L370">    }</span>
-
-    void copy(final String path, final String target, final CopyOption... options) throws IOException {
-<span class="nc" id="L373">        checkClosed();</span>
-<span class="nc" id="L374">        assertFileExists(path);</span>
-
-<span class="nc bnc" id="L376" title="All 2 branches missed.">        if (contains(target)) {</span>
-<span class="nc" id="L377">            throw new FileAlreadyExistsException(target);</span>
-        }
-
-<span class="nc" id="L380">        add(get(path).copy());</span>
 <span class="nc" id="L381">    }</span>
 
-    void move(final String path, final String target, final CopyOption... options) throws IOException {
-<span class="nc" id="L384">        checkClosed();</span>
-<span class="nc" id="L385">        assertFileExists(path);</span>
+    /**
+     * Create a directory.
+     *
+     * @param path must not be {@code null} or empty
+     * @param attrs
+     * @throws IOException if path does not exist
+     */
+    void createDirectory(final String path, final FileAttribute&lt;?&gt;... attrs) throws IOException {
+<span class="nc" id="L391">        checkClosed();</span>
+<span class="nc" id="L392">        assertFileExists(path);</span>
+<span class="nc" id="L393">        final List&lt;String&gt; names = JvfsPathUtil.tokenize(path);</span>
+<span class="nc" id="L394">        names.remove(names.size() - 1);</span>
+<span class="nc" id="L395">        final StringBuilder buf = new StringBuilder();</span>
 
-<span class="nc bnc" id="L387" title="All 2 branches missed.">        if (contains(target)) {</span>
-<span class="nc" id="L388">            throw new FileAlreadyExistsException(target);</span>
+<span class="nc bnc" id="L397" title="All 2 branches missed.">        for (final String name : names) {</span>
+<span class="nc" id="L398">            buf.append(JvfsFileSystems.DIR_SEP).append(name);</span>
+
+<span class="nc bnc" id="L400" title="All 2 branches missed.">            if (!contains(buf.toString())) {</span>
+<span class="nc" id="L401">                final JvfsFileEntry directory = JvfsFileEntry.newDir(buf.toString());</span>
+<span class="nc" id="L402">                add(directory);</span>
+            }
+<span class="nc" id="L404">        }</span>
+<span class="nc" id="L405">    }</span>
+
+    /**
+     * Deletes a file.
+     *
+     * @param path must not be {@code null} or empty
+     * @throws IOException if path does not exist
+     */
+    void delete(final String path) throws IOException {
+<span class="nc" id="L414">        checkClosed();</span>
+<span class="nc" id="L415">        assertFileExists(path);</span>
+<span class="nc" id="L416">        final JvfsFileEntry entry = get(path);</span>
+
+<span class="nc bnc" id="L418" title="All 4 branches missed.">        if (entry.isDirectory() &amp;&amp; entry.isEmpty()) {</span>
+<span class="nc" id="L419">            throw new DirectoryNotEmptyException(path);</span>
         }
 
-<span class="nc" id="L391">        final JvfsFileEntry entry = get(path);</span>
-<span class="nc" id="L392">        attic.remove(entry.getPath());</span>
-<span class="nc" id="L393">        add(entry);</span>
-<span class="nc" id="L394">    }</span>
+<span class="nc" id="L422">        attic.remove(path);</span>
+<span class="nc" id="L423">    }</span>
 
-    FileStore getFileStore() {
-<span class="nc" id="L397">        return fileStores.get(0);</span>
+    /**
+     * Get the file attributes.
+     *
+     * @param path must not be {@code null} or empty
+     * @return never {@code null}
+     * @throws IOException if path does not exist
+     */
+    JvfsFileAttributes getFileAttributes(final String path) throws IOException {
+<span class="nc" id="L433">        checkClosed();</span>
+<span class="nc" id="L434">        assertFileExists(path);</span>
+<span class="nc" id="L435">        return new JvfsFileAttributes(get(path));</span>
     }
 
+    /**
+     * Set the times.
+     *
+     * @param path must not be {@code null} or empty
+     * @param mtime must not be {@code null}
+     * @param atime must not be {@code null}
+     * @param ctime must not be {@code null}
+     * @throws IOException if source does not exist
+     */
+    void setTimes(final String path, final FileTime mtime, final FileTime atime, final FileTime ctime)
+        throws IOException {
+<span class="nc" id="L449">        checkClosed();</span>
+<span class="nc" id="L450">        assertFileExists(path);</span>
+<span class="nc" id="L451">        JvfsAssertions.notNull(mtime, &quot;mtime&quot;);</span>
+<span class="nc" id="L452">        JvfsAssertions.notNull(atime, &quot;atime&quot;);</span>
+<span class="nc" id="L453">        JvfsAssertions.notNull(ctime, &quot;ctime&quot;);</span>
+<span class="nc" id="L454">        final JvfsFileEntry entry = get(path);</span>
+<span class="nc" id="L455">        entry.setLastModifiedTime(mtime.to(TimeUnit.SECONDS));</span>
+<span class="nc" id="L456">        entry.setLastAccessTime(atime.to(TimeUnit.SECONDS));</span>
+<span class="nc" id="L457">        entry.setCreationTime(ctime.to(TimeUnit.SECONDS));</span>
+<span class="nc" id="L458">    }</span>
+
+    /**
+     * Copy a file from one path to an other one.
+     *
+     * @param source must not be {@code null} or empty
+     * @param target must not be {@code null} or empty
+     * @param options
+     * @throws IOException if source does not exist
+     */
+    void copy(final String source, final String target, final CopyOption... options) throws IOException {
+<span class="nc" id="L469">        checkClosed();</span>
+<span class="nc" id="L470">        assertFileExists(source);</span>
+
+<span class="nc bnc" id="L472" title="All 2 branches missed.">        if (contains(target)) {</span>
+<span class="nc" id="L473">            throw new FileAlreadyExistsException(target);</span>
+        }
+
+<span class="nc" id="L476">        add(get(source).copy());</span>
+<span class="nc" id="L477">    }</span>
+
+    /**
+     * Move a file from one path to an other one.
+     *
+     * @param source must not be {@code null} or empty
+     * @param target must not be {@code null} or empty
+     * @param options
+     * @throws IOException if source does not exist
+     */
+    void move(final String source, final String target, final CopyOption... options) throws IOException {
+<span class="nc" id="L488">        checkClosed();</span>
+<span class="nc" id="L489">        assertFileExists(source);</span>
+<span class="nc" id="L490">        JvfsAssertions.notEmpty(target, &quot;target&quot;);</span>
+
+<span class="nc bnc" id="L492" title="All 2 branches missed.">        if (contains(target)) {</span>
+<span class="nc" id="L493">            throw new FileAlreadyExistsException(target);</span>
+        }
+
+<span class="nc" id="L496">        final JvfsFileEntry entry = get(source);</span>
+<span class="nc" id="L497">        attic.remove(entry.getPath());</span>
+<span class="nc" id="L498">        add(entry);</span>
+<span class="nc" id="L499">    }</span>
+
+    /**
+     * Get the file store.
+     *
+     * @return never {@code null}
+     */
+    FileStore getFileStore() {
+<span class="nc" id="L507">        return fileStores.get(0);</span>
+    }
+
+    /**
+     * Ask hidden attribute for a path.
+     *
+     * @param path must not be {@code null} or empty
+     * @return {@code true} if file is hidden, else {@code false}
+     * @throws IOException if file does not exist
+     */
     boolean isHidden(final String path) throws IOException {
-<span class="nc" id="L401">        checkClosed();</span>
-<span class="nc" id="L402">        assertFileExists(path);</span>
-<span class="nc" id="L403">        return get(path).isHidden();</span>
+<span class="nc" id="L518">        checkClosed();</span>
+<span class="nc" id="L519">        assertFileExists(path);</span>
+<span class="nc" id="L520">        return get(path).isHidden();</span>
     }
 
 }

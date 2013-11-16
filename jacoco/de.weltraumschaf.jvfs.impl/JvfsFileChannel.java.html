@@ -39,14 +39,14 @@ final class JvfsFileChannel extends FileChannel {
      * @param channel must not be {@code null}
      */
     JvfsFileChannel(final SeekableByteChannel channel) {
-<span class="nc" id="L42">        super();</span>
-<span class="nc" id="L43">        JvfsAssertions.notNull(channel, &quot;channel&quot;);</span>
-<span class="nc" id="L44">        this.channel = channel;</span>
-<span class="nc" id="L45">    }</span>
+<span class="fc" id="L42">        super();</span>
+<span class="fc" id="L43">        JvfsAssertions.notNull(channel, &quot;channel&quot;);</span>
+<span class="fc" id="L44">        this.channel = channel;</span>
+<span class="fc" id="L45">    }</span>
 
     @Override
     public int read(final ByteBuffer dst) throws IOException {
-<span class="nc" id="L49">        return channel.read(dst);</span>
+<span class="fc" id="L49">        return channel.read(dst);</span>
     }
 
     @Override
@@ -67,13 +67,13 @@ final class JvfsFileChannel extends FileChannel {
 
     @Override
     public int read(ByteBuffer dst, long position) throws IOException {
-<span class="nc" id="L70">        channel.position(position);</span>
-<span class="nc" id="L71">        return channel.read(dst);</span>
+<span class="fc" id="L70">        channel.position(position);</span>
+<span class="fc" id="L71">        return channel.read(dst);</span>
     }
 
     @Override
     public int write(final ByteBuffer src) throws IOException {
-<span class="nc" id="L76">        return channel.write(src);</span>
+<span class="fc" id="L76">        return channel.write(src);</span>
     }
 
     @Override
@@ -95,30 +95,30 @@ final class JvfsFileChannel extends FileChannel {
 
     @Override
     public int write(ByteBuffer src, long position) throws IOException {
-<span class="nc" id="L98">        channel.position(position);</span>
-<span class="nc" id="L99">        return channel.write(src);</span>
+<span class="fc" id="L98">        channel.position(position);</span>
+<span class="fc" id="L99">        return channel.write(src);</span>
     }
 
     @Override
     public long position() throws IOException {
-<span class="nc" id="L104">        return channel.position();</span>
+<span class="fc" id="L104">        return channel.position();</span>
     }
 
     @Override
     public FileChannel position(long newPosition) throws IOException {
-<span class="nc" id="L109">        channel.position(newPosition);</span>
-<span class="nc" id="L110">        return this;</span>
+<span class="fc" id="L109">        channel.position(newPosition);</span>
+<span class="fc" id="L110">        return this;</span>
     }
 
     @Override
     public long size() throws IOException {
-<span class="nc" id="L115">        return channel.size();</span>
+<span class="fc" id="L115">        return channel.size();</span>
     }
 
     @Override
     public FileChannel truncate(long size) throws IOException {
-<span class="nc" id="L120">        channel.truncate(size);</span>
-<span class="nc" id="L121">        return this;</span>
+<span class="fc" id="L120">        channel.truncate(size);</span>
+<span class="fc" id="L121">        return this;</span>
     }
 
     @Override

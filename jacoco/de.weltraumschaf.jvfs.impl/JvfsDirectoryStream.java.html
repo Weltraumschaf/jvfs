@@ -12,23 +12,34 @@ import java.nio.file.Path;
 import java.util.Iterator;
 
 /**
+ * Implementation of a directory stream.
+ *
+ * TODO Implement class.
  *
  * @author Sven.Strittmatter
  */
 final class JvfsDirectoryStream implements DirectoryStream&lt;Path&gt; {
 
-    public JvfsDirectoryStream(final JvfsPath aThis, final Filter&lt;? super Path&gt; filter) {
-<span class="fc" id="L21">        super();</span>
-<span class="fc" id="L22">    }</span>
+    /**
+     * Dedicated constructor.
+     *
+     * @param path must not be {@code null}
+     * @param filter must not be {@code null}
+     */
+    public JvfsDirectoryStream(final JvfsPath path, final Filter&lt;? super Path&gt; filter) {
+<span class="fc" id="L30">        super();</span>
+<span class="fc" id="L31">        JvfsAssertions.notNull(path, &quot;path&quot;);</span>
+<span class="fc" id="L32">        JvfsAssertions.notNull(filter, &quot;filter&quot;);</span>
+<span class="fc" id="L33">    }</span>
 
     @Override
     public Iterator&lt;Path&gt; iterator() {
-<span class="nc" id="L26">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+<span class="nc" id="L37">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
     }
 
     @Override
     public void close() throws IOException {
-<span class="nc" id="L31">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+<span class="nc" id="L42">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
     }
 
 }

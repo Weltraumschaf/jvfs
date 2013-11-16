@@ -94,9 +94,9 @@ import java.io.IOException;
     /**
      * Dedicated constructor.
      *
-     * @param path
-     * @param direcotry
-     * @param content
+     * @param path must not be {@literal null} or empty
+     * @param direcotry {@literal true} if it is a directory, else {@literal false}
+     * @param content must not be {@code null}
      */
     private JvfsFileEntry(final String path, final boolean direcotry, final JvfsSeekableByteChannel content) {
 <span class="fc" id="L102">        super();</span>
@@ -269,21 +269,41 @@ import java.io.IOException;
 <span class="fc" id="L269">        return executable;</span>
     }
 
+    /**
+     * Set readable attribute.
+     *
+     * @param readable {@code true} for readable, else {@code false}
+     */
     public void setReadable(boolean readable) {
-<span class="fc" id="L273">        this.readable = readable;</span>
-<span class="fc" id="L274">    }</span>
+<span class="fc" id="L278">        this.readable = readable;</span>
+<span class="fc" id="L279">    }</span>
 
+    /**
+     * Set writable attribute.
+     *
+     * @param writable {@code true} for writable, else {@code false}
+     */
     public void setWritable(boolean writable) {
-<span class="fc" id="L277">        this.writable = writable;</span>
-<span class="fc" id="L278">    }</span>
+<span class="fc" id="L287">        this.writable = writable;</span>
+<span class="fc" id="L288">    }</span>
 
+    /**
+     * Set executable attribute.
+     *
+     * @param executable {@code true} for executable, else {@code false}
+     */
     public void setExecutable(boolean executable) {
-<span class="fc" id="L281">        this.executable = executable;</span>
-<span class="fc" id="L282">    }</span>
+<span class="fc" id="L296">        this.executable = executable;</span>
+<span class="fc" id="L297">    }</span>
 
+    /**
+     * Set hidden attribute.
+     *
+     * @param hidden {@code true} for hidden, else {@code false}
+     */
     public void setHidden(boolean hidden) {
-<span class="fc" id="L285">        this.hidden = hidden;</span>
-<span class="fc" id="L286">    }</span>
+<span class="fc" id="L305">        this.hidden = hidden;</span>
+<span class="fc" id="L306">    }</span>
 
     /**
      * If it has child entries if it is a directory.
@@ -291,7 +311,7 @@ import java.io.IOException;
      * @return {@literal true} if it is an empty directory or file, else {@literal false}
      */
     boolean isEmpty() {
-<span class="nc" id="L294">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+<span class="nc" id="L314">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
     }
 
     /**
@@ -300,7 +320,7 @@ import java.io.IOException;
      * @return {@literal true} if it is a symbolic link, else {@literal false}
      */
     boolean isSymbolicLink() {
-<span class="nc" id="L303">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+<span class="nc" id="L323">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
     }
 
     /**
@@ -309,13 +329,13 @@ import java.io.IOException;
      * @return -1 if it is a directory, else size
      */
     long size() {
-<span class="fc bfc" id="L312" title="All 2 branches covered.">        if (this.isDirectory()) {</span>
-<span class="fc" id="L313">            return -1L;</span>
+<span class="fc bfc" id="L332" title="All 2 branches covered.">        if (this.isDirectory()) {</span>
+<span class="fc" id="L333">            return -1L;</span>
         }
         try {
-<span class="fc" id="L316">            return content.size();</span>
-<span class="nc" id="L317">        } catch (IOException ex) {</span>
-<span class="nc" id="L318">            return -1L;</span>
+<span class="fc" id="L336">            return content.size();</span>
+<span class="nc" id="L337">        } catch (IOException ex) {</span>
+<span class="nc" id="L338">            return -1L;</span>
         }
     }
 
@@ -325,7 +345,7 @@ import java.io.IOException;
      * @return never {@literal null}
      */
     JvfsSeekableByteChannel getContent() {
-<span class="fc" id="L328">        return content;</span>
+<span class="fc" id="L348">        return content;</span>
     }
 
 }
