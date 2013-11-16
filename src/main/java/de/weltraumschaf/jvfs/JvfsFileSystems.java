@@ -39,11 +39,11 @@ public final class JvfsFileSystems {
      *
      * @see java.nio.file.FileSystems.DefaultFileSystemHolder#getDefaultProvider()
      */
-    private static final String IMPLEMENTATION_PROPERTY_NAME = "java.nio.file.spi.DefaultFileSystemProvider";
+    static final String IMPLEMENTATION_PROPERTY_NAME = "java.nio.file.spi.DefaultFileSystemProvider";
     /**
      * Full qualified class name of provider implementation.
      */
-    private static final String IMPLEMENTATION = "de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider";
+    static final String IMPLEMENTATION_CLASS_NAME = "de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider";
     /**
      * Whether the registered default fs is readonly or not.
      */
@@ -69,7 +69,7 @@ public final class JvfsFileSystems {
     /**
      * Returns a new file system provider.
      *
-     * @param flag {@code true} creates readonly file system
+     * @param flag {@literal true} creates readonly file system
      * @return never {@literal null} always new instance
      */
     public static FileSystemProvider newUnixProvider(final boolean flag) {
@@ -92,7 +92,7 @@ public final class JvfsFileSystems {
     /**
      * Whether the registered default file system is readonly.
      *
-     * @return {@code true} means that the registered default file system is not writable
+     * @return {@literal true} means that the registered default file system is not writable
      */
     public static boolean isReadonly() {
         return readonly;
@@ -112,7 +112,7 @@ public final class JvfsFileSystems {
      */
     public static void registerUnixAsDefault(final boolean flag) {
         readonly = flag;
-        System.setProperty(IMPLEMENTATION_PROPERTY_NAME, IMPLEMENTATION);
+        System.setProperty(IMPLEMENTATION_PROPERTY_NAME, IMPLEMENTATION_CLASS_NAME);
     }
 
     /**

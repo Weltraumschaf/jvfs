@@ -77,7 +77,7 @@ class JvfsFileSystem extends FileSystem {
      * Dedicated constructor.
      *
      * @param provider must not be {@literal null}
-     * @param flag {@code true} creates readonly file system
+     * @param flag {@literal true} creates readonly file system
      */
     JvfsFileSystem(final JvfsFileSystemProvider provider, final boolean flag) {
         super();
@@ -200,7 +200,7 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Throws {@link NoSuchFileException} if file does not exist.
      *
-     * @param path must not be {@code null} or empty
+     * @param path must not be {@literal null} or empty
      * @throws NoSuchFileException if file does not exists
      */
     private void assertFileExists(final String path) throws NoSuchFileException {
@@ -212,8 +212,8 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Get a file entry.
      *
-     * @param path must not be {@code null} or empty
-     * @return may be {@code null} if not exists
+     * @param path must not be {@literal null} or empty
+     * @return may be {@literal null} if not exists
      */
     JvfsFileEntry get(final String path) {
         JvfsAssertions.notEmpty(path, "path");
@@ -224,7 +224,7 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Add a file entry.
      *
-     * @param entry must not be {@code null}
+     * @param entry must not be {@literal null}
      */
     void add(final JvfsFileEntry entry) {
         JvfsAssertions.notNull(entry, "entry");
@@ -235,8 +235,8 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Whether the file system contains a file entry.
      *
-     * @param path must not be {@code null} or empty
-     * @return {@code true} if entry exists, else {@code false}
+     * @param path must not be {@literal null} or empty
+     * @return {@literal true} if entry exists, else {@literal false}
      */
     boolean contains(final String path) {
         JvfsAssertions.notEmpty(path, "path");
@@ -247,10 +247,10 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Create new file channel.
      *
-     * @param path must not be {@code null} or empty
+     * @param path must not be {@literal null} or empty
      * @param options options specifying how the file is opened
      * @param attrs an optional list of file attributes to set atomically when creating the file
-     * @return never {@code null}
+     * @return never {@literal null}
      * @throws IOException if path does not exist
      */
     FileChannel newFileChannel(
@@ -305,10 +305,10 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Create a new byte channel.
      *
-     * @param path must not be {@code null} or empty
+     * @param path must not be {@literal null} or empty
      * @param options options specifying how the file is opened
      * @param attrs an optional list of file attributes to set atomically when creating the file
-     * @return never {@code null}
+     * @return never {@literal null}
      */
     SeekableByteChannel newByteChannel(
             final String path,
@@ -330,7 +330,7 @@ class JvfsFileSystem extends FileSystem {
     /**
      * check file permissions.
      *
-     * @param path must not be {@code null} or empty
+     * @param path must not be {@literal null} or empty
      * @param modes The access modes to check; may have zero elements
      * @throws IOException if path does not exist
      */
@@ -376,7 +376,7 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Create a directory.
      *
-     * @param path must not be {@code null} or empty
+     * @param path must not be {@literal null} or empty
      * @param attrs an optional list of file attributes to set atomically when creating the directory
      * @throws IOException if path does not exist
      */
@@ -400,7 +400,7 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Deletes a file.
      *
-     * @param path must not be {@code null} or empty
+     * @param path must not be {@literal null} or empty
      * @throws IOException if path does not exist
      */
     void delete(final String path) throws IOException {
@@ -418,8 +418,8 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Get the file attributes.
      *
-     * @param path must not be {@code null} or empty
-     * @return never {@code null}
+     * @param path must not be {@literal null} or empty
+     * @return never {@literal null}
      * @throws IOException if path does not exist
      */
     JvfsFileAttributes getFileAttributes(final String path) throws IOException {
@@ -431,10 +431,10 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Set the times.
      *
-     * @param path must not be {@code null} or empty
-     * @param mtime not changed if {@code null}
-     * @param atime not changed if {@code null}
-     * @param ctime not changed if {@code null}
+     * @param path must not be {@literal null} or empty
+     * @param mtime not changed if {@literal null}
+     * @param atime not changed if {@literal null}
+     * @param ctime not changed if {@literal null}
      * @throws IOException if source does not exist
      */
     void setTimes(final String path, final FileTime mtime, final FileTime atime, final FileTime ctime)
@@ -459,8 +459,8 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Copy a file from one path to an other one.
      *
-     * @param source must not be {@code null} or empty
-     * @param target must not be {@code null} or empty
+     * @param source must not be {@literal null} or empty
+     * @param target must not be {@literal null} or empty
      * @param options options specifying how the copy should be done
      * @throws IOException if source does not exist
      */
@@ -478,8 +478,8 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Move a file from one path to an other one.
      *
-     * @param source must not be {@code null} or empty
-     * @param target must not be {@code null} or empty
+     * @param source must not be {@literal null} or empty
+     * @param target must not be {@literal null} or empty
      * @param options options specifying how the move should be done
      * @throws IOException if source does not exist
      */
@@ -500,7 +500,7 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Get the file store.
      *
-     * @return never {@code null}
+     * @return never {@literal null}
      */
     FileStore getFileStore() {
         return fileStores.get(0);
@@ -509,8 +509,8 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Ask hidden attribute for a path.
      *
-     * @param path must not be {@code null} or empty
-     * @return {@code true} if file is hidden, else {@code false}
+     * @param path must not be {@literal null} or empty
+     * @return {@literal true} if file is hidden, else {@literal false}
      * @throws IOException if file does not exist
      */
     boolean isHidden(final String path) throws IOException {

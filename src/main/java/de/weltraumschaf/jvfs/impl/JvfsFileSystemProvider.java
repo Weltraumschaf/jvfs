@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * Implements the I/O operations.
  *
- * Inspired by implementation of {@code sun.nio.fs.LinuxFileSystemProvider} and ZipFS demo.
+ * Inspired by implementation of {@literal sun.nio.fs.LinuxFileSystemProvider} and ZipFS demo.
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
@@ -41,7 +41,7 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
     /**
      * Dedicated constructor.
      *
-     * @param flag {@code true} registers readonly file system
+     * @param flag {@literal true} registers readonly file system
      */
     public JvfsFileSystemProvider(final boolean flag) {
         super();
@@ -69,7 +69,7 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
      * <ul>
      * <li>the URI scheme matches {@link #getScheme()}</li>
      * <li>the URI has no authority</li>
-     * <li>the path is not {@code null}</li>
+     * <li>the path is not {@literal null}</li>
      * <li>the path component is the root directory</li>
      * <li>the URI has no query part</li>
      * <li>the URI has no fragment</li>
@@ -77,7 +77,7 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
      *
      * Throws {@link IllegalArgumentException} if any rule is not complied.
      *
-     * @param uri must not be {@code null}
+     * @param uri must not be {@literal null}
      */
     void checkUri(final URI uri) {
         assert null != uri : "uri must not be null";
