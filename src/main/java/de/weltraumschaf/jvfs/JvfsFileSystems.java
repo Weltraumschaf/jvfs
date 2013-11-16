@@ -44,7 +44,7 @@ public final class JvfsFileSystems {
     /**
      * Full qualified class name of provider implementation.
      */
-    private static final String IMPLEMENTATION = "de.weltraumschaf.juberblog.jvfs.impl.JvfsFileSystemProvider";
+    private static final String IMPLEMENTATION = "de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider";
 
     /**
      * Hidden for pure static class.

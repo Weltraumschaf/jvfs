@@ -102,7 +102,6 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
 
     @Override
     public Path getPath(final URI uri) {
-        checkUri(uri);
         return new JvfsPath(uri.getPath(), fileSystem);
     }
 
