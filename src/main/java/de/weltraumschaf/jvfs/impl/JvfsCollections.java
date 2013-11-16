@@ -5,7 +5,6 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
-import de.weltraumschaf.jvfs.impl.JvfsAssertions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,12 +55,14 @@ final class JvfsCollections {
     }
 
     /**
+     * Creates a copy of given list.
      *
-     * @param <T>
-     * @param original
-     * @return
+     * @param <T> type of list entries
+     * @param original must not be {@code null}
+     * @return never {@code null}
      */
     public static <T> List<T> newArrayList(final List<T> original) {
+        JvfsAssertions.notNull(original, "original");
         return new ArrayList<T>(original);
     }
 
