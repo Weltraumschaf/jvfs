@@ -680,6 +680,12 @@ class JvfsPath implements Path {
         jvfs.setTimes(path, mtime, atime, ctime);
     }
 
+    /**
+     * Get all basic attributes.
+     *
+     * @return never {@code null}
+     * @throws IOException if path does not exist
+     */
     BasicFileAttributes getAttributes() throws IOException {
         final JvfsFileAttributes attrs = jvfs.getFileAttributes(path);
 
@@ -693,7 +699,7 @@ class JvfsPath implements Path {
     /**
      * Reads a set of file attributes as a bulk operation.
      *
-     * @see de.weltraumschaf.jvfs.impl.JvfsFileAttributeView.readAttributes(java.lang.String)
+     * @see de.weltraumschaf.jvfs.impl.JvfsFileAttributeView#readAttributes(java.lang.String)
      * @param attributes attributes must not be {@code nul} or empty
      * @param options ignored at the moment
      * @return never {@code null}

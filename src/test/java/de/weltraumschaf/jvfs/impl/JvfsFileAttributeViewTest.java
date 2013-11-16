@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import org.hamcrest.Matchers;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
@@ -168,6 +167,7 @@ public class JvfsFileAttributeViewTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void readAttributes_byNames_wildcard() throws IOException {
         final Map <String, Object> attrs = sut.readAttributes("*");
         assertThat(attrs.size(), is(9));
