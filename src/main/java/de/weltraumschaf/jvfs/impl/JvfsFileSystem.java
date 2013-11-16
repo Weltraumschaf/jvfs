@@ -245,7 +245,7 @@ class JvfsFileSystem extends FileSystem {
     }
 
     /**
-     * Create new file channel
+     * Create new file channel.
      *
      * @param path must not be {@code null} or empty
      * @param options
@@ -302,6 +302,14 @@ class JvfsFileSystem extends FileSystem {
         return new JvfsFileChannel(entry.getContent());
     }
 
+    /**
+     * Create a new byte channel.
+     *
+     * @param path must not be {@code null} or empty
+     * @param options
+     * @param attrs
+     * @return never {@code null}
+     */
     SeekableByteChannel newByteChannel(final String path, final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) {
         checkClosed();
         final JvfsFileEntry entry;
@@ -316,9 +324,16 @@ class JvfsFileSystem extends FileSystem {
         return entry.getContent();
     }
 
-    void checkAccess(final String pathname, final AccessMode... modes) throws IOException {
+    /**
+     * check file permissions.
+     *
+     * @param path must not be {@code null} or empty
+     * @param modes
+     * @throws IOException if path does not exist
+     */
+    void checkAccess(final String path, final AccessMode... modes) throws IOException {
         checkClosed();
-        assertFileExists(pathname);
+        assertFileExists(path);
 
         boolean r = false;
         boolean w = false;
@@ -340,31 +355,38 @@ class JvfsFileSystem extends FileSystem {
             }
         }
 
-        final JvfsFileEntry entry = get(pathname);
+        final JvfsFileEntry entry = get(path);
 
         if (r) {
             if (!entry.isReadable()) {
-                throw new AccessDeniedException(pathname);
+                throw new AccessDeniedException(path);
             }
         }
 
         if (w) {
             if (isReadOnly()) {
-                throw new AccessDeniedException(pathname);
+                throw new AccessDeniedException(path);
             }
 
             if (!entry.isWritable()) {
-                throw new AccessDeniedException(pathname);
+                throw new AccessDeniedException(path);
             }
         }
 
         if (x) {
             if (!entry.isExecutable()) {
-                throw new AccessDeniedException(pathname);
+                throw new AccessDeniedException(path);
             }
         }
     }
 
+    /**
+     * Create a directory.
+     *
+     * @param path must not be {@code null} or empty
+     * @param attrs
+     * @throws IOException if path does not exist
+     */
     void createDirectory(final String path, final FileAttribute<?>... attrs) throws IOException {
         checkClosed();
         assertFileExists(path);
@@ -382,6 +404,12 @@ class JvfsFileSystem extends FileSystem {
         }
     }
 
+    /**
+     * Deletes a file.
+     *
+     * @param path must not be {@code null} or empty
+     * @throws IOException if path does not exist
+     */
     void delete(final String path) throws IOException {
         checkClosed();
         assertFileExists(path);
@@ -394,49 +422,98 @@ class JvfsFileSystem extends FileSystem {
         attic.remove(path);
     }
 
+    /**
+     * Get the file attributes.
+     *
+     * @param path must not be {@code null} or empty
+     * @return never {@code null}
+     * @throws IOException if path does not exist
+     */
     JvfsFileAttributes getFileAttributes(final String path) throws IOException {
         checkClosed();
         assertFileExists(path);
         return new JvfsFileAttributes(get(path));
     }
 
-    void setTimes(final String path, final FileTime mtime, final FileTime atime, final FileTime ctime) throws IOException {
+    /**
+     * Set the times.
+     *
+     * @param path must not be {@code null} or empty
+     * @param mtime must not be {@code null}
+     * @param atime must not be {@code null}
+     * @param ctime must not be {@code null}
+     * @throws IOException if source does not exist
+     */
+    void setTimes(final String path, final FileTime mtime, final FileTime atime, final FileTime ctime)
+        throws IOException {
         checkClosed();
         assertFileExists(path);
+        JvfsAssertions.notNull(mtime, "mtime");
+        JvfsAssertions.notNull(atime, "atime");
+        JvfsAssertions.notNull(ctime, "ctime");
         final JvfsFileEntry entry = get(path);
         entry.setLastModifiedTime(mtime.to(TimeUnit.SECONDS));
         entry.setLastAccessTime(atime.to(TimeUnit.SECONDS));
         entry.setCreationTime(ctime.to(TimeUnit.SECONDS));
     }
 
-    void copy(final String path, final String target, final CopyOption... options) throws IOException {
+    /**
+     * Copy a file from one path to an other one.
+     *
+     * @param source must not be {@code null} or empty
+     * @param target must not be {@code null} or empty
+     * @param options
+     * @throws IOException if source does not exist
+     */
+    void copy(final String source, final String target, final CopyOption... options) throws IOException {
         checkClosed();
-        assertFileExists(path);
+        assertFileExists(source);
 
         if (contains(target)) {
             throw new FileAlreadyExistsException(target);
         }
 
-        add(get(path).copy());
+        add(get(source).copy());
     }
 
-    void move(final String path, final String target, final CopyOption... options) throws IOException {
+    /**
+     * Move a file from one path to an other one.
+     *
+     * @param source must not be {@code null} or empty
+     * @param target must not be {@code null} or empty
+     * @param options
+     * @throws IOException if source does not exist
+     */
+    void move(final String source, final String target, final CopyOption... options) throws IOException {
         checkClosed();
-        assertFileExists(path);
+        assertFileExists(source);
+        JvfsAssertions.notEmpty(target, "target");
 
         if (contains(target)) {
             throw new FileAlreadyExistsException(target);
         }
 
-        final JvfsFileEntry entry = get(path);
+        final JvfsFileEntry entry = get(source);
         attic.remove(entry.getPath());
         add(entry);
     }
 
+    /**
+     * Get the file store.
+     *
+     * @return never {@code null}
+     */
     FileStore getFileStore() {
         return fileStores.get(0);
     }
 
+    /**
+     * Ask hidden attribute for a path.
+     *
+     * @param path must not be {@code null} or empty
+     * @return {@code true} if file is hidden, else {@code false}
+     * @throws IOException if file does not exist
+     */
     boolean isHidden(final String path) throws IOException {
         checkClosed();
         assertFileExists(path);
