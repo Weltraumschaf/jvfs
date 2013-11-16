@@ -21,7 +21,11 @@ import java.util.regex.PatternSyntaxException;
  *
  * Supported syntax is either the standard Unix glob or java Regex syntax.
  *
+ * This class implements simple methods to scan glob syntax. Implementation is
+ * copied from the Zip file example from Sun ({@code com.sun.nio.zipfs.ZipFileSystem}.
+ *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
+ * @author Xueming Shen
  */
 final class JvfsPathMatcher implements PathMatcher {
 
@@ -165,101 +169,17 @@ final class JvfsPathMatcher implements PathMatcher {
 
         int i = 0;
         while (i < globPattern.length()) {
-            char c = globPattern.charAt(i++);
+            final char c = globPattern.charAt(i++);
 
             switch (c) {
                 case '\\':
-                    // escape special characters
-                    if (i == globPattern.length()) {
-                        throw new PatternSyntaxException("No character to escape",
-                                globPattern, i - 1);
-                    }
-
-                    final char next = globPattern.charAt(i++);
-
-                    if (isGlobMeta(next) || isRegexMeta(next)) {
-                        regex.append('\\');
-                    }
-
-                    regex.append(next);
+                    i = handleEscapeCharacter(regex, globPattern, i);
                     break;
                 case '/':
                     regex.append(c);
                     break;
                 case '[':
-                    // don't match name separator in class
-                    regex.append("[[^/]&&[");
-
-                    if (next(globPattern, i) == '^') {
-                        // escape the regex negation char if it appears
-                        regex.append("\\^");
-                        i++;
-                    } else {
-                        // negation
-                        if (next(globPattern, i) == '!') {
-                            regex.append('^');
-                            i++;
-                        }
-
-                        // hyphen allowed at start
-                        if (next(globPattern, i) == '-') {
-                            regex.append('-');
-                            i++;
-                        }
-                    }
-
-                    boolean hasRangeStart = false;
-                    char last = 0;
-
-                    while (i < globPattern.length()) {
-                        c = globPattern.charAt(i++);
-                        if (c == ']') {
-                            break;
-                        }
-
-                        if (c == '/') {
-                            throw new PatternSyntaxException("Explicit 'name separator' in class",
-                                    globPattern, i - 1);
-                        }
-
-                        // TBD: how to specify ']' in a class?
-                        if (c == '\\' || c == '['
-                                || c == '&' && next(globPattern, i) == '&') {
-                            // escape '\', '[' or "&&" for regex class
-                            regex.append('\\');
-                        }
-
-                        regex.append(c);
-
-                        if (c == '-') {
-                            if (!hasRangeStart) {
-                                throw new PatternSyntaxException("Invalid range",
-                                        globPattern, i - 1);
-                            }
-
-                            c = next(globPattern, i++);
-
-                            if (c == EOL || c == ']') {
-                                break;
-                            }
-
-                            if (c < last) {
-                                throw new PatternSyntaxException("Invalid range", globPattern, i - 3);
-                            }
-
-                            regex.append(c);
-                            hasRangeStart = false;
-                        } else {
-                            hasRangeStart = true;
-                            last = c;
-                        }
-                    }
-
-                    if (c != ']') {
-                        throw new PatternSyntaxException("Missing ']", globPattern, i - 1);
-                    }
-
-                    regex.append("]]");
+                    i = handleClassStartCharacter(regex, globPattern, i);
                     break;
                 case '{':
                     if (inGroup) {
@@ -315,5 +235,123 @@ final class JvfsPathMatcher implements PathMatcher {
         }
 
         return regex.append('$').toString();
+    }
+
+    /**
+     * Handles the "[" meta character.
+     *
+     * @param regex must not be {@code null}
+     * @param globPattern must not be {@code null}
+     * @param start must be non negative
+     * @return next position to scan
+     */
+    private static int handleClassStartCharacter(final StringBuilder regex, final String globPattern, final int start) {
+        assert regex != null : "regex must be defined";
+        assert globPattern != null : "globPattern must be defined";
+        assert start >= 0 : "start must not be negative";
+        char c = 0;
+        int position = start;
+        // don't match name separator in class
+        regex.append("[[^/]&&[");
+
+        if (next(globPattern, position) == '^') {
+            // escape the regex negation char if it appears
+            regex.append("\\^");
+            position++;
+        } else {
+            // negation
+            if (next(globPattern, position) == '!') {
+                regex.append('^');
+                position++;
+            }
+
+            // hyphen allowed at start
+            if (next(globPattern, position) == '-') {
+                regex.append('-');
+                position++;
+            }
+        }
+
+        boolean hasRangeStart = false;
+        char last = 0;
+        while (position < globPattern.length()) {
+            c = globPattern.charAt(position++);
+            if (c == ']') {
+                break;
+            }
+
+            if (c == '/') {
+                throw new PatternSyntaxException("Explicit 'name separator' in class",
+                        globPattern, position - 1);
+            }
+
+            // TBD: how to specify ']' in a class?
+            if (c == '\\' || c == '['
+                    || c == '&' && next(globPattern, position) == '&') {
+                // escape '\', '[' or "&&" for regex class
+                regex.append('\\');
+            }
+
+            regex.append(c);
+
+            if (c == '-') {
+                if (!hasRangeStart) {
+                    throw new PatternSyntaxException("Invalid range",
+                            globPattern, position - 1);
+                }
+
+                c = next(globPattern, position++);
+
+                if (c == EOL || c == ']') {
+                    break;
+                }
+
+                if (c < last) {
+                    //CHECKSTYLE:OFF
+                    throw new PatternSyntaxException("Invalid range", globPattern, position - 3);
+                    //CHECKSTYLE:ON
+                }
+
+                regex.append(c);
+                hasRangeStart = false;
+            } else {
+                hasRangeStart = true;
+                last = c;
+            }
+        }
+
+        if (c != ']') {
+            throw new PatternSyntaxException("Missing ']", globPattern, position - 1);
+        }
+
+        regex.append("]]");
+        return position;
+    }
+
+    /**
+     * Handles the "\\" meta character.
+     *
+     * @param regex must not be {@code null}
+     * @param globPattern must not be {@code null}
+     * @param start must be non negative
+     * @return next position to scan
+     */
+    private static int handleEscapeCharacter(final StringBuilder regex, final String globPattern, final int start) {
+        int position = start;
+
+        // escape special characters
+        if (position == globPattern.length()) {
+            throw new PatternSyntaxException("No character to escape",
+                    globPattern, position - 1);
+        }
+
+        final char next = globPattern.charAt(position++);
+
+        if (isGlobMeta(next) || isRegexMeta(next)) {
+            regex.append('\\');
+        }
+
+        regex.append(next);
+        return position;
     }
 }
