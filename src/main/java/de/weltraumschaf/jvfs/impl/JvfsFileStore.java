@@ -19,11 +19,15 @@ import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.attribute.FileStoreAttributeView;
 
 /**
+ * Implementation of the JVFS file store.
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
 final class JvfsFileStore extends FileStore {
 
+    /**
+     * Dedicated constructor.
+     */
     JvfsFileStore() {
         super();
     }
@@ -48,8 +52,13 @@ final class JvfsFileStore extends FileStore {
         return this.getUsableSpace() + this.getUsedSpace();
     }
 
+    /**
+     * Get the used space in bytes.
+     *
+     * @return non negative
+     */
     public long getUsedSpace() {
-        return 0;
+        return 0; // TODO Implement get usedspace.
     }
 
     @Override

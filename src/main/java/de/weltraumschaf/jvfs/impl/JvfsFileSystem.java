@@ -197,31 +197,67 @@ class JvfsFileSystem extends FileSystem {
         }
     }
 
+    /**
+     * Throws {@link NoSuchFileException} if file does not exist.
+     *
+     * @param path must not be {@code null} or empty
+     * @throws NoSuchFileException if file does not exists
+     */
     private void assertFileExists(final String path) throws NoSuchFileException {
         if (!contains(path)) {
             throw new NoSuchFileException(path);
         }
     }
 
+    /**
+     * Get a file entry.
+     *
+     * @param path must not be {@code null} or empty
+     * @return may be {@code null} if not exists
+     */
     JvfsFileEntry get(final String path) {
+        JvfsAssertions.notEmpty(path, "path");
         checkClosed();
         return attic.get(path);
     }
 
+    /**
+     * Add a file entry.
+     *
+     * @param entry must not be {@code null}
+     */
     void add(final JvfsFileEntry entry) {
+        JvfsAssertions.notNull(entry, "entry");
         // TODO Check parent direcotries.
         attic.put(entry.getPath(), entry);
     }
 
+    /**
+     * Whether the file system contains a file entry.
+     *
+     * @param path must not be {@code null} or empty
+     * @return {@code true} if entry exists, else {@code false}
+     */
     boolean contains(final String path) {
+        JvfsAssertions.notEmpty(path, "path");
         checkClosed();
         return attic.containsKey(path);
     }
 
+    /**
+     * Create new file channel
+     *
+     * @param path must not be {@code null} or empty
+     * @param options
+     * @param attrs
+     * @return
+     * @throws IOException
+     */
     FileChannel newFileChannel(
         final String path,
         final Set<? extends OpenOption> options,
         final FileAttribute<?>... attrs) throws IOException {
+        JvfsAssertions.notEmpty(path, "path");
         checkClosed();
         final boolean forWrite = options.contains(StandardOpenOption.WRITE)
             || options.contains(StandardOpenOption.APPEND);

@@ -94,9 +94,9 @@ final class JvfsFileEntry {
     /**
      * Dedicated constructor.
      *
-     * @param path
-     * @param direcotry
-     * @param content
+     * @param path must not be {@literal null} or empty
+     * @param direcotry {@literal true} if it is a directory, else {@literal false}
+     * @param content must not be {@code null}
      */
     private JvfsFileEntry(final String path, final boolean direcotry, final JvfsSeekableByteChannel content) {
         super();
@@ -269,18 +269,38 @@ final class JvfsFileEntry {
         return executable;
     }
 
+    /**
+     * Set readable attribute.
+     *
+     * @param readable {@code true} for readable, else {@code false}
+     */
     public void setReadable(boolean readable) {
         this.readable = readable;
     }
 
+    /**
+     * Set writable attribute.
+     *
+     * @param writable {@code true} for writable, else {@code false}
+     */
     public void setWritable(boolean writable) {
         this.writable = writable;
     }
 
+    /**
+     * Set executable attribute.
+     *
+     * @param executable {@code true} for executable, else {@code false}
+     */
     public void setExecutable(boolean executable) {
         this.executable = executable;
     }
 
+    /**
+     * Set hidden attribute.
+     *
+     * @param hidden {@code true} for hidden, else {@code false}
+     */
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
     }
