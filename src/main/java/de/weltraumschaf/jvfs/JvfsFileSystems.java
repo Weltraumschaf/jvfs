@@ -9,7 +9,6 @@
  *
  * Copyright (C) 2012 "Sven Strittmatter" <weltraumschaf@googlemail.com>
  */
-
 package de.weltraumschaf.jvfs;
 
 import de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider;
@@ -45,6 +44,9 @@ public final class JvfsFileSystems {
      * Full qualified class name of provider implementation.
      */
     private static final String IMPLEMENTATION = "de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider";
+    /**
+     * Whether the registered default fs is readonly or not.
+     */
     private static boolean readonly;
 
     /**
@@ -56,12 +58,22 @@ public final class JvfsFileSystems {
     }
 
     /**
-     * Returns a new file system provider.
+     * Returns writable a new file system provider.
      *
      * @return never {@literal null} always new instance
      */
-    public static FileSystemProvider newProvider() {
-        return new JvfsFileSystemProvider();
+    public static FileSystemProvider newUnixProvider() {
+        return newUnixProvider(false);
+    }
+
+    /**
+     * Returns a new file system provider.
+     *
+     * @param flag {@code true} creates readonly file system
+     * @return never {@literal null} always new instance
+     */
+    public static FileSystemProvider newUnixProvider(final boolean flag) {
+        return new JvfsFileSystemProvider(flag);
     }
 
     /**
@@ -78,18 +90,27 @@ public final class JvfsFileSystems {
     }
 
     /**
+     * Whether the registered default file system is readonly.
+     *
+     * @return {@code true} means that the registered default file system is not writable
+     */
+    public static boolean isReadonly() {
+        return readonly;
+    }
+
+    /**
      * Registers writable the JVFS implementation of {@link FileSystemProvider} as default file system.
      */
-    public static void registerAsDefault() {
-        registerAsDefault(false);
+    public static void registerUnixAsDefault() {
+        registerUnixAsDefault(false);
     }
 
     /**
      * Registers the JVFS implementation of {@link FileSystemProvider} as default file system.
      *
-     * @param flag {@code true} registers readonly file system
+     * @param flag {@literal true} registers readonly file system
      */
-    public static void registerAsDefault(final boolean flag) {
+    public static void registerUnixAsDefault(final boolean flag) {
         readonly = flag;
         System.setProperty(IMPLEMENTATION_PROPERTY_NAME, IMPLEMENTATION);
     }
@@ -97,7 +118,7 @@ public final class JvfsFileSystems {
     /**
      * Removes the custom implementation.
      */
-    public static void unregisterAsDefault() {
+    public static void unregisterDefault() {
         System.setProperty(IMPLEMENTATION_PROPERTY_NAME, "");
     }
 

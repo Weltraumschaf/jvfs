@@ -56,9 +56,9 @@ public class JvfsFileSystemsTest {
 
     @Test
     public void newProvider() {
-        final FileSystemProvider fsp = JvfsFileSystems.newProvider();
+        final FileSystemProvider fsp = JvfsFileSystems.newUnixProvider();
         assertThat(fsp, is(not(nullValue())));
-        assertThat(fsp, is(not(sameInstance(JvfsFileSystems.newProvider()))));
+        assertThat(fsp, is(not(sameInstance(JvfsFileSystems.newUnixProvider()))));
     }
 
     @Test
@@ -69,10 +69,10 @@ public class JvfsFileSystemsTest {
     @Test
     public void registerAsDefault() {
         assertThat(System.getProperty("java.nio.file.spi.DefaultFileSystemProvider"), is(nullValue()));
-        JvfsFileSystems.registerAsDefault();
+        JvfsFileSystems.registerUnixAsDefault();
         assertThat(System.getProperty("java.nio.file.spi.DefaultFileSystemProvider"),
             is(equalTo("de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider")));
-        JvfsFileSystems.unregisterAsDefault();
+        JvfsFileSystems.unregisterDefault();
         assertThat(System.getProperty("java.nio.file.spi.DefaultFileSystemProvider"), is(equalTo("")));
     }
 }

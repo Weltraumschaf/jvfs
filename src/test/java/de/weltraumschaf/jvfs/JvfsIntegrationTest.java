@@ -37,12 +37,12 @@ public class JvfsIntegrationTest {
 
     @Before
     public void registerDefaultProvider() {
-        JvfsFileSystems.registerAsDefault();
+        JvfsFileSystems.registerUnixAsDefault();
     }
 
     @After
     public void unregisterDefaultProvider() {
-        JvfsFileSystems.unregisterAsDefault();
+        JvfsFileSystems.unregisterDefault();
     }
 
     @Test

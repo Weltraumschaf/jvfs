@@ -174,8 +174,8 @@ class JvfsPath implements Path {
      * Returns the number of occurrences of the specified string in the specified {@link String}, starting at the
      * specified offset.
      *
-     * @param string must not be {@code null}
-     * @param searchedFor must not be {@code null}
+     * @param string must not be {@literal null}
+     * @param searchedFor must not be {@literal null}
      * @param offset not negative
      * @return non negative number
      */
@@ -531,12 +531,12 @@ class JvfsPath implements Path {
     /**
      * Relativizes the paths recursively.
      *
-     * @param thisOriginal must not be {@code null}
-     * @param thisCurrent must not be {@code null}
-     * @param otherOriginal must not be {@code null}
-     * @param otherCurrent must not be {@code null}
+     * @param thisOriginal must not be {@literal null}
+     * @param thisCurrent must not be {@literal null}
+     * @param otherOriginal must not be {@literal null}
+     * @param otherCurrent must not be {@literal null}
      * @param backupCount must not be negative
-     * @return never {@code null}
+     * @return never {@literal null}
      */
     private static JvfsPath relativizeCommonRoot(
         final JvfsPath thisOriginal,
@@ -594,7 +594,7 @@ class JvfsPath implements Path {
      *
      * @param options options specifying how the file is opened
      * @param attrs an optional list of file attributes to set atomically when creating the file
-     * @return never {@code null}
+     * @return never {@literal null}
      * @throws IOException if path does not exist
      */
     FileChannel newFileChannel(final Set<? extends OpenOption> options, final FileAttribute<?>... attrs)
@@ -607,7 +607,7 @@ class JvfsPath implements Path {
      *
      * @param options options specifying how the file is opened
      * @param attrs an optional list of file attributes to set atomically when creating the file
-     * @return never {@code null}
+     * @return never {@literal null}
      */
     SeekableByteChannel newByteChannel(final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) {
         return jvfs.newByteChannel(path, options, attrs);
@@ -617,7 +617,7 @@ class JvfsPath implements Path {
      * Create new directory channel.
      *
      * @param filter the directory stream filter
-     * @return never {@code null}
+     * @return never {@literal null}
      */
     DirectoryStream<Path> newDirectoryStream(final DirectoryStream.Filter<? super Path> filter) {
         return new JvfsDirectoryStream(this, filter);
@@ -645,7 +645,7 @@ class JvfsPath implements Path {
     /**
      * Copy path.
      *
-     * @param target must not be {@code null}
+     * @param target must not be {@literal null}
      * @param options options specifying how the copy should be done
      * @throws IOException if path does not exist
      */
@@ -657,7 +657,7 @@ class JvfsPath implements Path {
     /**
      * Move path.
      *
-     * @param target must not be {@code null}
+     * @param target must not be {@literal null}
      * @param options options specifying how the move should be done
      * @throws IOException if path does not exist
      */
@@ -669,8 +669,8 @@ class JvfsPath implements Path {
     /**
      * Tests if two paths locate the same file.
      *
-     * @param other may be {@code null}
-     * @return {@code true} if {@link Object#equals(java.lang.Object) equal}, else {@code false}
+     * @param other may be {@literal null}
+     * @return {@literal true} if {@link Object#equals(java.lang.Object) equal}, else {@literal false}
      */
     boolean isSameFile(final Path other) {
         return equals(other);
@@ -679,7 +679,7 @@ class JvfsPath implements Path {
     /**
      * Tells whether or not a file is considered <em>hidden</em>.
      *
-     * @return {@code true} if the file is considered hidden
+     * @return {@literal true} if the file is considered hidden
      * @throws IOException if path does not exist
      */
     boolean isHidden() throws IOException {
@@ -689,7 +689,7 @@ class JvfsPath implements Path {
     /**
      * Get the file store.
      *
-     * @return never {@code nul}
+     * @return never {@literal nul}
      */
     FileStore getFileStore() {
         return jvfs.getFileStore();
@@ -709,9 +709,9 @@ class JvfsPath implements Path {
      * Updates any or all of the file's last modified time, last access time,
      * and create time attributes.
      *
-     * @param mtime may be {@code null}, attribute is untouched if {@code null}
-     * @param atime may be {@code null}, attribute is untouched if {@code null}
-     * @param ctime may be {@code null}, attribute is untouched if {@code null}
+     * @param mtime may be {@literal null}, attribute is untouched if {@literal null}
+     * @param atime may be {@literal null}, attribute is untouched if {@literal null}
+     * @param ctime may be {@literal null}, attribute is untouched if {@literal null}
      * @throws IOException if path does not exist
      */
     void setTimes(final FileTime mtime, final FileTime atime, final FileTime ctime) throws IOException {
@@ -721,7 +721,7 @@ class JvfsPath implements Path {
     /**
      * Get all basic attributes.
      *
-     * @return never {@code null}
+     * @return never {@literal null}
      * @throws IOException if path does not exist
      */
     BasicFileAttributes getAttributes() throws IOException {
@@ -738,9 +738,9 @@ class JvfsPath implements Path {
      * Reads a set of file attributes as a bulk operation.
      *
      * @see de.weltraumschaf.jvfs.impl.JvfsFileAttributeView#readAttributes(java.lang.String)
-     * @param attributes attributes must not be {@code nul} or empty
+     * @param attributes attributes must not be {@literal nul} or empty
      * @param options ignored at the moment
-     * @return never {@code null}
+     * @return never {@literal null}
      * @throws IOException IOException if file does not exist
      */
     Map<String, Object> readAttributes(final String attributes, final LinkOption... options) throws IOException {
@@ -751,8 +751,8 @@ class JvfsPath implements Path {
     /**
      * Sets the value of a file attribute.
      *
-     * @param attribute must not be {@code nul} or empty
-     * @param value must not be {@code nul} or empty
+     * @param attribute must not be {@literal nul} or empty
+     * @param value must not be {@literal nul} or empty
      * @param options ignored at the moment
      * @throws IOException IOException if file does not exist
      */

@@ -38,10 +38,6 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
      */
     private final JvfsFileSystem fileSystem;
 
-    public JvfsFileSystemProvider() {
-        this(false);
-    }
-
     /**
      * Dedicated constructor.
      *
@@ -58,7 +54,7 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
      * @param parent is ignored at the moment, necessary that JVM default factory can instantiate
      */
     public JvfsFileSystemProvider(final FileSystemProvider parent) { // NOPMD Parameter for JVM facotry.
-        this();
+        this(JvfsFileSystems.isReadonly());
     }
 
     @Override

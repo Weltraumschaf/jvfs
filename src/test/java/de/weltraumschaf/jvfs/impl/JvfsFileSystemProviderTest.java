@@ -45,7 +45,7 @@ public class JvfsFileSystemProviderTest {
     //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
-    private final JvfsFileSystemProvider sut = new JvfsFileSystemProvider();
+    private final JvfsFileSystemProvider sut = new JvfsFileSystemProvider(false);
 
     @Test
     public void getScheme() {
