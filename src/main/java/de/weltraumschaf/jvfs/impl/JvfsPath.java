@@ -125,7 +125,7 @@ class JvfsPath implements Path {
         // No parent?
         final int numTokens = tokens.size();
 
-        if (numTokens == 0 || (numTokens == 1 && !this.isAbsolute())) {
+        if (numTokens == 0 || numTokens == 1 && !this.isAbsolute()) {
             return null;
         }
 
@@ -299,12 +299,9 @@ class JvfsPath implements Path {
 
         // Difference in component size
         final int differential = ourTokens.size() - numOtherTokens;
-        // Given an absolute?
-        if (other.isAbsolute()) {
-            // We must have the same number of elements
-            if (differential != 0) {
-                return false;
-            }
+        // Given an absolute? We must have the same number of elements.
+        if (other.isAbsolute() && differential != 0) {
+            return false;
         }
 
         // Compare all components
@@ -453,12 +450,14 @@ class JvfsPath implements Path {
     @Override
     public Iterator<Path> iterator() {
         return new Iterator<Path>() {
-            /** Current position of the iterator. */
+            /**
+             * Current position of the iterator.
+             */
             private int index;
 
             @Override
             public boolean hasNext() {
-                return (index < getNameCount());
+                return index < getNameCount();
             }
 
             @Override
@@ -643,12 +642,12 @@ class JvfsPath implements Path {
         return attrs;
     }
 
-    Map<String, Object> readAttributes(final String attributes, final LinkOption ... options) {
+    Map<String, Object> readAttributes(final String attributes, final LinkOption... options) {
         final JvfsFileAttributeView view = new JvfsFileAttributeView(this);
         return view.readAttributes(attributes);
     }
 
-    void setAttribute(final String attribute, final Object value, final LinkOption ... options) {
+    void setAttribute(final String attribute, final Object value, final LinkOption... options) {
         final JvfsFileAttributeView view = new JvfsFileAttributeView(this);
         view.setAttribute(attribute, value);
     }

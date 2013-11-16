@@ -218,9 +218,13 @@ class JvfsFileSystem extends FileSystem {
         return attic.containsKey(path);
     }
 
-    FileChannel newFileChannel(final String path, final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) throws IOException {
+    FileChannel newFileChannel(
+        final String path,
+        final Set<? extends OpenOption> options,
+        final FileAttribute<?>... attrs) throws IOException {
         checkClosed();
-        final boolean forWrite = (options.contains(StandardOpenOption.WRITE) || options.contains(StandardOpenOption.APPEND));
+        final boolean forWrite = options.contains(StandardOpenOption.WRITE)
+            || options.contains(StandardOpenOption.APPEND);
 
         if (forWrite) {
             if (isReadOnly()) {
