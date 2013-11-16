@@ -30,7 +30,7 @@ import java.nio.channels.SeekableByteChannel;
  *
  * @author <a href="mailto:alr@jboss.org">Andrew Lee Rubinger</a>
  */
-final class JvfsSeekableByteChannel implements SeekableByteChannel {
+class JvfsSeekableByteChannel implements SeekableByteChannel {
 
     /**
      * Current position; guarded by "this".
