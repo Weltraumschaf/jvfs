@@ -394,8 +394,8 @@ class JvfsPath implements Path {
     @Override
     public WatchKey register(
             final WatchService watcher,
-            final WatchEvent.Kind<?>[] events,
-            final WatchEvent.Modifier... modifiers) throws IOException {
+            final WatchEvent.Kind<?>[]  events,
+            final WatchEvent.Modifier ... modifiers) throws IOException {
         throw new UnsupportedOperationException("JVFS Paths do not support registration with a watch service!");
     }
 

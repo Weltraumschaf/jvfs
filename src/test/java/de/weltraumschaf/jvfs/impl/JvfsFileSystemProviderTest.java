@@ -69,7 +69,7 @@ public class JvfsFileSystemProviderTest {
     @Test
     public void newAsynchronousFileChannel_isUnsupportedOperation() throws IOException {
         thrown.expect(UnsupportedOperationException.class);
-        sut.newAsynchronousFileChannel(null, null, null, null);
+        sut.newAsynchronousFileChannel(null, null, null, (FileAttribute<?>[]) null);
     }
 
     @Test

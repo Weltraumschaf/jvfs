@@ -17,6 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
+import java.nio.file.WatchEvent;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import org.junit.Ignore;
@@ -225,13 +226,13 @@ public class JvfsPathTest {
     @Test
     public void register_3args() throws Exception {
         thrown.expect(UnsupportedOperationException.class);
-        new JvfsPath(createPath(false, "foo"), fs).register(null, null, null);
+        new JvfsPath(createPath(false, "foo"), fs).register(null, null, (WatchEvent.Modifier) null);
     }
 
     @Test
     public void register_WatchService_WatchEventKindArr() throws Exception {
         thrown.expect(UnsupportedOperationException.class);
-        new JvfsPath(createPath(false, "foo"), fs).register(null, null);
+        new JvfsPath(createPath(false, "foo"), fs).register(null, (WatchEvent.Kind<?>) null);
     }
 
     @Test
