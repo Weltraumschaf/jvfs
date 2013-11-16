@@ -67,6 +67,34 @@ public class JvfsAssertionsTest {
     }
 
     @Test
+    public void notEmpty_throwsExceptionIfNameIsNull() {
+        thrown.expect(NullPointerException.class);
+        thrown.expectMessage("Argument name must not be null!");
+        JvfsAssertions.notEmpty("foo", null);
+    }
+
+    @Test
+    public void notEmpty_throwsExceptionIfNameIsEmpty() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Argument name must not be empty!");
+        JvfsAssertions.notEmpty("foo", "");
+    }
+
+    @Test
+    public void notEmpty_throwsExceptionIfStringIsNull() {
+        thrown.expect(NullPointerException.class);
+        thrown.expectMessage("Parameter 'foo' must not be null!");
+        JvfsAssertions.notEmpty(null, "foo");
+    }
+
+    @Test
+    public void notEmpty_throwsExceptionIfStringIsEmpty() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Parameter 'foo' must not be empty!");
+        JvfsAssertions.notEmpty("", "foo");
+    }
+
+    @Test
     public void lessThan_throwsExceptionIfNameIsNull() {
         thrown.expect(NullPointerException.class);
         thrown.expectMessage("Argument name must not be null!");
