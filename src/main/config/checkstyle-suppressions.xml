@@ -23,7 +23,7 @@
     <suppress checks="ClassFanOutComplexity" files=".*JvfsFileSystemProvider\.java$"/>
     <suppress checks="ClassDataAbstractionCoupling" files=".*JvfsFileSystemProvider\.java$"/>
     <!-- JvfsPath -->
-    <suppress checks="ClassFanOutComplexity" file=".*JvfsPath\.java$"/>
+    <suppress checks="ClassFanOutComplexity" files=".*JvfsPath\.java$"/>
     <!-- Suppressions for unit testing code -->
     <suppress checks="MagicNumber" files=".*Test\.java$"/>
     <suppress checks="JavadocMethod" files=".*Test\.java$"/>
