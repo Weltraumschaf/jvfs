@@ -45,6 +45,7 @@ public final class JvfsFileSystems {
      * Full qualified class name of provider implementation.
      */
     private static final String IMPLEMENTATION = "de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider";
+    private static boolean readonly;
 
     /**
      * Hidden for pure static class.
@@ -77,9 +78,19 @@ public final class JvfsFileSystems {
     }
 
     /**
-     * Registers the JVFS implementation of {@link FileSystemProvider} as default file system.
+     * Registers writable the JVFS implementation of {@link FileSystemProvider} as default file system.
      */
     public static void registerAsDefault() {
+        registerAsDefault(false);
+    }
+
+    /**
+     * Registers the JVFS implementation of {@link FileSystemProvider} as default file system.
+     *
+     * @param flag {@code true} registers readonly file system
+     */
+    public static void registerAsDefault(final boolean flag) {
+        readonly = flag;
         System.setProperty(IMPLEMENTATION_PROPERTY_NAME, IMPLEMENTATION);
     }
 

@@ -77,13 +77,14 @@ class JvfsFileSystem extends FileSystem {
      * Dedicated constructor.
      *
      * @param provider must not be {@literal null}
+     * @param flag {@code true} creates readonly file system
      */
-    JvfsFileSystem(final JvfsFileSystemProvider provider) {
+    JvfsFileSystem(final JvfsFileSystemProvider provider, final boolean flag) {
         super();
         JvfsAssertions.notNull(provider, "provider");
         this.provider = provider;
         this.open = true;
-        final FileStore store = new JvfsFileStore();
+        final FileStore store = new JvfsFileStore(flag);
         final List<FileStore> stores = JvfsCollections.newArrayList(1);
         stores.add(store);
         this.fileStores = Collections.unmodifiableList(stores);
@@ -106,7 +107,7 @@ class JvfsFileSystem extends FileSystem {
 
     @Override
     public boolean isReadOnly() {
-        return false;
+        return getFileStore().isReadOnly();
     }
 
     @Override

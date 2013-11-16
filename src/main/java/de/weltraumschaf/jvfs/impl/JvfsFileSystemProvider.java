@@ -38,12 +38,18 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
      */
     private final JvfsFileSystem fileSystem;
 
+    public JvfsFileSystemProvider() {
+        this(false);
+    }
+
     /**
      * Dedicated constructor.
+     *
+     * @param flag {@code true} registers readonly file system
      */
-    public JvfsFileSystemProvider() {
+    public JvfsFileSystemProvider(final boolean flag) {
         super();
-        fileSystem = new JvfsFileSystem(this);
+        fileSystem = new JvfsFileSystem(this, flag);
     }
 
     /**

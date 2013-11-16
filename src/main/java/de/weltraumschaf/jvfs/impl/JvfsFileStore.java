@@ -33,12 +33,19 @@ final class JvfsFileStore extends FileStore {
      * Type of the store.
      */
     private static final String TYPE = "in-memory";
+    /**
+     * Whether the sore is readonly or not.
+     */
+    private final boolean readonly;
 
     /**
      * Dedicated constructor.
+     *
+     * @param flag {@code true} registers readonly file system
      */
-    JvfsFileStore() {
+    JvfsFileStore(final boolean flag) {
         super();
+        readonly = flag;
     }
 
     @Override
@@ -54,8 +61,7 @@ final class JvfsFileStore extends FileStore {
 
     @Override
     public boolean isReadOnly() {
-        // TODO Moda readability configurable.
-        return false;
+        return readonly;
     }
 
     @Override

@@ -31,7 +31,7 @@ public class JvfsFileStoreTest {
     //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
-    private final JvfsFileStore sut = new JvfsFileStore();
+    private final JvfsFileStore sut = new JvfsFileStore(false);
 
     @Test
     public void name() {
@@ -45,7 +45,8 @@ public class JvfsFileStoreTest {
 
     @Test
     public void isReadOnly() {
-        assertThat(sut.isReadOnly(), is(false));
+        assertThat(new JvfsFileStore(false).isReadOnly(), is(false));
+        assertThat(new JvfsFileStore(true).isReadOnly(), is(true));
     }
 
     @Test @Ignore
