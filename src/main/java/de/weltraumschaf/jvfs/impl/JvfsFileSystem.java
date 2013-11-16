@@ -253,13 +253,13 @@ class JvfsFileSystem extends FileSystem {
      * @throws IOException if path does not exist
      */
     FileChannel newFileChannel(
-        final String path,
-        final Set<? extends OpenOption> options,
-        final FileAttribute<?>... attrs) throws IOException {
+            final String path,
+            final Set<? extends OpenOption> options,
+            final FileAttribute<?>... attrs) throws IOException {
         JvfsAssertions.notEmpty(path, "path");
         checkClosed();
         final boolean forWrite = options.contains(StandardOpenOption.WRITE)
-            || options.contains(StandardOpenOption.APPEND);
+                || options.contains(StandardOpenOption.APPEND);
 
         if (forWrite) {
             if (isReadOnly()) {
@@ -305,14 +305,14 @@ class JvfsFileSystem extends FileSystem {
      * Create a new byte channel.
      *
      * @param path must not be {@code null} or empty
-     * @param   options options specifying how the file is opened
-     * @param   attrs an optional list of file attributes to set atomically when creating the file
+     * @param options options specifying how the file is opened
+     * @param attrs an optional list of file attributes to set atomically when creating the file
      * @return never {@code null}
      */
     SeekableByteChannel newByteChannel(
-        final String path,
-        final Set<? extends OpenOption> options,
-        final FileAttribute<?>... attrs) {
+            final String path,
+            final Set<? extends OpenOption> options,
+            final FileAttribute<?>... attrs) {
         checkClosed();
         final JvfsFileEntry entry;
 
@@ -431,22 +431,28 @@ class JvfsFileSystem extends FileSystem {
      * Set the times.
      *
      * @param path must not be {@code null} or empty
-     * @param mtime must not be {@code null}
-     * @param atime must not be {@code null}
-     * @param ctime must not be {@code null}
+     * @param mtime not changed if {@code null}
+     * @param atime not changed if {@code null}
+     * @param ctime not changed if {@code null}
      * @throws IOException if source does not exist
      */
     void setTimes(final String path, final FileTime mtime, final FileTime atime, final FileTime ctime)
         throws IOException {
         checkClosed();
         assertFileExists(path);
-        JvfsAssertions.notNull(mtime, "mtime");
-        JvfsAssertions.notNull(atime, "atime");
-        JvfsAssertions.notNull(ctime, "ctime");
         final JvfsFileEntry entry = get(path);
-        entry.setLastModifiedTime(mtime.to(TimeUnit.SECONDS));
-        entry.setLastAccessTime(atime.to(TimeUnit.SECONDS));
-        entry.setCreationTime(ctime.to(TimeUnit.SECONDS));
+
+        if (null != mtime) {
+            entry.setLastModifiedTime(mtime.to(TimeUnit.SECONDS));
+        }
+
+        if (null != atime) {
+            entry.setLastAccessTime(atime.to(TimeUnit.SECONDS));
+        }
+
+        if (null != ctime) {
+            entry.setCreationTime(ctime.to(TimeUnit.SECONDS));
+        }
     }
 
     /**

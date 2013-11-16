@@ -311,7 +311,8 @@ final class JvfsFileEntry {
      * @return {@literal true} if it is an empty directory or file, else {@literal false}
      */
     boolean isEmpty() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // TODO Implement is empty functionality.
+        return false;
     }
 
     /**
@@ -320,7 +321,8 @@ final class JvfsFileEntry {
      * @return {@literal true} if it is a symbolic link, else {@literal false}
      */
     boolean isSymbolicLink() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // TODO Implement symbolic links.
+        return false;
     }
 
     /**

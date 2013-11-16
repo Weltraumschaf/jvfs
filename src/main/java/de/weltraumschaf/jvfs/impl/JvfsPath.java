@@ -690,12 +690,29 @@ class JvfsPath implements Path {
         return attrs;
     }
 
-    Map<String, Object> readAttributes(final String attributes, final LinkOption... options) {
+    /**
+     * Reads a set of file attributes as a bulk operation.
+     *
+     * @see de.weltraumschaf.jvfs.impl.JvfsFileAttributeView.readAttributes(java.lang.String)
+     * @param attributes attributes must not be {@code nul} or empty
+     * @param options ignored at the moment
+     * @return never {@code null}
+     * @throws IOException IOException if file does not exist
+     */
+    Map<String, Object> readAttributes(final String attributes, final LinkOption... options) throws IOException {
         final JvfsFileAttributeView view = new JvfsFileAttributeView(this);
         return view.readAttributes(attributes);
     }
 
-    void setAttribute(final String attribute, final Object value, final LinkOption... options) {
+    /**
+     * Sets the value of a file attribute.
+     *
+     * @param attribute must not be {@code nul} or empty
+     * @param value must not be {@code nul} or empty
+     * @param options ignored at the moment
+     * @throws IOException IOException if file does not exist
+     */
+    void setAttribute(final String attribute, final Object value, final LinkOption... options) throws IOException {
         final JvfsFileAttributeView view = new JvfsFileAttributeView(this);
         view.setAttribute(attribute, value);
     }

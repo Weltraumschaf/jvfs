@@ -9,7 +9,6 @@
  *
  * Copyright (C) 2012 "Sven Strittmatter" <weltraumschaf@googlemail.com>
  */
-
 package de.weltraumschaf.jvfs.impl;
 
 import java.io.IOException;
@@ -63,21 +62,95 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
      *
      * @param attribute must not be {@code nul} or empty
      * @param value must not be {@code nul} or empty
+     * @throws IOException IOException if file does not exist
      */
-    void setAttribute(final String attribute, final Object value) {
+    void setAttribute(final String attribute, final Object value) throws IOException {
         JvfsAssertions.notEmpty(attribute, "attribute");
         JvfsAssertions.notNull(value, "value");
-        throw new UnsupportedOperationException("Not supported yet.");
+
+        switch (AttrID.valueOf(attribute)) {
+            case creationTime:
+                setTimes(null, null, (FileTime) value);
+                break;
+            case lastAccessTime:
+                setTimes(null, (FileTime) value, null);
+                break;
+            case lastModifiedTime:
+                setTimes((FileTime) value, null, null);
+                break;
+            default:
+                throw new UnsupportedOperationException("Attribute '" + attribute
+                    + "' is unknown or read-only attribute!");
+        }
     }
 
     /**
      * Reads a set of file attributes as a bulk operation.
      *
+     * Examples:
+     * <ul>
+     * <li>{@code "*"}: Read all basic-file-attributes.</li>
+     * <li>{@code "size,lastModifiedTime,lastAccessTime" }:
+     * Reads the file size, last modified time, and last access time attributes.</li>
+     * </ul>
+     *
      * @param attributes must not be {@code nul} or empty
-     * @return may be {@code null}
+     * @return never {@code null}
+     * @throws IOException if file does not exist
      */
-    Map<String, Object> readAttributes(String attributes) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    Map<String, Object> readAttributes(final String attributes) throws IOException {
+        JvfsAssertions.notEmpty(attributes, "attributes");
+        final BasicFileAttributes attrs = readAttributes();
+        final Map<String, Object> map = JvfsCollections.newHashMap();
+
+        if ("*".equals(attributes.trim())) {
+            for (AttrID id : AttrID.values()) {
+                map.put(id.name(), attribute(id, attrs));
+            }
+        } else {
+            final String[] as = attributes.trim().split(",");
+
+            for (String a : as) {
+                map.put(a, attribute(AttrID.valueOf(a.trim()), attrs));
+            }
+        }
+
+        return map;
+    }
+
+    /**
+     * Get a path attribute by its name.
+     *
+     * @param id must not be {@code null}
+     * @param attrs must not {@code null}
+     * @return {@code null} if unsupported id given
+     */
+    Object attribute(final AttrID id, final BasicFileAttributes attrs) {
+        assert id != null : "id must be defined";
+        assert attrs != null : "attrs must be defined";
+
+        switch (id) {
+            case size:
+                return attrs.size();
+            case creationTime:
+                return attrs.creationTime();
+            case lastAccessTime:
+                return attrs.lastAccessTime();
+            case lastModifiedTime:
+                return attrs.lastModifiedTime();
+            case isDirectory:
+                return attrs.isDirectory();
+            case isRegularFile:
+                return attrs.isRegularFile();
+            case isSymbolicLink:
+                return attrs.isSymbolicLink();
+            case isOther:
+                return attrs.isOther();
+            case fileKey:
+                return attrs.fileKey();
+            default:
+                return null;
+        }
     }
 
     /**
@@ -89,4 +162,27 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
         return path;
     }
 
+    /**
+     * Names of attributes.
+     */
+    private static enum AttrID {
+        /** Size attribute. */
+        size,
+        /** Creation time attribute. */
+        creationTime,
+        /** Last access time attribute. */
+        lastAccessTime,
+        /** Last modification time attribute. */
+        lastModifiedTime,
+        /** Is directory attribute. */
+        isDirectory,
+        /** Is regular file attribute. */
+        isRegularFile,
+        /** Is symbolic link attribute. */
+        isSymbolicLink,
+        /** Is other file attribute. */
+        isOther,
+        /** File key attribute. */
+        fileKey
+    };
 }
