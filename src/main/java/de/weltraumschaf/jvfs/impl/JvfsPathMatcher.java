@@ -17,20 +17,48 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
+ * Implementation to match paths.
+ *
+ * Supported syntax is either the standard Unix glob or java Regex syntax.
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
 final class JvfsPathMatcher implements PathMatcher {
 
+    /**
+     * Identifier for Unix glob syntax.
+     */
     private static final String GLOB_SYNTAX = "glob";
+    /**
+     * Identifier for Java Regex syntax.
+     */
     private static final String REGEX_SYNTAX = "regex";
+    /**
+     * Meta characters for Unix glob syntax.
+     */
     private static final String GLOB_META_CHARACTERS = "\\*?[{";
+    /**
+     * Meta characters for Java Regex syntax.
+     */
     private static final String REGEX_META_CHARACTERS = ".^$+{[]|()";
+    /**
+     * Indicates end of line.
+     */
     private static char EOL = 0;
-
+    /**
+     * Ready to use compiled pattern.
+     */
     private final Pattern pattern;
 
+    /**
+     * Dedicated constructor.
+     *
+     * Use {@link #newMatcher(java.lang.String) factory method} to create matchers.
+     *
+     * @param expr must not be {@code null} or empty
+     */
     private JvfsPathMatcher(final String expr) {
+        super();
         this.pattern = Pattern.compile(expr);
     }
 
@@ -39,7 +67,17 @@ final class JvfsPathMatcher implements PathMatcher {
         return pattern.matcher(path.toString()).matches();
     }
 
+    /**
+     * Creates a new matcher.
+     *
+     * Syntax for parameter: {@code "SYNTAX:EXPRESSION"}. For syntax use either {@link #GLOB_SYNTAX} or
+     * {@link#REGEX_SYNTAX}. As expression the according glob or regex.
+     *
+     * @param syntaxAndPattern must not be {@code null} or empty
+     * @return never {@code null}
+     */
     static PathMatcher newMatcher(final String syntaxAndPattern) {
+        JvfsAssertions.notEmpty(syntaxAndPattern, "syntaxAndPattern");
         final int pos = syntaxAndPattern.indexOf(':');
 
         if (pos <= 0 || pos == syntaxAndPattern.length()) {
@@ -64,17 +102,41 @@ final class JvfsPathMatcher implements PathMatcher {
         return new JvfsPathMatcher(expr);
     }
 
+    /**
+     * Determines if given character is a glob syntax meta character.
+     *
+     * @param c any character
+     * @return {@code true} if it is a glob meta character, else {@code false}
+     */
     private static boolean isGlobMeta(char c) {
         return GLOB_META_CHARACTERS.indexOf(c) != -1;
     }
 
+    /**
+     * Determines if given character is a regex syntax meta character.
+     *
+     * @param c any character
+     * @return {@code true} if it is a regex meta character, else {@code false}
+     */
     private static boolean isRegexMeta(char c) {
         return REGEX_META_CHARACTERS.indexOf(c) != -1;
     }
 
-    private static char next(String glob, int i) {
-        if (i < glob.length()) {
-            return glob.charAt(i);
+    /**
+     * Get character from string.
+     *
+     * Returns {@link #EOL} if index is not less than the inputs length.
+     *
+     * @param str must not be {@code null}
+     * @param index any non negative number
+     * @return {@link #EOL} if index is at the end.
+     */
+    private static char next(final String str, int index) {
+        assert null != str : "str must be defined";
+        assert index >= 0 : "index must not be negative";
+
+        if (index < str.length()) {
+            return str.charAt(index);
         }
 
         return EOL;
@@ -87,6 +149,7 @@ final class JvfsPathMatcher implements PathMatcher {
      * @return never {@literal null}
      */
     private static String toRegexPattern(final String globPattern) {
+        assert null != globPattern : "globPattern must be defined";
         boolean inGroup = false;
         final StringBuilder regex = new StringBuilder("^");
 
