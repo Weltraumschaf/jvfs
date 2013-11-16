@@ -157,7 +157,7 @@ final class JvfsPathMatcher implements PathMatcher {
     }
 
     /**
-     * Creates a Regex pattern from the given glob expression.
+     * Creates a Java Regex pattern from the given glob expression.
      *
      * @param globPattern must not be {@literal null}
      * @return never {@literal null}
@@ -238,7 +238,7 @@ final class JvfsPathMatcher implements PathMatcher {
     }
 
     /**
-     * Handles the "[" meta character.
+     * Handles the "[" glob meta character.
      *
      * @param regex must not be {@code null}
      * @param globPattern must not be {@code null}
@@ -329,7 +329,7 @@ final class JvfsPathMatcher implements PathMatcher {
     }
 
     /**
-     * Handles the "\\" meta character.
+     * Handles the "\\" glob meta character.
      *
      * @param regex must not be {@code null}
      * @param globPattern must not be {@code null}
