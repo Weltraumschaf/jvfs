@@ -86,4 +86,14 @@ public class JvfsCollectionsTest {
         assertThat(s, is(not(sameInstance(JvfsCollections.newHashSet()))));
     }
 
+    @Test
+    public void asList() {
+        List<String> l = JvfsCollections.asList();
+        assertThat(l, is(not(nullValue())));
+        assertThat(l.size(), is(0));
+
+        l = JvfsCollections.asList("foo", "bar", "baz");
+        assertThat(l, is(not(nullValue())));
+        assertThat(l, contains("foo", "bar", "baz"));
+    }
 }
