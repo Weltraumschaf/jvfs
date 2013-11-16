@@ -26,6 +26,15 @@ import java.nio.file.attribute.FileStoreAttributeView;
 final class JvfsFileStore extends FileStore {
 
     /**
+     * Name of the store.
+     */
+    private static final String NAME = "jvfs";
+    /**
+     * Type of the store.
+     */
+    private static final String TYPE = "in-memory";
+
+    /**
      * Dedicated constructor.
      */
     JvfsFileStore() {
@@ -34,16 +43,18 @@ final class JvfsFileStore extends FileStore {
 
     @Override
     public String name() {
-        return "jvfs";
+        return NAME;
     }
 
     @Override
     public String type() {
-        return "in-memory";
+        return TYPE;
     }
+
 
     @Override
     public boolean isReadOnly() {
+        // TODO Moda readability configurable.
         return false;
     }
 
@@ -72,22 +83,24 @@ final class JvfsFileStore extends FileStore {
     }
 
     @Override
-    public boolean supportsFileAttributeView(Class<? extends FileAttributeView> type) {
+    public boolean supportsFileAttributeView(final Class<? extends FileAttributeView> type) {
         return BasicFileAttributeView.class.equals(type);
     }
 
     @Override
-    public boolean supportsFileAttributeView(String name) {
+    public boolean supportsFileAttributeView(final String name) {
         return JvfsFileSystem.FILE_ATTR_VIEW_BASIC.equals(name);
     }
 
     @Override
-    public <V extends FileStoreAttributeView> V getFileStoreAttributeView(Class<V> type) {
+    public <V extends FileStoreAttributeView> V getFileStoreAttributeView(final Class<V> type) {
+        // XXX: Considder to implement this.
         return null;
     }
 
     @Override
-    public Object getAttribute(String attribute) throws IOException {
+    public Object getAttribute(final String attribute) throws IOException {
+        // XXX: Considder to implement this.
         throw new UnsupportedOperationException(this.getClass().getSimpleName() + " does not support attributes.");
     }
 
