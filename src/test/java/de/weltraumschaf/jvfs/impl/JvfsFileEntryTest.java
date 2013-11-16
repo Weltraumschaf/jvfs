@@ -61,14 +61,48 @@ public class JvfsFileEntryTest {
             is(equalTo("foo")));
     }
 
-    @Test @Ignore
+    @Test
     public void testHashCode() {
+        final JvfsFileEntry one = JvfsFileEntry.newFile("foo");
+        final JvfsFileEntry two = JvfsFileEntry.newFile("foo");
+        final JvfsFileEntry three = JvfsFileEntry.newFile("bar");
+        final JvfsFileEntry four = JvfsFileEntry.newDir("foo");
 
+        assertThat(one.hashCode(), is(one.hashCode()));
+        assertThat(one.hashCode(), is(two.hashCode()));
+        assertThat(two.hashCode(), is(one.hashCode()));
+        assertThat(two.hashCode(), is(two.hashCode()));
+        // Dir/file does not matter
+        assertThat(four.hashCode(), is(one.hashCode()));
+        assertThat(four.hashCode(), is(two.hashCode()));
+        assertThat(four.hashCode(), is(four.hashCode()));
+
+        assertThat(three.hashCode(), is(three.hashCode()));
+        assertThat(three.hashCode(), is(not(one.hashCode())));
+        assertThat(three.hashCode(), is(not(two.hashCode())));
+        assertThat(three.hashCode(), is(not(four.hashCode())));
     }
 
-    @Test @Ignore
+    @Test
     public void equals() {
+        final JvfsFileEntry one = JvfsFileEntry.newFile("foo");
+        final JvfsFileEntry two = JvfsFileEntry.newFile("foo");
+        final JvfsFileEntry three = JvfsFileEntry.newFile("bar");
+        final JvfsFileEntry four = JvfsFileEntry.newDir("foo");
 
+        assertThat(one.equals(one), is(true));
+        assertThat(one.equals(two), is(true));
+        assertThat(two.equals(one), is(true));
+        assertThat(two.equals(two), is(true));
+        // Dir/file does not matter
+        assertThat(four.equals(one), is(true));
+        assertThat(four.equals(two), is(true));
+        assertThat(four.equals(four), is(true));
+
+        assertThat(three.equals(three), is(true));
+        assertThat(three.equals(one), is(false));
+        assertThat(three.equals(two), is(false));
+        assertThat(three.equals(four), is(false));
     }
 
     @Test
