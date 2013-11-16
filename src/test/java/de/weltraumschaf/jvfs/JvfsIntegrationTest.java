@@ -33,7 +33,7 @@ import org.junit.Test;
  * 
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-public class IntegrationTest {
+public class JvfsIntegrationTest {
 
     @Before
     public void registerDefaultProvider() {

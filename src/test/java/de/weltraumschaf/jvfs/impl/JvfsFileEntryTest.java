@@ -108,8 +108,10 @@ public class JvfsFileEntryTest {
         assertThat(three.equals(two), is(false));
         assertThat(three.equals(four), is(false));
 
+        //CHECKSTYLE:OFF
         assertThat(one.equals(null), is(false));
         assertThat(one.equals("foobar"), is(false));
+        //CHECKSTYLE:ON
     }
 
     @Test
