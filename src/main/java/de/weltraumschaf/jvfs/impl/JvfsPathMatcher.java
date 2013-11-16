@@ -104,8 +104,8 @@ final class JvfsPathMatcher implements PathMatcher {
             case REGEX_SYNTAX:
                 expr = input;
                 break;
-                default:
-                    throw new UnsupportedOperationException("Syntax '" + syntax
+            default:
+                throw new UnsupportedOperationException("Syntax '" + syntax
                         + "' not recognized");
         }
 
@@ -237,7 +237,9 @@ final class JvfsPathMatcher implements PathMatcher {
                                         globPattern, i - 1);
                             }
 
-                            if ((c = next(globPattern, i++)) == EOL || c == ']') {
+                            c = next(globPattern, i++);
+
+                            if (c == EOL || c == ']') {
                                 break;
                             }
 
