@@ -205,33 +205,10 @@ final class JvfsAssertions {
     static void isEqual(final Object actual, final Object expected, final String name) {
 <span class="fc" id="L206">        validateName(name);</span>
 
-<span class="fc bfc" id="L208" title="All 2 branches covered.">        if (notEqual(actual, expected)) {</span>
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        if (JvfsObject.notEqual(actual, expected)) {</span>
 <span class="fc" id="L209">            throw new IllegalArgumentException(String.format(EQUAL_MESSAGE, name, expected));</span>
         }
 <span class="fc" id="L211">    }</span>
 
-    /**
-     * Determines if two objects are {@link Object#equals(java.lang.Object) equal} with
-     * respect of {@code null} values.
-     *
-     * @param a may be {@code null}
-     * @param b may be {@code null}
-     * @return {@code true} if a and b are equal, else {@code false}
-     */
-    static boolean equal(final Object a, final Object b) {
-<span class="pc bpc" id="L222" title="1 of 6 branches missed.">        return a == b || a != null &amp;&amp; a.equals(b);</span>
-    }
-
-    /**
-     * Determines if two objects are not {@link Object#equals(java.lang.Object) equal} with
-     * respect of {@code null} values.
-     *
-     * @param a may be {@code null}
-     * @param b may be {@code null}
-     * @return {@code true} if a and b are not equal, else {@code false}
-     */
-    static boolean notEqual(final Object a, final Object b) {
-<span class="fc bfc" id="L234" title="All 2 branches covered.">        return !equal(a, b);</span>
-    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

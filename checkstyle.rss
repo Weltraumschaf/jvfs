@@ -8,9 +8,9 @@
     <language>en-us</language>
     <copyright>&#169;2013</copyright>
     <item>
-      <title>File: 31,
-             Errors: 25,
-             Warnings: 2,
+      <title>File: 33,
+             Errors: 3,
+             Warnings: 0,
              Infos: 0
       </title>
             <link>http://weltraumschaf.github.io/jvfs//checkstyle.html</link>
@@ -99,6 +99,20 @@
               </tr>
                           <tr>
                 <td>
+                  <a href="http://weltraumschaf.github.io/jvfs//checkstyle.html#de.weltraumschaf.jvfs.IntegrationTest.java">de/weltraumschaf/jvfs/IntegrationTest.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  1
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="http://weltraumschaf.github.io/jvfs//checkstyle.html#de.weltraumschaf.jvfs.impl.JvfsPath.java">de/weltraumschaf/jvfs/impl/JvfsPath.java</a>
                 </td>
                 <td>
@@ -108,7 +122,7 @@
                   0
                 </td>
                 <td>
-                  22
+                  2
                 </td>
               </tr>
                           <tr>
@@ -427,10 +441,10 @@
                   0
                 </td>
                 <td>
-                  2
+                  0
                 </td>
                 <td>
-                  3
+                  0
                 </td>
               </tr>
                           <tr>
@@ -450,6 +464,20 @@
                           <tr>
                 <td>
                   <a href="http://weltraumschaf.github.io/jvfs//checkstyle.html#de.weltraumschaf.jvfs.impl.JvfsObject.java">de/weltraumschaf/jvfs/impl/JvfsObject.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="http://weltraumschaf.github.io/jvfs//checkstyle.html#de.weltraumschaf.jvfs.impl.JvfsObjectTest.java">de/weltraumschaf/jvfs/impl/JvfsObjectTest.java</a>
                 </td>
                 <td>
                   0

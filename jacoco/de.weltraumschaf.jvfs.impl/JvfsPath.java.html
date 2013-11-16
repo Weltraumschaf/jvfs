@@ -171,60 +171,62 @@ import java.util.Set;
     }
 
     /**
-     * Returns the number of occurrences of the specified character in the specified {@link String}, starting at the
+     * Returns the number of occurrences of the specified string in the specified {@link String}, starting at the
      * specified offset.
      *
      * @param string must not be {@code null}
-     * @param s
-     * @param offset
+     * @param searchedFor must not be {@code null}
+     * @param offset not negative
      * @return non negative number
      */
-    private int countOccurrences(final String string, final String s, int offset) {
-<span class="pc bpc" id="L183" title="2 of 4 branches missed.">        assert string != null : &quot;String must be specified&quot;;</span>
+    private int countOccurrences(final String string, final String searchedFor, int offset) {
+<span class="pc bpc" id="L183" title="2 of 4 branches missed.">        assert string != null : &quot;string must be specified&quot;;</span>
+<span class="pc bpc" id="L184" title="2 of 4 branches missed.">        assert searchedFor != null : &quot;searchedFor must be specified&quot;;</span>
+<span class="pc bpc" id="L185" title="2 of 4 branches missed.">        assert offset &gt;= 0 : &quot;offset must not be negative&quot;;</span>
 
-<span class="fc bfc" id="L185" title="All 2 branches covered.">        if ((offset = string.indexOf(s, offset)) == -1) {</span>
-<span class="fc" id="L186">            return 0;</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">        if ((offset = string.indexOf(searchedFor, offset)) == -1) {</span>
+<span class="fc" id="L188">            return 0;</span>
         } else {
-<span class="fc" id="L188">            return 1 + countOccurrences(string, s, offset + 1);</span>
+<span class="fc" id="L190">            return 1 + countOccurrences(string, searchedFor, offset + 1);</span>
         }
     }
 
     @Override
     public Path getName(int index) {
         // Precondition checks handled by subpath implementation.
-<span class="fc" id="L195">        return this.subpath(index, index + 1);</span>
+<span class="fc" id="L197">        return this.subpath(index, index + 1);</span>
     }
 
     @Override
     public Path subpath(int beginIndex, int endIndex) {
-<span class="fc" id="L200">        JvfsAssertions.greaterThanEqual(beginIndex, 0, &quot;beginIndex&quot;);</span>
-<span class="fc" id="L201">        JvfsAssertions.greaterThanEqual(endIndex, 0, &quot;endIndex&quot;);</span>
-<span class="fc" id="L202">        JvfsAssertions.lessThan(beginIndex, endIndex, &quot;beginIndex&quot;);</span>
+<span class="fc" id="L202">        JvfsAssertions.greaterThanEqual(beginIndex, 0, &quot;beginIndex&quot;);</span>
+<span class="fc" id="L203">        JvfsAssertions.greaterThanEqual(endIndex, 0, &quot;endIndex&quot;);</span>
+<span class="fc" id="L204">        JvfsAssertions.lessThan(beginIndex, endIndex, &quot;beginIndex&quot;);</span>
 
-<span class="fc" id="L204">        final List&lt;String&gt; tokens = tokenize(this);</span>
-<span class="fc" id="L205">        final int tokenCount = tokens.size();</span>
+<span class="fc" id="L206">        final List&lt;String&gt; tokens = tokenize(this);</span>
+<span class="fc" id="L207">        final int tokenCount = tokens.size();</span>
 
-<span class="pc bpc" id="L207" title="1 of 2 branches missed.">        if (beginIndex &gt;= tokenCount) {</span>
-<span class="nc" id="L208">            throw new IllegalArgumentException(&quot;Invalid begin index &quot; + endIndex + &quot; for &quot; + this.toString()</span>
+<span class="pc bpc" id="L209" title="1 of 2 branches missed.">        if (beginIndex &gt;= tokenCount) {</span>
+<span class="nc" id="L210">            throw new IllegalArgumentException(&quot;Invalid begin index &quot; + endIndex + &quot; for &quot; + this.toString()</span>
                     + &quot;; must be between 0 and &quot; + tokenCount + &quot; exclusive&quot;);
         }
 
-<span class="pc bpc" id="L212" title="1 of 2 branches missed.">        if (endIndex &gt; tokenCount) {</span>
-<span class="nc" id="L213">            throw new IllegalArgumentException(&quot;Invalid end index &quot; + endIndex + &quot; for &quot; + this.toString()</span>
+<span class="pc bpc" id="L214" title="1 of 2 branches missed.">        if (endIndex &gt; tokenCount) {</span>
+<span class="nc" id="L215">            throw new IllegalArgumentException(&quot;Invalid end index &quot; + endIndex + &quot; for &quot; + this.toString()</span>
                     + &quot;; must be between 0 and &quot; + tokenCount + &quot; inclusive&quot;);
         }
 
-<span class="fc" id="L217">        final StringBuilder buffer = new StringBuilder();</span>
+<span class="fc" id="L219">        final StringBuilder buffer = new StringBuilder();</span>
 
-<span class="fc bfc" id="L219" title="All 2 branches covered.">        for (int i = beginIndex; i &lt; endIndex; i++) {</span>
-<span class="fc bfc" id="L220" title="All 2 branches covered.">            if (i &gt; beginIndex) {</span>
-<span class="fc" id="L221">                buffer.append(DIR_SEP);</span>
+<span class="fc bfc" id="L221" title="All 2 branches covered.">        for (int i = beginIndex; i &lt; endIndex; i++) {</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">            if (i &gt; beginIndex) {</span>
+<span class="fc" id="L223">                buffer.append(DIR_SEP);</span>
             }
 
-<span class="fc" id="L224">            buffer.append(tokens.get(i));</span>
+<span class="fc" id="L226">            buffer.append(tokens.get(i));</span>
         }
 
-<span class="fc" id="L227">        return this.fromString(buffer.toString());</span>
+<span class="fc" id="L229">        return this.fromString(buffer.toString());</span>
     }
 
     /**
@@ -234,156 +236,156 @@ import java.util.Set;
      * @return never {@literal null}
      */
     private Path fromString(final String p) {
-<span class="fc" id="L237">        JvfsAssertions.notNull(p, &quot;path&quot;);</span>
-<span class="fc" id="L238">        return new JvfsPath(p, jvfs);</span>
+<span class="fc" id="L239">        JvfsAssertions.notNull(p, &quot;path&quot;);</span>
+<span class="fc" id="L240">        return new JvfsPath(p, jvfs);</span>
     }
 
     @Override
     public boolean startsWith(final Path other) {
-<span class="fc" id="L243">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
+<span class="fc" id="L245">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
 
-<span class="pc bpc" id="L245" title="1 of 2 branches missed.">        if (this.getFileSystem() != other.getFileSystem()) {</span>
-<span class="nc" id="L246">            return false;</span>
+<span class="pc bpc" id="L247" title="1 of 2 branches missed.">        if (this.getFileSystem() != other.getFileSystem()) {</span>
+<span class="nc" id="L248">            return false;</span>
         }
 
-<span class="fc" id="L249">        final List&lt;String&gt; ourTokens = tokenize(this);</span>
-<span class="fc" id="L250">        final List&lt;String&gt; otherTokens = tokenize((JvfsPath) other);</span>
+<span class="fc" id="L251">        final List&lt;String&gt; ourTokens = tokenize(this);</span>
+<span class="fc" id="L252">        final List&lt;String&gt; otherTokens = tokenize((JvfsPath) other);</span>
 
         // Inequal roots
-<span class="pc bpc" id="L253" title="3 of 4 branches missed.">        if (other.isAbsolute() &amp;&amp; !this.isAbsolute()) {</span>
-<span class="nc" id="L254">            return false;</span>
+<span class="pc bpc" id="L255" title="3 of 4 branches missed.">        if (other.isAbsolute() &amp;&amp; !this.isAbsolute()) {</span>
+<span class="nc" id="L256">            return false;</span>
         }
 
         // More names in the other Path than we have
-<span class="fc" id="L258">        final int otherTokensSize = otherTokens.size();</span>
-<span class="fc bfc" id="L259" title="All 2 branches covered.">        if (otherTokensSize &gt; ourTokens.size()) {</span>
-<span class="fc" id="L260">            return false;</span>
+<span class="fc" id="L260">        final int otherTokensSize = otherTokens.size();</span>
+<span class="fc bfc" id="L261" title="All 2 branches covered.">        if (otherTokensSize &gt; ourTokens.size()) {</span>
+<span class="fc" id="L262">            return false;</span>
         }
 
         // Ensure each of the other name elements match ours
-<span class="fc bfc" id="L264" title="All 2 branches covered.">        for (int i = 0; i &lt; otherTokensSize; i++) {</span>
-<span class="fc bfc" id="L265" title="All 2 branches covered.">            if (!otherTokens.get(i).equals(ourTokens.get(i))) {</span>
-<span class="fc" id="L266">                return false;</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">        for (int i = 0; i &lt; otherTokensSize; i++) {</span>
+<span class="fc bfc" id="L267" title="All 2 branches covered.">            if (!otherTokens.get(i).equals(ourTokens.get(i))) {</span>
+<span class="fc" id="L268">                return false;</span>
             }
         }
 
         // All conditions met
-<span class="fc" id="L271">        return true;</span>
+<span class="fc" id="L273">        return true;</span>
     }
 
     @Override
     public boolean startsWith(final String other) {
         // Precondition checks
-<span class="fc" id="L277">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
-<span class="fc" id="L278">        return this.startsWith(this.fromString(other));</span>
+<span class="fc" id="L279">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
+<span class="fc" id="L280">        return this.startsWith(this.fromString(other));</span>
     }
 
     @Override
     public boolean endsWith(final Path other) {
         // Precondition checks
-<span class="fc" id="L284">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
+<span class="fc" id="L286">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
 
         // Unequal FS? (also ensures that we can safely cast to this type later)
-<span class="pc bpc" id="L287" title="1 of 2 branches missed.">        if (this.getFileSystem() != other.getFileSystem()) {</span>
-<span class="nc" id="L288">            return false;</span>
+<span class="pc bpc" id="L289" title="1 of 2 branches missed.">        if (this.getFileSystem() != other.getFileSystem()) {</span>
+<span class="nc" id="L290">            return false;</span>
         }
 
-<span class="fc" id="L291">        final List&lt;String&gt; ourTokens = tokenize(this);</span>
-<span class="fc" id="L292">        final List&lt;String&gt; otherTokens = tokenize((JvfsPath) other);</span>
+<span class="fc" id="L293">        final List&lt;String&gt; ourTokens = tokenize(this);</span>
+<span class="fc" id="L294">        final List&lt;String&gt; otherTokens = tokenize((JvfsPath) other);</span>
 
         // Bigger than us, fails
-<span class="fc" id="L295">        final int numOtherTokens = otherTokens.size();</span>
-<span class="pc bpc" id="L296" title="1 of 2 branches missed.">        if (numOtherTokens &gt; ourTokens.size()) {</span>
-<span class="nc" id="L297">            return false;</span>
+<span class="fc" id="L297">        final int numOtherTokens = otherTokens.size();</span>
+<span class="pc bpc" id="L298" title="1 of 2 branches missed.">        if (numOtherTokens &gt; ourTokens.size()) {</span>
+<span class="nc" id="L299">            return false;</span>
         }
 
         // Difference in component size
-<span class="fc" id="L301">        final int differential = ourTokens.size() - numOtherTokens;</span>
+<span class="fc" id="L303">        final int differential = ourTokens.size() - numOtherTokens;</span>
         // Given an absolute? We must have the same number of elements.
-<span class="pc bpc" id="L303" title="3 of 4 branches missed.">        if (other.isAbsolute() &amp;&amp; differential != 0) {</span>
-<span class="nc" id="L304">            return false;</span>
+<span class="pc bpc" id="L305" title="3 of 4 branches missed.">        if (other.isAbsolute() &amp;&amp; differential != 0) {</span>
+<span class="nc" id="L306">            return false;</span>
         }
 
         // Compare all components
-<span class="fc bfc" id="L308" title="All 2 branches covered.">        for (int i = numOtherTokens - 1; i &gt;= 0; i--) {</span>
-<span class="fc bfc" id="L309" title="All 2 branches covered.">            if (!ourTokens.get(i + differential).equals(otherTokens.get(i))) {</span>
+<span class="fc bfc" id="L310" title="All 2 branches covered.">        for (int i = numOtherTokens - 1; i &gt;= 0; i--) {</span>
+<span class="fc bfc" id="L311" title="All 2 branches covered.">            if (!ourTokens.get(i + differential).equals(otherTokens.get(i))) {</span>
                 // Any tokens don't match, punt
-<span class="fc" id="L311">                return false;</span>
+<span class="fc" id="L313">                return false;</span>
             }
         }
 
         // All conditions met
-<span class="fc" id="L316">        return true;</span>
+<span class="fc" id="L318">        return true;</span>
     }
 
     @Override
     public boolean endsWith(final String other) {
-<span class="fc" id="L321">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
-<span class="fc" id="L322">        return this.endsWith(this.fromString(other));</span>
+<span class="fc" id="L323">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
+<span class="fc" id="L324">        return this.endsWith(this.fromString(other));</span>
     }
 
     @Override
     public Path normalize() {
-<span class="fc" id="L327">        final String normalizedString = JvfsPathUtil.normalize(tokenize(this), this.isAbsolute());</span>
-<span class="fc" id="L328">        return new JvfsPath(normalizedString, this.jvfs);</span>
+<span class="fc" id="L329">        final String normalizedString = JvfsPathUtil.normalize(tokenize(this), this.isAbsolute());</span>
+<span class="fc" id="L330">        return new JvfsPath(normalizedString, this.jvfs);</span>
     }
 
     @Override
     public Path resolve(final Path other) {
-<span class="nc" id="L333">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
+<span class="nc" id="L335">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
 
-<span class="nc bnc" id="L335" title="All 2 branches missed.">        if (other.isAbsolute()) {</span>
-<span class="nc" id="L336">            return other;</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">        if (other.isAbsolute()) {</span>
+<span class="nc" id="L338">            return other;</span>
         }
 
-<span class="nc bnc" id="L339" title="All 2 branches missed.">        if (other.toString().length() == 0) {</span>
-<span class="nc" id="L340">            return this;</span>
+<span class="nc bnc" id="L341" title="All 2 branches missed.">        if (other.toString().length() == 0) {</span>
+<span class="nc" id="L342">            return this;</span>
         }
 
         // Else join other to this
-<span class="nc" id="L344">        final StringBuilder sb = new StringBuilder(this.path);</span>
-<span class="nc bnc" id="L345" title="All 2 branches missed.">        if (!this.path.endsWith(DIR_SEP)) {</span>
-<span class="nc" id="L346">            sb.append(DIR_SEP);</span>
+<span class="nc" id="L346">        final StringBuilder sb = new StringBuilder(this.path);</span>
+<span class="nc bnc" id="L347" title="All 2 branches missed.">        if (!this.path.endsWith(DIR_SEP)) {</span>
+<span class="nc" id="L348">            sb.append(DIR_SEP);</span>
         }
-<span class="nc" id="L348">        sb.append(other.toString());</span>
+<span class="nc" id="L350">        sb.append(other.toString());</span>
 
-<span class="nc" id="L350">        return new JvfsPath(sb.toString(), this.jvfs);</span>
+<span class="nc" id="L352">        return new JvfsPath(sb.toString(), this.jvfs);</span>
     }
 
     @Override
     public Path resolve(final String other) {
         // Delegate
-<span class="nc" id="L356">        return this.resolve(this.fromString(other));</span>
+<span class="nc" id="L358">        return this.resolve(this.fromString(other));</span>
     }
 
     @Override
     public Path resolveSibling(final Path other) {
-<span class="nc" id="L361">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
-<span class="nc" id="L362">        final Path parent = getParent();</span>
-<span class="nc bnc" id="L363" title="All 2 branches missed.">        return (parent == null) ? other : parent.resolve(other);</span>
+<span class="nc" id="L363">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
+<span class="nc" id="L364">        final Path parent = getParent();</span>
+<span class="nc bnc" id="L365" title="All 2 branches missed.">        return (parent == null) ? other : parent.resolve(other);</span>
     }
 
     @Override
     public Path resolveSibling(final String other) {
         // Delegate
-<span class="nc" id="L369">        return this.resolveSibling(this.fromString(other));</span>
+<span class="nc" id="L371">        return this.resolveSibling(this.fromString(other));</span>
     }
 
     @Override
     public Path relativize(final Path other) {
-<span class="nc" id="L374">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
-<span class="nc bnc" id="L375" title="All 2 branches missed.">        if (!(other instanceof JvfsPath)) {</span>
-<span class="nc" id="L376">            throw new IllegalArgumentException(&quot;Can only relativize paths of type &quot;</span>
+<span class="nc" id="L376">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
+<span class="nc bnc" id="L377" title="All 2 branches missed.">        if (!(other instanceof JvfsPath)) {</span>
+<span class="nc" id="L378">            throw new IllegalArgumentException(&quot;Can only relativize paths of type &quot;</span>
                     + JvfsPath.class.getSimpleName());
         }
 
         // Equal paths, return empty Path
-<span class="nc bnc" id="L381" title="All 2 branches missed.">        if (this.equals(other)) {</span>
-<span class="nc" id="L382">            return new JvfsPath(&quot;&quot;, this.jvfs);</span>
+<span class="nc bnc" id="L383" title="All 2 branches missed.">        if (this.equals(other)) {</span>
+<span class="nc" id="L384">            return new JvfsPath(&quot;&quot;, this.jvfs);</span>
         }
 
         // Recursive relativization
-<span class="nc" id="L386">        return relativizeCommonRoot(this, this, other, other, 0);</span>
+<span class="nc" id="L388">        return relativizeCommonRoot(this, this, other, other, 0);</span>
     }
 
     /**
@@ -396,7 +398,7 @@ import java.util.Set;
             final WatchService watcher,
             final WatchEvent.Kind&lt;?&gt;[]  events,
             final WatchEvent.Modifier ... modifiers) throws IOException {
-<span class="fc" id="L399">        throw new UnsupportedOperationException(&quot;JVFS Paths do not support registration with a watch service!&quot;);</span>
+<span class="fc" id="L401">        throw new UnsupportedOperationException(&quot;JVFS Paths do not support registration with a watch service!&quot;);</span>
     }
 
     /**
@@ -406,49 +408,49 @@ import java.util.Set;
      */
     @Override
     public WatchKey register(WatchService watcher, WatchEvent.Kind&lt;?&gt;... events) throws IOException {
-<span class="nc" id="L409">        return this.register(watcher, events, (WatchEvent.Modifier) null);</span>
+<span class="nc" id="L411">        return this.register(watcher, events, (WatchEvent.Modifier) null);</span>
     }
 
     @Override
     public URI toUri() {
-<span class="fc" id="L414">        String location = JvfsFileSystems.getRootUri().toString();</span>
+<span class="fc" id="L416">        String location = JvfsFileSystems.getRootUri().toString();</span>
 
         // Compose a new URI location, stripping out the extra &quot;/&quot; root idabsolute
-<span class="pc bpc" id="L417" title="1 of 2 branches missed.">        if (isAbsolute()) {</span>
-<span class="nc" id="L418">            location += this.toString().substring(1);</span>
+<span class="pc bpc" id="L419" title="1 of 2 branches missed.">        if (isAbsolute()) {</span>
+<span class="nc" id="L420">            location += this.toString().substring(1);</span>
         } else {
-<span class="fc" id="L420">            location += this.toString();</span>
+<span class="fc" id="L422">            location += this.toString();</span>
         }
 
-<span class="fc" id="L423">        return URI.create(location);</span>
+<span class="fc" id="L425">        return URI.create(location);</span>
     }
 
     @Override
     public Path toAbsolutePath() {
         // Already absolute?
-<span class="nc bnc" id="L429" title="All 2 branches missed.">        if (this.isAbsolute()) {</span>
-<span class="nc" id="L430">            return this;</span>
+<span class="nc bnc" id="L431" title="All 2 branches missed.">        if (this.isAbsolute()) {</span>
+<span class="nc" id="L432">            return this;</span>
         }
 
         // Else construct a new absolute path and normalize it
-<span class="nc" id="L434">        final Path absolutePath = new JvfsPath(DIR_SEP + this.path, this.jvfs);</span>
-<span class="nc" id="L435">        return absolutePath.normalize();</span>
+<span class="nc" id="L436">        final Path absolutePath = new JvfsPath(DIR_SEP + this.path, this.jvfs);</span>
+<span class="nc" id="L437">        return absolutePath.normalize();</span>
     }
 
     @Override
     public Path toRealPath(final LinkOption... options) throws IOException {
-<span class="nc" id="L440">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+<span class="nc" id="L442">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
     }
 
     @Override
     public File toFile() {
         // XXX Consider returning own implementation, because File will may be circumvent JVFS.
-<span class="nc" id="L446">        return new File(toString());</span>
+<span class="nc" id="L448">        return new File(toString());</span>
     }
 
     @Override
     public Iterator&lt;Path&gt; iterator() {
-<span class="nc" id="L451">        return new Iterator&lt;Path&gt;() {</span>
+<span class="nc" id="L453">        return new Iterator&lt;Path&gt;() {</span>
             /**
              * Current position of the iterator.
              */
@@ -456,64 +458,64 @@ import java.util.Set;
 
             @Override
             public boolean hasNext() {
-<span class="nc bnc" id="L459" title="All 2 branches missed.">                return index &lt; getNameCount();</span>
+<span class="nc bnc" id="L461" title="All 2 branches missed.">                return index &lt; getNameCount();</span>
             }
 
             @Override
             public Path next() {
-<span class="nc bnc" id="L464" title="All 2 branches missed.">                if (index &lt; getNameCount()) {</span>
-<span class="nc" id="L465">                    final Path result = getName(index);</span>
-<span class="nc" id="L466">                    index++;</span>
-<span class="nc" id="L467">                    return result;</span>
+<span class="nc bnc" id="L466" title="All 2 branches missed.">                if (index &lt; getNameCount()) {</span>
+<span class="nc" id="L467">                    final Path result = getName(index);</span>
+<span class="nc" id="L468">                    index++;</span>
+<span class="nc" id="L469">                    return result;</span>
                 } else {
-<span class="nc" id="L469">                    throw new NoSuchElementException();</span>
+<span class="nc" id="L471">                    throw new NoSuchElementException();</span>
                 }
             }
 
             @Override
             public void remove() {
-<span class="nc" id="L475">                throw new UnsupportedOperationException();</span>
+<span class="nc" id="L477">                throw new UnsupportedOperationException();</span>
             }
         };
     }
 
     @Override
     public int compareTo(final Path other) {
-<span class="nc" id="L482">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
-<span class="nc" id="L483">        return this.toString().compareTo(other.toString());</span>
+<span class="nc" id="L484">        JvfsAssertions.notNull(other, &quot;other&quot;);</span>
+<span class="nc" id="L485">        return this.toString().compareTo(other.toString());</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L488">        return this.path;</span>
+<span class="fc" id="L490">        return this.path;</span>
     }
 
     @Override
     public int hashCode() {
-<span class="nc" id="L493">        return JvfsObject.hashCode(jvfs.hashCode(), path.hashCode());</span>
+<span class="nc" id="L495">        return JvfsObject.hashCode(jvfs.hashCode(), path.hashCode());</span>
     }
 
     @Override
     public boolean equals(final Object obj) {
-<span class="pc bpc" id="L498" title="1 of 2 branches missed.">        if (!(obj instanceof JvfsPath)) {</span>
-<span class="nc" id="L499">            return false;</span>
+<span class="pc bpc" id="L500" title="1 of 2 branches missed.">        if (!(obj instanceof JvfsPath)) {</span>
+<span class="nc" id="L501">            return false;</span>
         }
 
-<span class="fc" id="L502">        final JvfsPath other = (JvfsPath) obj;</span>
+<span class="fc" id="L504">        final JvfsPath other = (JvfsPath) obj;</span>
 
-<span class="pc bpc" id="L504" title="1 of 2 branches missed.">        if (this.jvfs != other.jvfs) {</span>
-<span class="nc" id="L505">            return false;</span>
+<span class="pc bpc" id="L506" title="1 of 2 branches missed.">        if (this.jvfs != other.jvfs) {</span>
+<span class="nc" id="L507">            return false;</span>
         }
 
-<span class="pc bpc" id="L508" title="1 of 2 branches missed.">        if (path == null) {</span>
-<span class="nc bnc" id="L509" title="All 2 branches missed.">            if (other.path != null) {</span>
-<span class="nc" id="L510">                return false;</span>
+<span class="pc bpc" id="L510" title="1 of 2 branches missed.">        if (path == null) {</span>
+<span class="nc bnc" id="L511" title="All 2 branches missed.">            if (other.path != null) {</span>
+<span class="nc" id="L512">                return false;</span>
             }
-<span class="pc bpc" id="L512" title="1 of 2 branches missed.">        } else if (!path.equals(other.path)) {</span>
-<span class="nc" id="L513">            return false;</span>
+<span class="pc bpc" id="L514" title="1 of 2 branches missed.">        } else if (!path.equals(other.path)) {</span>
+<span class="nc" id="L515">            return false;</span>
         }
 
-<span class="fc" id="L516">        return true;</span>
+<span class="fc" id="L518">        return true;</span>
     }
 
     /**
@@ -523,109 +525,113 @@ import java.util.Set;
      * @return never {@literal null} may be empty collection
      */
     static List&lt;String&gt; tokenize(final JvfsPath path) {
-<span class="fc" id="L526">        return JvfsPathUtil.tokenize(path.toString());</span>
+<span class="fc" id="L528">        return JvfsPathUtil.tokenize(path.toString());</span>
     }
 
     /**
      * Relativizes the paths recursively.
      *
-     * @param thisOriginal
-     * @param thisCurrent
-     * @param otherOriginal
-     * @param otherCurrent
-     * @param backupCount
+     * @param thisOriginal must not be {@code null}
+     * @param thisCurrent must not be {@code null}
+     * @param otherOriginal must not be {@code null}
+     * @param otherCurrent must not be {@code null}
+     * @param backupCount must not be negative
      * @return never {@code null}
      */
-    private static JvfsPath relativizeCommonRoot(final JvfsPath thisOriginal, final Path thisCurrent,
-            final Path otherOriginal, Path otherCurrent, final int backupCount) {
+    private static JvfsPath relativizeCommonRoot(
+        final JvfsPath thisOriginal,
+        final Path thisCurrent,
+        final Path otherOriginal,
+        Path otherCurrent,
+        final int backupCount) {
         // Preconditions
-<span class="nc bnc" id="L542" title="All 4 branches missed.">        assert thisOriginal != null;</span>
-<span class="nc bnc" id="L543" title="All 4 branches missed.">        assert thisCurrent != null;</span>
-<span class="nc bnc" id="L544" title="All 4 branches missed.">        assert otherOriginal != null;</span>
-<span class="nc bnc" id="L545" title="All 4 branches missed.">        assert otherCurrent != null;</span>
-<span class="nc bnc" id="L546" title="All 4 branches missed.">        assert backupCount &gt;= 0;</span>
+<span class="nc bnc" id="L548" title="All 4 branches missed.">        assert thisOriginal != null : &quot;thisOriginal must be defined&quot;;</span>
+<span class="nc bnc" id="L549" title="All 4 branches missed.">        assert thisCurrent != null : &quot;thisCurrent must be defined&quot;;</span>
+<span class="nc bnc" id="L550" title="All 4 branches missed.">        assert otherOriginal != null : &quot;otherOriginal must be defined&quot;;</span>
+<span class="nc bnc" id="L551" title="All 4 branches missed.">        assert otherCurrent != null : &quot;otherCurrent must be defined&quot;;</span>
+<span class="nc bnc" id="L552" title="All 4 branches missed.">        assert backupCount &gt;= 0 : &quot;backupCount must not be negative&quot;;</span>
 
         // Do we yet have a common root?
-<span class="nc bnc" id="L549" title="All 2 branches missed.">        if (!otherCurrent.startsWith(thisCurrent)) {</span>
+<span class="nc bnc" id="L555" title="All 2 branches missed.">        if (!otherCurrent.startsWith(thisCurrent)) {</span>
             // Back up until we do
-<span class="nc" id="L551">            final Path otherParent = otherCurrent.getParent();</span>
-<span class="nc" id="L552">            final JvfsPath thisParent = (JvfsPath) thisCurrent.getParent();</span>
+<span class="nc" id="L557">            final Path otherParent = otherCurrent.getParent();</span>
+<span class="nc" id="L558">            final JvfsPath thisParent = (JvfsPath) thisCurrent.getParent();</span>
 
-<span class="nc bnc" id="L554" title="All 4 branches missed.">            if (otherParent != null &amp;&amp; thisParent != null) {</span>
-<span class="nc" id="L555">                return relativizeCommonRoot(thisOriginal, thisParent, otherOriginal, otherParent, backupCount + 1);</span>
+<span class="nc bnc" id="L560" title="All 4 branches missed.">            if (otherParent != null &amp;&amp; thisParent != null) {</span>
+<span class="nc" id="L561">                return relativizeCommonRoot(thisOriginal, thisParent, otherOriginal, otherParent, backupCount + 1);</span>
             } else {
-<span class="nc" id="L557">                throw new IllegalArgumentException(&quot;No common components&quot;);</span>
+<span class="nc" id="L563">                throw new IllegalArgumentException(&quot;No common components&quot;);</span>
             }
         }
 
         // Common root. Now relativize that.
-<span class="nc" id="L562">        final List&lt;String&gt; thisTokens = tokenize(thisOriginal);</span>
-<span class="nc" id="L563">        final List&lt;String&gt; otherTokens = tokenize((JvfsPath) otherOriginal);</span>
-<span class="nc" id="L564">        final int numOtherTokens = otherTokens.size();</span>
-<span class="nc" id="L565">        final int numToTake = otherTokens.size() - thisTokens.size();</span>
-<span class="nc" id="L566">        final StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L568">        final List&lt;String&gt; thisTokens = tokenize(thisOriginal);</span>
+<span class="nc" id="L569">        final List&lt;String&gt; otherTokens = tokenize((JvfsPath) otherOriginal);</span>
+<span class="nc" id="L570">        final int numOtherTokens = otherTokens.size();</span>
+<span class="nc" id="L571">        final int numToTake = otherTokens.size() - thisTokens.size();</span>
+<span class="nc" id="L572">        final StringBuilder sb = new StringBuilder();</span>
 
-<span class="nc bnc" id="L568" title="All 2 branches missed.">        for (int i = 0; i &lt; backupCount; i++) {</span>
-<span class="nc" id="L569">            sb.append(DIR_UP);</span>
-<span class="nc" id="L570">            sb.append(DIR_SEP);</span>
+<span class="nc bnc" id="L574" title="All 2 branches missed.">        for (int i = 0; i &lt; backupCount; i++) {</span>
+<span class="nc" id="L575">            sb.append(DIR_UP);</span>
+<span class="nc" id="L576">            sb.append(DIR_SEP);</span>
         }
 
-<span class="nc" id="L573">        final int startCounter = numOtherTokens - numToTake - backupCount;</span>
-<span class="nc" id="L574">        final int stopCounter = numOtherTokens - 1;</span>
+<span class="nc" id="L579">        final int startCounter = numOtherTokens - numToTake - backupCount;</span>
+<span class="nc" id="L580">        final int stopCounter = numOtherTokens - 1;</span>
 
-<span class="nc bnc" id="L576" title="All 2 branches missed.">        for (int i = startCounter; i &lt;= stopCounter; i++) {</span>
-<span class="nc bnc" id="L577" title="All 2 branches missed.">            if (i &gt; startCounter) {</span>
-<span class="nc" id="L578">                sb.append(DIR_SEP);</span>
+<span class="nc bnc" id="L582" title="All 2 branches missed.">        for (int i = startCounter; i &lt;= stopCounter; i++) {</span>
+<span class="nc bnc" id="L583" title="All 2 branches missed.">            if (i &gt; startCounter) {</span>
+<span class="nc" id="L584">                sb.append(DIR_SEP);</span>
             }
-<span class="nc" id="L580">            sb.append(otherTokens.get(i));</span>
+<span class="nc" id="L586">            sb.append(otherTokens.get(i));</span>
         }
 
-<span class="nc" id="L583">        return new JvfsPath(sb.toString(), thisOriginal.jvfs);</span>
+<span class="nc" id="L589">        return new JvfsPath(sb.toString(), thisOriginal.jvfs);</span>
     }
 
     /**
      * Create new file channel.
      *
-     * @param options
-     * @param attrs
+     * @param options options specifying how the file is opened
+     * @param attrs an optional list of file attributes to set atomically when creating the file
      * @return never {@code null}
      * @throws IOException if path does not exist
      */
     FileChannel newFileChannel(final Set&lt;? extends OpenOption&gt; options, final FileAttribute&lt;?&gt;... attrs)
         throws IOException {
-<span class="fc" id="L596">        return jvfs.newFileChannel(path, options, attrs);</span>
+<span class="fc" id="L602">        return jvfs.newFileChannel(path, options, attrs);</span>
     }
 
     /**
      * Create new byte channel.
      *
-     * @param options
-     * @param attrs
+     * @param options options specifying how the file is opened
+     * @param attrs an optional list of file attributes to set atomically when creating the file
      * @return never {@code null}
      */
     SeekableByteChannel newByteChannel(final Set&lt;? extends OpenOption&gt; options, final FileAttribute&lt;?&gt;... attrs) {
-<span class="fc" id="L607">        return jvfs.newByteChannel(path, options, attrs);</span>
+<span class="fc" id="L613">        return jvfs.newByteChannel(path, options, attrs);</span>
     }
 
     /**
      * Create new directory channel.
      *
-     * @param filter
+     * @param filter the directory stream filter
      * @return never {@code null}
      */
     DirectoryStream&lt;Path&gt; newDirectoryStream(final DirectoryStream.Filter&lt;? super Path&gt; filter) {
-<span class="fc" id="L617">        return new JvfsDirectoryStream(this, filter);</span>
+<span class="fc" id="L623">        return new JvfsDirectoryStream(this, filter);</span>
     }
 
     /**
      * Create directory.
      *
-     * @param attrs
+     * @param attrs an optional list of file attributes to set atomically when creating the directory
      * @throws IOException if path does not exist
      */
     void createDirectory(final FileAttribute&lt;?&gt;... attrs) throws IOException {
-<span class="fc" id="L627">        jvfs.createDirectory(path, attrs);</span>
-<span class="fc" id="L628">    }</span>
+<span class="fc" id="L633">        jvfs.createDirectory(path, attrs);</span>
+<span class="fc" id="L634">    }</span>
 
     /**
      * Delete path.
@@ -633,52 +639,84 @@ import java.util.Set;
      * @throws IOException if path does not exist
      */
     void delete() throws IOException {
-<span class="fc" id="L636">        jvfs.delete(path);</span>
-<span class="fc" id="L637">    }</span>
+<span class="fc" id="L642">        jvfs.delete(path);</span>
+<span class="fc" id="L643">    }</span>
 
     /**
      * Copy path.
      *
      * @param target must not be {@code null}
-     * @param options
+     * @param options options specifying how the copy should be done
      * @throws IOException if path does not exist
      */
     void copy(final JvfsPath target, final CopyOption... options) throws IOException {
-<span class="fc" id="L647">        JvfsAssertions.notNull(target, &quot;target&quot;);</span>
-<span class="fc" id="L648">        jvfs.copy(path, target.toString(), options);</span>
-<span class="fc" id="L649">    }</span>
+<span class="fc" id="L653">        JvfsAssertions.notNull(target, &quot;target&quot;);</span>
+<span class="fc" id="L654">        jvfs.copy(path, target.toString(), options);</span>
+<span class="fc" id="L655">    }</span>
 
     /**
      * Move path.
      *
      * @param target must not be {@code null}
-     * @param options
+     * @param options options specifying how the move should be done
      * @throws IOException if path does not exist
      */
     void move(final JvfsPath target, final CopyOption... options) throws IOException {
-<span class="fc" id="L659">        JvfsAssertions.notNull(target, &quot;target&quot;);</span>
-<span class="fc" id="L660">        jvfs.move(path, target.toString(), options);</span>
-<span class="fc" id="L661">    }</span>
+<span class="fc" id="L665">        JvfsAssertions.notNull(target, &quot;target&quot;);</span>
+<span class="fc" id="L666">        jvfs.move(path, target.toString(), options);</span>
+<span class="fc" id="L667">    }</span>
 
+    /**
+     * Tests if two paths locate the same file.
+     *
+     * @param other may be {@code null}
+     * @return {@code true} if {@link Object#equals(java.lang.Object) equal}, else {@code false}
+     */
     boolean isSameFile(final Path other) {
-<span class="fc" id="L664">        return equals(other);</span>
+<span class="fc" id="L676">        return equals(other);</span>
     }
 
+    /**
+     * Tells whether or not a file is considered &lt;em&gt;hidden&lt;/em&gt;.
+     *
+     * @return {@code true} if the file is considered hidden
+     * @throws IOException if path does not exist
+     */
     boolean isHidden() throws IOException {
-<span class="fc" id="L668">        return jvfs.isHidden(path);</span>
+<span class="fc" id="L686">        return jvfs.isHidden(path);</span>
     }
 
+    /**
+     * Get the file store.
+     *
+     * @return never {@code nul}
+     */
     FileStore getFileStore() {
-<span class="fc" id="L672">        return jvfs.getFileStore();</span>
+<span class="fc" id="L695">        return jvfs.getFileStore();</span>
     }
 
+    /**
+     * Checks the existence, and optionally the accessibility, of a file.
+     *
+     * @param modes The access modes to check; may have zero elements
+     * @throws IOException if path does not exist
+     */
     void checkAccess(final AccessMode... modes) throws IOException {
-<span class="fc" id="L676">        jvfs.checkAccess(path, modes);</span>
-<span class="fc" id="L677">    }</span>
+<span class="fc" id="L705">        jvfs.checkAccess(path, modes);</span>
+<span class="fc" id="L706">    }</span>
 
+    /**
+     * Updates any or all of the file's last modified time, last access time,
+     * and create time attributes.
+     *
+     * @param mtime may be {@code null}, attribute is untouched if {@code null}
+     * @param atime may be {@code null}, attribute is untouched if {@code null}
+     * @param ctime may be {@code null}, attribute is untouched if {@code null}
+     * @throws IOException if path does not exist
+     */
     void setTimes(final FileTime mtime, final FileTime atime, final FileTime ctime) throws IOException {
-<span class="fc" id="L680">        jvfs.setTimes(path, mtime, atime, ctime);</span>
-<span class="fc" id="L681">    }</span>
+<span class="fc" id="L718">        jvfs.setTimes(path, mtime, atime, ctime);</span>
+<span class="fc" id="L719">    }</span>
 
     /**
      * Get all basic attributes.
@@ -687,13 +725,13 @@ import java.util.Set;
      * @throws IOException if path does not exist
      */
     BasicFileAttributes getAttributes() throws IOException {
-<span class="fc" id="L690">        final JvfsFileAttributes attrs = jvfs.getFileAttributes(path);</span>
+<span class="fc" id="L728">        final JvfsFileAttributes attrs = jvfs.getFileAttributes(path);</span>
 
-<span class="pc bpc" id="L692" title="1 of 2 branches missed.">        if (attrs == null) {</span>
-<span class="nc" id="L693">            throw new NoSuchFileException(path);</span>
+<span class="pc bpc" id="L730" title="1 of 2 branches missed.">        if (attrs == null) {</span>
+<span class="nc" id="L731">            throw new NoSuchFileException(path);</span>
         }
 
-<span class="fc" id="L696">        return attrs;</span>
+<span class="fc" id="L734">        return attrs;</span>
     }
 
     /**
@@ -706,8 +744,8 @@ import java.util.Set;
      * @throws IOException IOException if file does not exist
      */
     Map&lt;String, Object&gt; readAttributes(final String attributes, final LinkOption... options) throws IOException {
-<span class="nc" id="L709">        final JvfsFileAttributeView view = new JvfsFileAttributeView(this);</span>
-<span class="nc" id="L710">        return view.readAttributes(attributes);</span>
+<span class="nc" id="L747">        final JvfsFileAttributeView view = new JvfsFileAttributeView(this);</span>
+<span class="nc" id="L748">        return view.readAttributes(attributes);</span>
     }
 
     /**
@@ -719,8 +757,8 @@ import java.util.Set;
      * @throws IOException IOException if file does not exist
      */
     void setAttribute(final String attribute, final Object value, final LinkOption... options) throws IOException {
-<span class="nc" id="L722">        final JvfsFileAttributeView view = new JvfsFileAttributeView(this);</span>
-<span class="nc" id="L723">        view.setAttribute(attribute, value);</span>
-<span class="nc" id="L724">    }</span>
+<span class="nc" id="L760">        final JvfsFileAttributeView view = new JvfsFileAttributeView(this);</span>
+<span class="nc" id="L761">        view.setAttribute(attribute, value);</span>
+<span class="nc" id="L762">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>
