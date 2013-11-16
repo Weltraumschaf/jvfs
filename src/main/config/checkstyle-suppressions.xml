@@ -17,11 +17,11 @@
     "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 <suppressions>
     <!-- JvfsFileSystem -->
-    <suppress checks="ClassFanOutComplexity" file=".*JvfsFileSystem\.java$"/>
-    <suppress checks="ClassDataAbstractionCoupling" file=".*JvfsFileSystem\.java$"/>
+    <suppress checks="ClassFanOutComplexity" files=".*JvfsFileSystem\.java$"/>
+    <suppress checks="ClassDataAbstractionCoupling" files=".*JvfsFileSystem\.java$"/>
     <!-- JvfsFileSystemProvider -->
-    <suppress checks="ClassFanOutComplexity" file=".*JvfsFileSystemProvider\.java$"/>
-    <suppress checks="ClassDataAbstractionCoupling" file=".*JvfsFileSystemProvider\.java$"/>
+    <suppress checks="ClassFanOutComplexity" files=".*JvfsFileSystemProvider\.java$"/>
+    <suppress checks="ClassDataAbstractionCoupling" files=".*JvfsFileSystemProvider\.java$"/>
     <!-- JvfsPath -->
     <suppress checks="ClassFanOutComplexity" file=".*JvfsPath\.java$"/>
     <!-- Suppressions for unit testing code -->
