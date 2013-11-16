@@ -44,7 +44,7 @@ final class JvfsPathMatcher implements PathMatcher {
     /**
      * Indicates end of line.
      */
-    private static char EOL = 0;
+    private static final char EOL = 0;
     /**
      * Ready to use compiled pattern.
      */
@@ -67,6 +67,10 @@ final class JvfsPathMatcher implements PathMatcher {
         return pattern.matcher(path.toString()).matches();
     }
 
+    String getPattern() {
+        return pattern.pattern();
+    }
+
     /**
      * Creates a new matcher.
      *
@@ -76,7 +80,7 @@ final class JvfsPathMatcher implements PathMatcher {
      * @param syntaxAndPattern must not be {@code null} or empty
      * @return never {@code null}
      */
-    static PathMatcher newMatcher(final String syntaxAndPattern) {
+    static JvfsPathMatcher newMatcher(final String syntaxAndPattern) {
         JvfsAssertions.notEmpty(syntaxAndPattern, "syntaxAndPattern");
         final int pos = syntaxAndPattern.indexOf(':');
 
@@ -84,19 +88,20 @@ final class JvfsPathMatcher implements PathMatcher {
             throw new IllegalArgumentException(syntaxAndPattern);
         }
 
-        final String syntax = syntaxAndPattern.substring(0, pos);
-        final String input = syntaxAndPattern.substring(pos + 1);
+        final String syntax = syntaxAndPattern.substring(0, pos).trim();
+        final String input = syntaxAndPattern.substring(pos + 1).trim();
         final String expr;
 
-        if (syntax.equals(GLOB_SYNTAX)) {
-            expr = toRegexPattern(input);
-        } else {
-            if (syntax.equals(REGEX_SYNTAX)) {
+        switch (syntax) {
+            case GLOB_SYNTAX:
+                expr = toRegexPattern(input);
+                break;
+            case REGEX_SYNTAX:
                 expr = input;
-            } else {
-                throw new UnsupportedOperationException("Syntax '" + syntax
+                break;
+                default:
+                    throw new UnsupportedOperationException("Syntax '" + syntax
                         + "' not recognized");
-            }
         }
 
         return new JvfsPathMatcher(expr);
