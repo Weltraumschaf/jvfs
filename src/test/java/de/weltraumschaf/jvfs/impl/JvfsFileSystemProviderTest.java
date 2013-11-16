@@ -168,7 +168,7 @@ public class JvfsFileSystemProviderTest {
         final FileAttributeView view = sut.getFileAttributeView(path, null);
         assertThat(view, is(not(nullValue())));
         assertThat(view, is(instanceOf(JvfsFileAttributeView.class)));
-        assertThat(((JvfsFileAttributeView)view).getPath(), is(sameInstance(path)));
+        assertThat(((JvfsFileAttributeView) view).getPath(), is(sameInstance(path)));
     }
 
     @Test

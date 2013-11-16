@@ -67,6 +67,11 @@ final class JvfsPathMatcher implements PathMatcher {
         return pattern.matcher(path.toString()).matches();
     }
 
+    /**
+     * Get the compiled Java Regex pattern as string.
+     *
+     * @return never {@code null}
+     */
     String getPattern() {
         return pattern.pattern();
     }
@@ -75,7 +80,7 @@ final class JvfsPathMatcher implements PathMatcher {
      * Creates a new matcher.
      *
      * Syntax for parameter: {@code "SYNTAX:EXPRESSION"}. For syntax use either {@link #GLOB_SYNTAX} or
-     * {@link#REGEX_SYNTAX}. As expression the according glob or regex.
+     * {@link #REGEX_SYNTAX}. As expression the according glob or Regex.
      *
      * @param syntaxAndPattern must not be {@code null} or empty
      * @return never {@code null}
@@ -118,10 +123,10 @@ final class JvfsPathMatcher implements PathMatcher {
     }
 
     /**
-     * Determines if given character is a regex syntax meta character.
+     * Determines if given character is a Regex syntax meta character.
      *
      * @param c any character
-     * @return {@code true} if it is a regex meta character, else {@code false}
+     * @return {@code true} if it is a Regex meta character, else {@code false}
      */
     private static boolean isRegexMeta(char c) {
         return REGEX_META_CHARACTERS.indexOf(c) != -1;
@@ -148,7 +153,7 @@ final class JvfsPathMatcher implements PathMatcher {
     }
 
     /**
-     * Creates a regex pattern from the given glob expression.
+     * Creates a Regex pattern from the given glob expression.
      *
      * @param globPattern must not be {@literal null}
      * @return never {@literal null}

@@ -50,7 +50,7 @@ public class JvfsFileAttributeViewTest {
 
     @Before
     public void setUpMocks() throws IOException {
-        when(fs.getFileAttributes(pathname)).thenReturn(attributes);;
+        when(fs.getFileAttributes(pathname)).thenReturn(attributes);
     }
 
     @Test
@@ -169,7 +169,7 @@ public class JvfsFileAttributeViewTest {
     @Test
     @SuppressWarnings("unchecked")
     public void readAttributes_byNames_wildcard() throws IOException {
-        final Map <String, Object> attrs = sut.readAttributes("*");
+        final Map<String, Object> attrs = sut.readAttributes("*");
         assertThat(attrs.size(), is(9));
         assertThat(attrs, allOf(
             hasEntry("lastModifiedTime", (Object) FileTime.from(0L, TimeUnit.SECONDS)),

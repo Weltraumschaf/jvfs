@@ -11,7 +11,6 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
-import java.nio.file.PathMatcher;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
