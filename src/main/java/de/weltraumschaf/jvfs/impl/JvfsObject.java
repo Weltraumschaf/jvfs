@@ -19,7 +19,15 @@ import java.util.Arrays;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-public class JvfsObject {
+final class JvfsObject {
+
+    /**
+     * Hidden for pure static class.
+     */
+    private JvfsObject() {
+        super();
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Handy method to calculate hash code.

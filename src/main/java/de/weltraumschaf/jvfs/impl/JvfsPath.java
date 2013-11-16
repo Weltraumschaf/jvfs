@@ -359,7 +359,7 @@ class JvfsPath implements Path {
     @Override
     public Path resolveSibling(final Path other) {
         JvfsAssertions.notNull(other, "other");
-        Path parent = getParent();
+        final Path parent = getParent();
         return (parent == null) ? other : parent.resolve(other);
     }
 
@@ -535,7 +535,7 @@ class JvfsPath implements Path {
      * @param otherOriginal
      * @param otherCurrent
      * @param backupCount
-     * @return
+     * @return never {@code null}
      */
     private static JvfsPath relativizeCommonRoot(final JvfsPath thisOriginal, final Path thisCurrent,
             final Path otherOriginal, Path otherCurrent, final int backupCount) {
@@ -584,31 +584,80 @@ class JvfsPath implements Path {
         return new JvfsPath(sb.toString(), thisOriginal.jvfs);
     }
 
-    FileChannel newFileChannel(final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) throws IOException {
+    /**
+     * Create new file channel.
+     *
+     * @param options
+     * @param attrs
+     * @return never {@code null}
+     * @throws IOException if path does not exist
+     */
+    FileChannel newFileChannel(final Set<? extends OpenOption> options, final FileAttribute<?>... attrs)
+        throws IOException {
         return jvfs.newFileChannel(path, options, attrs);
     }
 
+    /**
+     * Create new byte channel.
+     *
+     * @param options
+     * @param attrs
+     * @return never {@code null}
+     */
     SeekableByteChannel newByteChannel(final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) {
         return jvfs.newByteChannel(path, options, attrs);
     }
 
+    /**
+     * Create new directory channel.
+     *
+     * @param filter
+     * @return never {@code null}
+     */
     DirectoryStream<Path> newDirectoryStream(final DirectoryStream.Filter<? super Path> filter) {
         return new JvfsDirectoryStream(this, filter);
     }
 
+    /**
+     * Create directory.
+     *
+     * @param attrs
+     * @throws IOException if path does not exist
+     */
     void createDirectory(final FileAttribute<?>... attrs) throws IOException {
         jvfs.createDirectory(path, attrs);
     }
 
+    /**
+     * Delete path.
+     *
+     * @throws IOException if path does not exist
+     */
     void delete() throws IOException {
         jvfs.delete(path);
     }
 
+    /**
+     * Copy path.
+     *
+     * @param target must not be {@code null}
+     * @param options
+     * @throws IOException if path does not exist
+     */
     void copy(final JvfsPath target, final CopyOption... options) throws IOException {
+        JvfsAssertions.notNull(target, "target");
         jvfs.copy(path, target.toString(), options);
     }
 
+    /**
+     * Move path.
+     *
+     * @param target must not be {@code null}
+     * @param options
+     * @throws IOException if path does not exist
+     */
     void move(final JvfsPath target, final CopyOption... options) throws IOException {
+        JvfsAssertions.notNull(target, "target");
         jvfs.move(path, target.toString(), options);
     }
 
