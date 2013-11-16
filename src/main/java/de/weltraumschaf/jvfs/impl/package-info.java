@@ -13,8 +13,8 @@
 /**
  * Implementation of the file system.
  *
- * All classes but {@link JvfsFileSystemProvider} are package private. All classes
- * inside this package are not considered to be referenced outside of the package.
+ * All classes but {@link de.weltraumschaf.jvfs.JvfsFileSystemProvider} are package private.
+ * All classes inside this package are not considered to be referenced outside of the package.
  * Only the classes from the main package should be used.
  */
 package de.weltraumschaf.jvfs.impl;

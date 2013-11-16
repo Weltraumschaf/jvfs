@@ -389,8 +389,7 @@ class JvfsPath implements Path {
     /**
      * {@inheritDoc}
      *
-     * @see java.nio.file.Path#register(java.nio.file.WatchService, java.nio.file.WatchEvent.Kind,
-     * java.nio.file.WatchEvent.Modifier)
+     * Unsupported operation!
      */
     @Override
     public WatchKey register(
@@ -403,7 +402,7 @@ class JvfsPath implements Path {
     /**
      * {@inheritDoc}
      *
-     * @see java.nio.file.Path#register(java.nio.file.WatchService, java.nio.file.WatchEvent.Kind)
+     * Unsupported operation!
      */
     @Override
     public WatchKey register(WatchService watcher, WatchEvent.Kind<?>... events) throws IOException {
