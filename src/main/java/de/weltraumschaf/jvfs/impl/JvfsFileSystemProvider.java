@@ -108,34 +108,34 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
 
     @Override
     public AsynchronousFileChannel newAsynchronousFileChannel(
-            final Path path,
-            final Set<? extends OpenOption> options,
-            final ExecutorService exec,
-            final FileAttribute<?>... attrs)
-            throws IOException {
+        final Path path,
+        final Set<? extends OpenOption> options,
+        final ExecutorService exec,
+        final FileAttribute<?>... attrs)
+        throws IOException {
         throw new UnsupportedOperationException("Not supported yet!");
     }
 
     @Override
     public FileChannel newFileChannel(
-            final Path path,
-            final Set<? extends OpenOption> options,
-            final FileAttribute<?>... attrs) throws IOException {
+        final Path path,
+        final Set<? extends OpenOption> options,
+        final FileAttribute<?>... attrs) throws IOException {
         return toJvfsPath(path).newFileChannel(options, attrs);
     }
 
     @Override
     public SeekableByteChannel newByteChannel(
-            final Path path,
-            final Set<? extends OpenOption> options,
-            final FileAttribute<?>... attrs) throws IOException {
+        final Path path,
+        final Set<? extends OpenOption> options,
+        final FileAttribute<?>... attrs) throws IOException {
         return toJvfsPath(path).newByteChannel(options, attrs);
     }
 
     @Override
     public DirectoryStream<Path> newDirectoryStream(
-            final Path dir,
-            final DirectoryStream.Filter<? super Path> filter) throws IOException {
+        final Path dir,
+        final DirectoryStream.Filter<? super Path> filter) throws IOException {
         return toJvfsPath(dir).newDirectoryStream(filter);
     }
 

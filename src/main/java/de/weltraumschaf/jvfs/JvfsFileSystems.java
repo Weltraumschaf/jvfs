@@ -38,7 +38,7 @@ public final class JvfsFileSystems {
     /**
      * Name of property to set default file system provider implementations.
      *
-     * @see java.nio.file.FileSystems.DefaultFileSystemHolder#getDefaultProvider():java.nio.file.spi.FileSystemProvider
+     * @see java.nio.file.FileSystems.DefaultFileSystemHolder#getDefaultProvider()
      */
     private static final String IMPLEMENTATION_PROPERTY_NAME = "java.nio.file.spi.DefaultFileSystemProvider";
     /**

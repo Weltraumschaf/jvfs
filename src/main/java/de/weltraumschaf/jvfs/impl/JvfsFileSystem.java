@@ -34,7 +34,6 @@ import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.attribute.UserPrincipalLookupService;
 import java.nio.file.spi.FileSystemProvider;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -118,7 +117,7 @@ class JvfsFileSystem extends FileSystem {
     @Override
     public Iterable<Path> getRootDirectories() {
         this.checkClosed();
-        return Arrays.<Path>asList(new JvfsPath(this));
+        return JvfsCollections.<Path>asList(new JvfsPath(this));
     }
 
     @Override
@@ -248,10 +247,10 @@ class JvfsFileSystem extends FileSystem {
      * Create new file channel.
      *
      * @param path must not be {@code null} or empty
-     * @param options
-     * @param attrs
-     * @return
-     * @throws IOException
+     * @param options options specifying how the file is opened
+     * @param attrs an optional list of file attributes to set atomically when creating the file
+     * @return never {@code null}
+     * @throws IOException if path does not exist
      */
     FileChannel newFileChannel(
         final String path,
@@ -306,11 +305,14 @@ class JvfsFileSystem extends FileSystem {
      * Create a new byte channel.
      *
      * @param path must not be {@code null} or empty
-     * @param options
-     * @param attrs
+     * @param   options options specifying how the file is opened
+     * @param   attrs an optional list of file attributes to set atomically when creating the file
      * @return never {@code null}
      */
-    SeekableByteChannel newByteChannel(final String path, final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) {
+    SeekableByteChannel newByteChannel(
+        final String path,
+        final Set<? extends OpenOption> options,
+        final FileAttribute<?>... attrs) {
         checkClosed();
         final JvfsFileEntry entry;
 
@@ -328,7 +330,7 @@ class JvfsFileSystem extends FileSystem {
      * check file permissions.
      *
      * @param path must not be {@code null} or empty
-     * @param modes
+     * @param modes The access modes to check; may have zero elements
      * @throws IOException if path does not exist
      */
     void checkAccess(final String path, final AccessMode... modes) throws IOException {
@@ -384,7 +386,7 @@ class JvfsFileSystem extends FileSystem {
      * Create a directory.
      *
      * @param path must not be {@code null} or empty
-     * @param attrs
+     * @param attrs an optional list of file attributes to set atomically when creating the directory
      * @throws IOException if path does not exist
      */
     void createDirectory(final String path, final FileAttribute<?>... attrs) throws IOException {
@@ -462,7 +464,7 @@ class JvfsFileSystem extends FileSystem {
      *
      * @param source must not be {@code null} or empty
      * @param target must not be {@code null} or empty
-     * @param options
+     * @param options options specifying how the copy should be done
      * @throws IOException if source does not exist
      */
     void copy(final String source, final String target, final CopyOption... options) throws IOException {
@@ -481,7 +483,7 @@ class JvfsFileSystem extends FileSystem {
      *
      * @param source must not be {@code null} or empty
      * @param target must not be {@code null} or empty
-     * @param options
+     * @param options options specifying how the move should be done
      * @throws IOException if source does not exist
      */
     void move(final String source, final String target, final CopyOption... options) throws IOException {

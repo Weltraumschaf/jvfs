@@ -6,6 +6,7 @@
 package de.weltraumschaf.jvfs.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +39,7 @@ final class JvfsCollections {
      * @param <T> type of list entries
      * @return never {@literal null}, always new instance
      */
-    public static <T> List<T> newArrayList() {
+    static <T> List<T> newArrayList() {
         return newArrayList(DEFAULT_LIST_SIZE);
     }
 
@@ -49,7 +50,7 @@ final class JvfsCollections {
      * @param size must be non negative
      * @return never {@literal null}, always new instance
      */
-    public static <T> List<T> newArrayList(final int size) {
+    static <T> List<T> newArrayList(final int size) {
         JvfsAssertions.greaterThan(size, -1, "size");
         return new ArrayList<T>(size);
     }
@@ -61,7 +62,7 @@ final class JvfsCollections {
      * @param original must not be {@code null}
      * @return never {@code null}
      */
-    public static <T> List<T> newArrayList(final List<T> original) {
+    static <T> List<T> newArrayList(final List<T> original) {
         JvfsAssertions.notNull(original, "original");
         return new ArrayList<T>(original);
     }
@@ -73,7 +74,7 @@ final class JvfsCollections {
      * @param <V> type of map values
      * @return never {@literal null}, always new instance
      */
-    public static <K, V> Map<K, V> newHashMap() {
+    static <K, V> Map<K, V> newHashMap() {
         return new HashMap<K, V>();
     }
 
@@ -83,7 +84,18 @@ final class JvfsCollections {
      * @param <T> type of set entries
      * @return never {@literal null}, always new instance
      */
-    public static <T> Set<T> newHashSet() {
+    static <T> Set<T> newHashSet() {
         return new HashSet<T>();
+    }
+
+    /**
+     * Converts given varargs into a list.
+     *
+     * @param <T> <T> type of set entries
+     * @param a variable arguments or array
+     * @return never {@code null}
+     */
+    static <T> List<T> asList(T... a) {
+        return Arrays.asList(a);
     }
 }

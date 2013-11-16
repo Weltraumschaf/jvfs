@@ -25,7 +25,7 @@ final class JvfsAssertions {
      */
     private static final String NOT_NULL_MESSAGE = "Parameter '%s' must not be null!";
     /**
-     * Format string of error message for {@link #notEmpty(java.lang.Object, java.lang.String)}.
+     * Format string of error message for {@link #notEmpty(java.lang.String, java.lang.String)}.
      */
     private static final String NOT_EMPTY_MESSAGE = "Parameter '%s' must not be empty!";
     /**
