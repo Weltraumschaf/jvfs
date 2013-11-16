@@ -20,13 +20,22 @@ import java.nio.file.attribute.FileTime;
 import java.util.Map;
 
 /**
+ * Implementation of a basic file attributes view.
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
 final class JvfsFileAttributeView implements BasicFileAttributeView {
 
+    /**
+     * To get attributes from.
+     */
     private final JvfsPath path;
 
+    /**
+     * Dedicated constructor.
+     *
+     * @param path must not be {@code null}
+     */
     JvfsFileAttributeView(final JvfsPath path) {
         super();
         assert path != null : "path must be specified";
@@ -49,14 +58,33 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
         path.setTimes(lastModifiedTime, lastAccessTime, createTime);
     }
 
+    /**
+     * Sets the value of a file attribute.
+     *
+     * @param attribute must not be {@code nul} or empty
+     * @param value must not be {@code nul} or empty
+     */
     void setAttribute(final String attribute, final Object value) {
+        JvfsAssertions.notEmpty(attribute, "attribute");
+        JvfsAssertions.notNull(value, "value");
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Reads a set of file attributes as a bulk operation.
+     *
+     * @param attributes must not be {@code nul} or empty
+     * @return may be {@code null}
+     */
     Map<String, Object> readAttributes(String attributes) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Get the path from which the attributes are viewed.
+     *
+     * @return never {@code null}
+     */
     Path getPath() {
         return path;
     }

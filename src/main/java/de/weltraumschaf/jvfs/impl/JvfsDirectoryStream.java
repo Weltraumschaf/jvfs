@@ -12,13 +12,24 @@ import java.nio.file.Path;
 import java.util.Iterator;
 
 /**
+ * Implementation of a directory stream.
+ *
+ * TODO Implement class.
  *
  * @author Sven.Strittmatter
  */
 final class JvfsDirectoryStream implements DirectoryStream<Path> {
 
-    public JvfsDirectoryStream(final JvfsPath aThis, final Filter<? super Path> filter) {
+    /**
+     * Dedicated constructor.
+     *
+     * @param path must not be {@code null}
+     * @param filter must not be {@code null}
+     */
+    public JvfsDirectoryStream(final JvfsPath path, final Filter<? super Path> filter) {
         super();
+        JvfsAssertions.notNull(path, "path");
+        JvfsAssertions.notNull(filter, "filter");
     }
 
     @Override

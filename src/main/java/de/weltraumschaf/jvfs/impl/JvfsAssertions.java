@@ -25,6 +25,10 @@ final class JvfsAssertions {
      */
     private static final String NOT_NULL_MESSAGE = "Parameter '%s' must not be null!";
     /**
+     * Format string of error message for {@link #notEmpty(java.lang.Object, java.lang.String)}.
+     */
+    private static final String NOT_EMPTY_MESSAGE = "Parameter '%s' must not be empty!";
+    /**
      * Format string of error message for {@link #lessThan(int, int, java.lang.String)}.
      */
     private static final String LESS_THAN_MESSAGE = "Paramater '%s' must be less than '%d'!";
@@ -71,10 +75,11 @@ final class JvfsAssertions {
             throw new IllegalArgumentException("Argument name must not be empty!");
         }
     }
+
     /**
      * Asserts that given object is not {@literal null}.
      *
-     * Throws{@link NullPointerException} if given object is {@literal nul}.
+     * Throws {@link NullPointerException} if given object is {@literal null}.
      *
      * @param o checked if {@literal null}
      * @param name name of checked parameter for error message
@@ -88,9 +93,27 @@ final class JvfsAssertions {
     }
 
     /**
+     * Asserts that given string is not {@literal null} or empty.
+     *
+     * Throws {@link NullPointerException} if given String is {@literal null}.
+     * Throws {@link IllegalArgumentException} if given string is empty.
+     *
+     * @param o checked if {@literal null} or empty
+     * @param name name of checked parameter for error message
+     */
+    static void notEmpty(final String o, final String name) {
+        validateName(name);
+        notNull(o, name);
+
+        if (o.isEmpty()) {
+            throw new IllegalArgumentException(String.format(NOT_EMPTY_MESSAGE, name));
+        }
+    }
+
+    /**
      * Asserts that checked value is less than the reference.
      *
-     * Throws{@link IllegalArgumentException} if checked value is not less than reference.
+     * Throws {@link IllegalArgumentException} if checked value is not less than reference.
      *
      * @param checked value to check
      * @param reference reference to check against
@@ -107,7 +130,7 @@ final class JvfsAssertions {
     /**
      * Asserts that checked value is less than or equal the reference.
      *
-     * Throws{@link IllegalArgumentException} if checked value is not less than or equal reference.
+     * Throws {@link IllegalArgumentException} if checked value is not less than or equal reference.
      *
      * @param checked value to check
      * @param reference reference to check against
@@ -124,7 +147,7 @@ final class JvfsAssertions {
     /**
      * Asserts that checked value is greater than the reference.
      *
-     * Throws{@link IllegalArgumentException} if checked value is not greater than reference.
+     * Throws {@link IllegalArgumentException} if checked value is not greater than reference.
      *
      * @param checked value to check
      * @param reference reference to check against
@@ -141,7 +164,7 @@ final class JvfsAssertions {
     /**
      * Asserts that checked value is greater than or equal the reference.
      *
-     * Throws{@link IllegalArgumentException} if checked value is not greater than or equal reference.
+     * Throws {@link IllegalArgumentException} if checked value is not greater than or equal reference.
      *
      * @param checked value to check
      * @param reference reference to check against
@@ -155,7 +178,7 @@ final class JvfsAssertions {
     /**
      * Asserts that checked value is greater than or equal the reference.
      *
-     * Throws{@link IllegalArgumentException} if checked value is not greater than or equal reference.
+     * Throws {@link IllegalArgumentException} if checked value is not greater than or equal reference.
      *
      * @param checked value to check
      * @param reference reference to check against
@@ -172,7 +195,7 @@ final class JvfsAssertions {
     /**
      * Asserts that two objects are equal.
      *
-     * Throws{@link IllegalArgumentException} if checked actual value is not
+     * Throws {@link IllegalArgumentException} if checked actual value is not
      * {@link Object#equals(java.lang.Object) equal} to expected.
      *
      * @param actual object to be checked
