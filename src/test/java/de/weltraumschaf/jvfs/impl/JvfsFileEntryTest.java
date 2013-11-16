@@ -11,9 +11,12 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
+import java.io.IOException;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.*;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
 
 /**
  * Tests for {@link JvfsFileEntry}.
@@ -27,6 +30,7 @@ public class JvfsFileEntryTest {
         final JvfsFileEntry dir = JvfsFileEntry.newDir("foo");
         assertThat(dir.getPath(), is(equalTo("foo")));
         assertThat(dir.isDirectory(), is(true));
+        assertThat(dir.isEmpty(), is(false));
         assertThat(dir.isHidden(), is(false));
         assertThat(dir.isReadable(), is(false));
         assertThat(dir.isWritable(), is(false));
@@ -42,6 +46,7 @@ public class JvfsFileEntryTest {
     public void defaults_file() {
         final JvfsFileEntry file = JvfsFileEntry.newFile("foo");
         assertThat(file.isDirectory(), is(false));
+        assertThat(file.isEmpty(), is(false));
         assertThat(file.isHidden(), is(false));
         assertThat(file.isReadable(), is(false));
         assertThat(file.isWritable(), is(false));
@@ -102,6 +107,9 @@ public class JvfsFileEntryTest {
         assertThat(three.equals(one), is(false));
         assertThat(three.equals(two), is(false));
         assertThat(three.equals(four), is(false));
+
+        assertThat(one.equals(null), is(false));
+        assertThat(one.equals("foobar"), is(false));
     }
 
     @Test
@@ -125,5 +133,13 @@ public class JvfsFileEntryTest {
         assertThat(copy.isWritable(), is(true));
         assertThat(copy.isExecutable(), is(true));
         assertThat(copy.isHidden(), is(true));
+    }
+
+    @Test
+    public void size_returnsMinusOneOnException() throws IOException {
+        final JvfsSeekableByteChannel channel = mock(JvfsSeekableByteChannel.class);
+        Mockito.doThrow(new IOException()).when(channel).size();
+        final JvfsFileEntry sut = new JvfsFileEntry("foo", false, channel);
+        assertThat(sut.size(), is(-1L));
     }
 }

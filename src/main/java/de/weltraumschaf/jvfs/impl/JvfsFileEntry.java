@@ -98,7 +98,7 @@ final class JvfsFileEntry {
      * @param direcotry {@literal true} if it is a directory, else {@literal false}
      * @param content must not be {@code null}
      */
-    private JvfsFileEntry(final String path, final boolean direcotry, final JvfsSeekableByteChannel content) {
+    JvfsFileEntry(final String path, final boolean direcotry, final JvfsSeekableByteChannel content) {
         super();
         assert path != null : "path must not be null";
         assert !path.isEmpty() : "path must not be empty";
@@ -311,7 +311,10 @@ final class JvfsFileEntry {
      * @return {@literal true} if it is an empty directory or file, else {@literal false}
      */
     boolean isEmpty() {
-        // TODO Implement is empty functionality.
+        if (isDirectory()) {
+            // TODO Implement is empty functionality.
+        }
+
         return false;
     }
 
@@ -336,7 +339,7 @@ final class JvfsFileEntry {
         }
         try {
             return content.size();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             return -1L;
         }
     }
