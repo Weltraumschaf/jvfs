@@ -23,6 +23,14 @@ import java.nio.file.spi.FileSystemProvider;
 public final class JvfsFileSystems {
 
     /**
+     * OS dependent directory separator.
+     */
+    public static final String DIR_SEP = System.getProperty("file.separator");
+    /**
+     * Protocol portion of a {@link URI} to JVFS {@link java.nio.file.FileSystem file systems}.
+     */
+    public static final String PROTOCOL = "file";
+    /**
      * Name of property to set default file system provider implementations.
      *
      * @see java.nio.file.FileSystems.DefaultFileSystemHolder#getDefaultProvider()
@@ -33,19 +41,11 @@ public final class JvfsFileSystems {
      */
     static final String IMPLEMENTATION_CLASS_NAME = "de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider";
     /**
-     * OS dependent directory separator.
-     */
-    public static final String DIR_SEP = System.getProperty("file.separator");
-    /**
-     * Protocol portion of a {@link URI} to JVFS {@link java.nio.file.FileSystem file systems}.
-     */
-    public static final String PROTOCOL = "file";
-    /**
      * Protocol suffix before ID portion of ShrinkWrap {@link URI}s.
      */
     private static final String URI_PROTOCOL_SUFFIX = "://";
     /**
-     * Whether the registered default fs is readonly or not.
+     * Whether the registered default file system is readonly or not.
      */
     private static boolean readonly;
 
