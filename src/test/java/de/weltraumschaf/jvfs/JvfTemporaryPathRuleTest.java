@@ -19,7 +19,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import static org.mockito.Mockito.*;
 
 /**
@@ -29,6 +31,10 @@ import static org.mockito.Mockito.*;
  */
 public class JvfTemporaryPathRuleTest {
 
+    @Rule
+    //CHECKSTYLE:OFF
+    public final ExpectedException thrown = ExpectedException.none();
+    //CHECKSTYLE:ON
     private final JvfTemporaryPathRule sut = new JvfTemporaryPathRule();
 
     @Test
@@ -62,6 +68,18 @@ public class JvfTemporaryPathRuleTest {
     }
 
     @Test
+    public void createTemporaryFile_throwsExceptionIfNameIsNull() throws IOException {
+        thrown.expect(NullPointerException.class);
+        sut.newFile(null);
+    }
+
+    @Test
+    public void createTemporaryFile_throwsExceptionIfNameIsEmpty() throws IOException {
+        thrown.expect(IllegalArgumentException.class);
+        sut.newFile("");
+    }
+
+    @Test
     public void createTemporaryFolder() throws IOException {
         sut.create();
         final Path folder = sut.newFolder("foobar");
@@ -71,4 +89,15 @@ public class JvfTemporaryPathRuleTest {
         assertThat(Files.exists(folder), is(false));
     }
 
+    @Test
+    public void createTemporaryFolder_throwsExceptionIfNameIsNull() throws IOException {
+        thrown.expect(NullPointerException.class);
+        sut.newFolder(null);
+    }
+
+    @Test
+    public void createTemporaryFolder_throwsExceptionIfNameIsEmpty() throws IOException {
+        thrown.expect(IllegalArgumentException.class);
+        sut.newFolder("");
+    }
 }
