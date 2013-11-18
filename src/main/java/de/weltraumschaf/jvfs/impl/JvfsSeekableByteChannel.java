@@ -47,28 +47,23 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
      * Internal buffer for contents; guarded by "this".
      */
     private byte[] contents;
-
-    /**
-     * Creates a new instance with 0 size and 0 position, and open.
-     */
-    JvfsSeekableByteChannel() {
-        this(new byte[0]);
-    }
+    private final JvfsFileEntry entry;
 
     /**
      * Dedicated constructor.
      *
-     * @param contents must not be null
+     * @param entry must not be {@code null}
      */
-    JvfsSeekableByteChannel(final byte[] contents) {
+    JvfsSeekableByteChannel(final JvfsFileEntry entry) {
         super();
-        assert null != contents : "contents must be defined";
+        assert null != entry : "entry must be defined";
         this.open = true;
 
         // Set fields
         synchronized (this) {
             this.position = 0;
-            this.contents = contents;
+            this.contents = entry.getContent();
+            this.entry = entry;
         }
     }
 
@@ -79,16 +74,12 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
 
     @Override
     public void close() throws IOException {
-        // XXX: Consider if necessary.
         this.open = false;
     }
 
     @Override
     public int read(final ByteBuffer destination) throws IOException {
-
-        // Precondition checks
         this.checkClosed();
-//        position(0); // XXX Consider not reusing channel and return always new channelswith position 0.
 
         if (destination == null) {
             throw new IllegalArgumentException("Destination buffer must be supplied");
@@ -101,6 +92,7 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
 
         // Sync up before getting at shared mutable state
         synchronized (this) {
+            entry.beginRead();
             numBytesRemainingInContent = this.contents.length - this.position;
 
             // Set position was greater than the size? Just return.
@@ -116,6 +108,7 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
 
             // Set the new position
             this.position += numBytesToRead;
+            entry.endRead();
         }
 
         // Return the number of bytes read
@@ -124,10 +117,7 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
 
     @Override
     public int write(final ByteBuffer source) throws IOException {
-
-        // Precondition checks
         this.checkClosed();
-//        position(0); // XXX Consider not reusing channel and return always new channelswith position 0.
 
         if (source == null) {
             throw new IllegalArgumentException("Source buffer must be supplied");
@@ -138,18 +128,18 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
         final byte[] readContents = new byte[totalBytes];
         source.get(readContents);
 
-        // Sync up, we're gonna access shared mutable state
+        // Sync up, we're gonna access shared mutable state.
         synchronized (this) {
-
-            // Append the read contents to our internal contents
+            entry.beginWrite();
+            // Append the read contents to our internal contents.
             this.contents = this.concat(this.contents, readContents, this.position);
-
-            // Increment the position of this channel
+            // Increment the position of this channel.
             this.position += totalBytes;
-
+            entry.setContent(contents);
+            entry.endWrite();
         }
 
-        // Return the number of bytes read
+        // Return the number of bytes read.
         return totalBytes;
     }
 
@@ -190,9 +180,11 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
         if (newPosition > Integer.MAX_VALUE || newPosition < 0) {
             throw new IllegalArgumentException("Valid position for this channel is between 0 and " + Integer.MAX_VALUE);
         }
+
         synchronized (this) {
             this.position = (int) newPosition;
         }
+
         return this;
     }
 
@@ -205,7 +197,6 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
 
     @Override
     public SeekableByteChannel truncate(final long size) throws IOException {
-
         // Precondition checks
         if (size < 0 || size > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("This implementation permits a size of 0 to " + Integer.MAX_VALUE
@@ -214,7 +205,6 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
 
         // Sync up for mucking w/ shared mutable state
         synchronized (this) {
-
             final int newSize = (int) size;
             final int currentSize = (int) this.size();
 
@@ -232,6 +222,7 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
                 // Set the new array as our contents
                 this.contents = newContents;
             }
+
             // If we've been given a size greater than we are
             if (newSize > currentSize) {
                 // Reset the position only
@@ -250,6 +241,7 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
      */
     InputStream getContents() {
         final byte[] copy;
+
         synchronized (this) {
             final int length = this.contents.length;
             copy = new byte[length];
@@ -267,19 +259,6 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
     private void checkClosed() throws ClosedChannelException {
         if (!this.isOpen()) {
             throw new ClosedChannelException();
-        }
-    }
-
-    /**
-     * Creates deep copy.
-     *
-     * @return never {@code null}
-     */
-    JvfsSeekableByteChannel copy() {
-        synchronized (this) {
-            final byte[] copy = new byte[contents.length];
-            System.arraycopy(contents, 0, copy, 0, contents.length);
-            return new JvfsSeekableByteChannel(copy);
         }
     }
 

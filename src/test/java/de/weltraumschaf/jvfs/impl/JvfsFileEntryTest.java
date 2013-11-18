@@ -11,12 +11,9 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
-import java.io.IOException;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.*;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.mock;
 
 /**
  * Tests for {@link JvfsFileEntry}.
@@ -137,11 +134,4 @@ public class JvfsFileEntryTest {
         assertThat(copy.isHidden(), is(true));
     }
 
-    @Test
-    public void size_returnsMinusOneOnException() throws IOException {
-        final JvfsSeekableByteChannel channel = mock(JvfsSeekableByteChannel.class);
-        Mockito.doThrow(new IOException()).when(channel).size();
-        final JvfsFileEntry sut = new JvfsFileEntry("foo", false, channel);
-        assertThat(sut.size(), is(-1L));
-    }
 }

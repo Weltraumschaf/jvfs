@@ -50,7 +50,7 @@ public class JvfsSeekableByteChannelTest {
 
     @Before
     public void init() {
-        this.channel = new JvfsSeekableByteChannel();
+        this.channel = new JvfsSeekableByteChannel(JvfsFileEntry.newFile("foo"));
         try {
             smallerBuffer = ByteBuffer.wrap(CONTENTS_SMALLER_BUFFER.getBytes(UTF8));
             biggerBuffer = ByteBuffer.wrap(CONTENTS_BIGGER_BUFFER.getBytes(UTF8));

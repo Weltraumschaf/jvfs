@@ -11,7 +11,8 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
-import java.io.IOException;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Holds the administrative data of a file entry in the virtual file system.
@@ -21,10 +22,6 @@ import java.io.IOException;
 final class JvfsFileEntry {
 
     /**
-     * Holds the file data.
-     */
-    private final JvfsSeekableByteChannel content;
-    /**
      * Absolute path name of the file system entry.
      */
     private final String path;
@@ -32,6 +29,14 @@ final class JvfsFileEntry {
      * Whether it is a directory or not.
      */
     private final boolean direcotry;
+    /**
+     * R/W lock.
+     */
+    private final ReadWriteLock rwlock = new ReentrantReadWriteLock();
+    /**
+     * Holds the file data.
+     */
+    private byte[] content;
     /**
      * Last modification time.
      */
@@ -69,7 +74,7 @@ final class JvfsFileEntry {
      * @param src must not be {@literal null}
      */
     private JvfsFileEntry(final JvfsFileEntry src) {
-        this(src.path, src.direcotry, src.getContent().copy());
+        this(src.path, src.direcotry, src.getContent());
         this.lastModifiedTime = src.getLastModifiedTime();
         this.lastAccessTime = src.getLastAccessTime();
         this.creationTime = src.getCreationTime();
@@ -88,7 +93,7 @@ final class JvfsFileEntry {
      * @param direcotry {@literal true} if it is a directory, else {@literal false}
      */
     private JvfsFileEntry(final String path, final boolean direcotry) {
-        this(path, direcotry, new JvfsSeekableByteChannel());
+        this(path, direcotry, new byte[0]);
     }
 
     /**
@@ -98,7 +103,7 @@ final class JvfsFileEntry {
      * @param direcotry {@literal true} if it is a directory, else {@literal false}
      * @param content must not be {@code null}
      */
-    JvfsFileEntry(final String path, final boolean direcotry, final JvfsSeekableByteChannel content) {
+    JvfsFileEntry(final String path, final boolean direcotry, final byte[] content) {
         super();
         assert path != null : "path must not be null";
         assert !path.isEmpty() : "path must not be empty";
@@ -115,7 +120,7 @@ final class JvfsFileEntry {
      * @param path must not be {@literal null} or empty
      * @return never {@literal null}
      */
-    public static JvfsFileEntry newDir(final String path) {
+    static JvfsFileEntry newDir(final String path) {
         return new JvfsFileEntry(path, true);
     }
 
@@ -125,7 +130,7 @@ final class JvfsFileEntry {
      * @param path must not be {@literal null} or empty
      * @return never {@literal null}
      */
-    public static JvfsFileEntry newFile(final String path) {
+    static JvfsFileEntry newFile(final String path) {
         return new JvfsFileEntry(path, false);
     }
 
@@ -134,7 +139,7 @@ final class JvfsFileEntry {
      *
      * @return never {@literal null}
      */
-    public JvfsFileEntry copy() {
+    JvfsFileEntry copy() {
         return new JvfsFileEntry(this);
     }
 
@@ -337,20 +342,37 @@ final class JvfsFileEntry {
         if (this.isDirectory()) {
             return -1L;
         }
-        try {
-            return content.size();
-        } catch (final IOException ex) {
-            return -1L;
-        }
+
+        return content.length;
     }
 
     /**
-     * Get the file content as seekable byte channel.
+     * Get the file content.
      *
      * @return never {@literal null}
      */
-    JvfsSeekableByteChannel getContent() {
+    byte[] getContent() {
         return content;
+    }
+
+    void setContent(final byte[] content) {
+        this.content = content;
+    }
+
+    void beginWrite() {
+        rwlock.writeLock().lock();
+    }
+
+    void endWrite() {
+        rwlock.writeLock().unlock();
+    }
+
+    void beginRead() {
+        rwlock.readLock().lock();
+    }
+
+    void endRead() {
+        rwlock.readLock().unlock();
     }
 
 }

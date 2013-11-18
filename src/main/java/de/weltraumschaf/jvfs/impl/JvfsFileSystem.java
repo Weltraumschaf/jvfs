@@ -258,6 +258,7 @@ class JvfsFileSystem extends FileSystem {
             final Set<? extends OpenOption> options,
             final FileAttribute<?>... attrs) throws IOException {
         JvfsAssertions.notEmpty(path, "path");
+        // XXX: All checks done by newByteChannel.
         checkClosed();
         final boolean forWrite = options.contains(StandardOpenOption.WRITE)
                 || options.contains(StandardOpenOption.APPEND);
@@ -290,16 +291,7 @@ class JvfsFileSystem extends FileSystem {
             }
         }
 
-        final JvfsFileEntry entry;
-
-        if (contains(path)) {
-            entry = get(path);
-        } else {
-            entry = JvfsFileEntry.newFile(path);
-//            add(entry);
-        }
-
-        return new JvfsFileChannel(entry.getContent());
+        return new JvfsFileChannel(newByteChannel(path, options, attrs));
     }
 
     /**
@@ -309,22 +301,43 @@ class JvfsFileSystem extends FileSystem {
      * @param options options specifying how the file is opened
      * @param attrs an optional list of file attributes to set atomically when creating the file
      * @return never {@literal null}
+     * @throws IOException on any I/O error
      */
     SeekableByteChannel newByteChannel(
             final String path,
             final Set<? extends OpenOption> options,
-            final FileAttribute<?>... attrs) {
+            final FileAttribute<?>... attrs) throws IOException {
         checkClosed();
-        final JvfsFileEntry entry;
 
-        if (contains(path)) {
-            entry = get(path);
-        } else {
-            entry = JvfsFileEntry.newFile(path);
-            add(entry);
+        // Writing?
+        if (options.contains(StandardOpenOption.CREATE)
+                || options.contains(StandardOpenOption.CREATE_NEW)
+                || options.contains(StandardOpenOption.WRITE)) {
+            if (contains(path)) {
+                if (options.contains(StandardOpenOption.WRITE)) {
+                    final JvfsFileEntry entry = get(path);
+                    final JvfsSeekableByteChannel channel = new JvfsSeekableByteChannel(entry);
+
+                    if (options.contains(StandardOpenOption.APPEND)) {
+                        channel.position(channel.size());
+                    }
+
+                    return channel;
+                } else {
+                    throw new FileAlreadyExistsException(path);
+                }
+            } else {
+                final JvfsFileEntry entry = JvfsFileEntry.newFile(path);
+                add(entry);
+                return new JvfsSeekableByteChannel(entry);
+            }
         }
 
-        return entry.getContent();
+        if (contains(path)) {
+            return new JvfsSeekableByteChannel(get(path));
+        }
+
+        throw new NoSuchFileException(path);
     }
 
     /**
@@ -438,7 +451,7 @@ class JvfsFileSystem extends FileSystem {
      * @throws IOException if source does not exist
      */
     void setTimes(final String path, final FileTime mtime, final FileTime atime, final FileTime ctime)
-        throws IOException {
+            throws IOException {
         checkClosed();
         assertFileExists(path);
         final JvfsFileEntry entry = get(path);

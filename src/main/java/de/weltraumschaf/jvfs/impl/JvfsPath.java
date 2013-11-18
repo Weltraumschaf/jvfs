@@ -609,7 +609,7 @@ class JvfsPath implements Path {
      * @param attrs an optional list of file attributes to set atomically when creating the file
      * @return never {@literal null}
      */
-    SeekableByteChannel newByteChannel(final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) {
+    SeekableByteChannel newByteChannel(final Set<? extends OpenOption> options, final FileAttribute<?>... attrs) throws IOException {
         return jvfs.newByteChannel(path, options, attrs);
     }
 

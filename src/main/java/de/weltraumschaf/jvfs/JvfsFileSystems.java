@@ -35,11 +35,11 @@ public final class JvfsFileSystems {
      *
      * @see java.nio.file.FileSystems.DefaultFileSystemHolder#getDefaultProvider()
      */
-    static final String IMPLEMENTATION_PROPERTY_NAME = "java.nio.file.spi.DefaultFileSystemProvider";
+    public static final String IMPLEMENTATION_PROPERTY_NAME = "java.nio.file.spi.DefaultFileSystemProvider";
     /**
      * Full qualified class name of provider implementation.
      */
-    static final String IMPLEMENTATION_CLASS_NAME = "de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider";
+    public static final String IMPLEMENTATION_CLASS_NAME = "de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider";
     /**
      * Protocol suffix before ID portion of ShrinkWrap {@link URI}s.
      */
