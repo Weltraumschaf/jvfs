@@ -32,21 +32,19 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * In memory file system.
+ * A provider implementation which is registered as default file system.
  *
- * This file system is by default registered for the {@literal jvfs://} protocol.
+ * Via {@link JvfsFileSystems} you can mount virtual in memory file systems.
+ * This provider will dispatches all paths matching a mounted file system
+ * to {@link JvfsFileSystemProvider}.
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-public class JvfsFileSystemProvider extends FileSystemProvider {
-
-    public JvfsFileSystemProvider() {
-        super();
-    }
+public class JvfsDefaultFileSystemProvider extends FileSystemProvider {
 
     @Override
     public String getScheme() {
-        return JvfsFileSystems.PROTOCOL_JVFS;
+        return JvfsFileSystems.PROTOCOL_FILE;
     }
 
     @Override

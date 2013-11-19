@@ -52,7 +52,7 @@ public class JvfsFileSystemsTest {
 
     @Test
     public void protocol() {
-        assertThat(JvfsFileSystems.FILE_PROTOCOL, is(equalTo("file")));
+        assertThat(JvfsFileSystems.PROTOCOL_FILE, is(equalTo("file")));
     }
 
     @Test
