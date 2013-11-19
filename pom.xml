@@ -480,6 +480,7 @@
                                 <charset>${build.sourceEncoding}</charset>
                                 <docencoding>${build.sourceEncoding}</docencoding>
                                 <source>${source.version}</source>
+                                <nohelp>true</nohelp>
                                 <links>
                                     <link>http://docs.oracle.com/javase/6/docs/api/</link>
                                     <!-- test dependencies -->
