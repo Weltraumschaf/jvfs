@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package de.weltraumschaf.jvfs.impl;
+package de.weltraumschaf.jvfs;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

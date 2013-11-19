@@ -12,15 +12,12 @@
 
 package de.weltraumschaf.jvfs;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.spi.FileSystemProvider;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.*;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
@@ -35,15 +32,6 @@ public class JvfsFileSystemsTest {
     //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
-
-    @Test
-    public void invokeConstructorByReflectionThrowsException() throws Exception {
-        thrown.expect(InvocationTargetException.class);
-        assertThat(JvfsFileSystems.class.getDeclaredConstructors().length, is(1));
-        final Constructor<JvfsFileSystems> ctor = JvfsFileSystems.class.getDeclaredConstructor();
-        ctor.setAccessible(true);
-        ctor.newInstance();
-    }
 
     @Test
     public void dirsep() {

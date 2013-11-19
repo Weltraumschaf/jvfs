@@ -11,6 +11,8 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsAssertions;
+import de.weltraumschaf.jvfs.JvfsCollections;
 import java.util.List;
 import java.util.StringTokenizer;
 

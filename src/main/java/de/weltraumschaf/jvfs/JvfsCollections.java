@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.weltraumschaf.jvfs.impl;
+package de.weltraumschaf.jvfs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import java.util.Set;
  *
  * @author Sven.Strittmatter
  */
-final class JvfsCollections {
+public final class JvfsCollections {
 
     /**
      * Default size for lists.
@@ -39,7 +39,7 @@ final class JvfsCollections {
      * @param <T> type of list entries
      * @return never {@literal null}, always new instance
      */
-    static <T> List<T> newArrayList() {
+    public static <T> List<T> newArrayList() {
         return newArrayList(DEFAULT_LIST_SIZE);
     }
 
@@ -50,7 +50,7 @@ final class JvfsCollections {
      * @param size must be non negative
      * @return never {@literal null}, always new instance
      */
-    static <T> List<T> newArrayList(final int size) {
+    public static <T> List<T> newArrayList(final int size) {
         JvfsAssertions.greaterThan(size, -1, "size");
         return new ArrayList<T>(size);
     }
@@ -62,7 +62,7 @@ final class JvfsCollections {
      * @param original must not be {@code null}
      * @return never {@code null}
      */
-    static <T> List<T> newArrayList(final List<T> original) {
+    public static <T> List<T> newArrayList(final List<T> original) {
         JvfsAssertions.notNull(original, "original");
         return new ArrayList<T>(original);
     }
@@ -74,7 +74,7 @@ final class JvfsCollections {
      * @param <V> type of map values
      * @return never {@literal null}, always new instance
      */
-    static <K, V> Map<K, V> newHashMap() {
+    public static <K, V> Map<K, V> newHashMap() {
         return new HashMap<K, V>();
     }
 
@@ -84,7 +84,7 @@ final class JvfsCollections {
      * @param <T> type of set entries
      * @return never {@literal null}, always new instance
      */
-    static <T> Set<T> newHashSet() {
+    public static <T> Set<T> newHashSet() {
         return new HashSet<T>();
     }
 
@@ -96,7 +96,7 @@ final class JvfsCollections {
      * @return never {@code null}
      */
     @SafeVarargs
-    static <T> List<T> asList(T... a) {
+    public static <T> List<T> asList(T... a) {
         return Arrays.asList(a);
     }
 }

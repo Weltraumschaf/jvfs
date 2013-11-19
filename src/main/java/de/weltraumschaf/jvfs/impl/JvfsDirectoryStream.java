@@ -6,6 +6,7 @@
 
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsAssertions;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;

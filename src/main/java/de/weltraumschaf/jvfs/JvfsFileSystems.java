@@ -70,7 +70,6 @@ public final class JvfsFileSystems {
      */
     private JvfsFileSystems() {
         super();
-        throw new UnsupportedOperationException(); // Avoid reflective instantiation.
     }
 
     /**
@@ -153,6 +152,7 @@ public final class JvfsFileSystems {
      * @param path must not be {@code null} or empty
      */
     public void mount(final String path) {
+        JvfsAssertions.notEmpty(path, "path");
         mountpoints.add(path);
     }
 
@@ -164,6 +164,8 @@ public final class JvfsFileSystems {
      * @param path must not be {@code null} or empty
      */
     public void umount(final String path) {
+        JvfsAssertions.notEmpty(path, "path");
+
         if (!mountpoints.contains(path)) {
             throw new IllegalStateException(String.format("Path not mounted to JVFS: '%s'!", path));
         }

@@ -10,7 +10,7 @@
  * Copyright (C) 2012 "Sven Strittmatter" <weltraumschaf@googlemail.com>
  */
 
-package de.weltraumschaf.jvfs.impl;
+package de.weltraumschaf.jvfs;
 
 import java.util.Arrays;
 
@@ -19,7 +19,7 @@ import java.util.Arrays;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-final class JvfsObject {
+public final class JvfsObject {
 
     /**
      * Hidden for pure static class.
@@ -35,7 +35,7 @@ final class JvfsObject {
      * @param objects must not be {@code null}
      * @return any number
      */
-    static int hashCode(final Object ... objects) {
+    public static int hashCode(final Object ... objects) {
         JvfsAssertions.notNull(objects, "objects");
         return Arrays.hashCode(objects);
     }
@@ -48,7 +48,7 @@ final class JvfsObject {
      * @param b may be {@code null}
      * @return {@code true} if a and b are equal, else {@code false}
      */
-    static boolean equal(final Object a, final Object b) {
+    public static boolean equal(final Object a, final Object b) {
         return a == b || a != null && a.equals(b);
     }
 
@@ -60,7 +60,7 @@ final class JvfsObject {
      * @param b may be {@code null}
      * @return {@code true} if a and b are not equal, else {@code false}
      */
-    static boolean notEqual(final Object a, final Object b) {
+    public static boolean notEqual(final Object a, final Object b) {
         return !equal(a, b);
     }
 }

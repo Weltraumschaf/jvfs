@@ -11,6 +11,8 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsObject;
+import de.weltraumschaf.jvfs.JvfsAssertions;
 import de.weltraumschaf.jvfs.JvfsFileSystems;
 import java.io.File;
 import java.io.IOException;

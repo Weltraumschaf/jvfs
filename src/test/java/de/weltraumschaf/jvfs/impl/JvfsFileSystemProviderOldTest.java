@@ -11,6 +11,7 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsCollections;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;

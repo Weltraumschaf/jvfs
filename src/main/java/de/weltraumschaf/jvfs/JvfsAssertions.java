@@ -9,7 +9,7 @@
  *
  * Copyright (C) 2012 "Sven Strittmatter" <weltraumschaf@googlemail.com>
  */
-package de.weltraumschaf.jvfs.impl;
+package de.weltraumschaf.jvfs;
 
 /**
  * Static methods to assert values.
@@ -18,7 +18,7 @@ package de.weltraumschaf.jvfs.impl;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-final class JvfsAssertions {
+public final class JvfsAssertions {
 
     /**
      * Format string of error message for {@link #notNull(java.lang.Object, java.lang.String)}.
@@ -84,7 +84,7 @@ final class JvfsAssertions {
      * @param o checked if {@literal null}
      * @param name name of checked parameter for error message
      */
-    static void notNull(final Object o, final String name) {
+    public static void notNull(final Object o, final String name) {
         validateName(name);
 
         if (null == o) {
@@ -101,7 +101,7 @@ final class JvfsAssertions {
      * @param o checked if {@literal null} or empty
      * @param name name of checked parameter for error message
      */
-    static void notEmpty(final String o, final String name) {
+    public static void notEmpty(final String o, final String name) {
         validateName(name);
         notNull(o, name);
 
@@ -119,7 +119,7 @@ final class JvfsAssertions {
      * @param reference reference to check against
      * @param name name of checked parameter for error message
      */
-    static void lessThan(final int checked, final int reference, final String name) {
+    public static void lessThan(final int checked, final int reference, final String name) {
         validateName(name);
 
         if (checked >= reference) {
@@ -136,7 +136,7 @@ final class JvfsAssertions {
      * @param reference reference to check against
      * @param name name of checked parameter for error message
      */
-    static void lessThanEqual(int checked, int reference, String name) {
+    public static void lessThanEqual(int checked, int reference, String name) {
         validateName(name);
 
         if (checked > reference) {
@@ -153,7 +153,7 @@ final class JvfsAssertions {
      * @param reference reference to check against
      * @param name name of checked parameter for error message
      */
-    static void greaterThan(final int checked, final int reference, final String name) {
+    public static void greaterThan(final int checked, final int reference, final String name) {
         validateName(name);
 
         if (checked <= reference) {
@@ -170,7 +170,7 @@ final class JvfsAssertions {
      * @param reference reference to check against
      * @param name name of checked parameter for error message
      */
-    static void greaterThanEqual(final int checked, final int reference, final String name) {
+    public static void greaterThanEqual(final int checked, final int reference, final String name) {
         validateName(name);
         greaterThanEqual((long) checked, (long) reference, name);
     }
@@ -184,7 +184,7 @@ final class JvfsAssertions {
      * @param reference reference to check against
      * @param name name of checked parameter for error message
      */
-    static void greaterThanEqual(final long checked, final long reference, final String name) {
+    public static void greaterThanEqual(final long checked, final long reference, final String name) {
         validateName(name);
 
         if (checked < reference) {
@@ -202,7 +202,7 @@ final class JvfsAssertions {
      * @param expected object to be checked should be equal
      * @param name name of checked parameter for error message
      */
-    static void isEqual(final Object actual, final Object expected, final String name) {
+    public static void isEqual(final Object actual, final Object expected, final String name) {
         validateName(name);
 
         if (JvfsObject.notEqual(actual, expected)) {

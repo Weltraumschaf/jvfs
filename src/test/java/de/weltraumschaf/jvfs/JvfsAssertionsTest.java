@@ -9,7 +9,7 @@
  *
  * Copyright (C) 2012 "Sven Strittmatter" <weltraumschaf@googlemail.com>
  */
-package de.weltraumschaf.jvfs.impl;
+package de.weltraumschaf.jvfs;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
