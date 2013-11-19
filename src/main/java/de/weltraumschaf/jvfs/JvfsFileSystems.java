@@ -29,7 +29,11 @@ public final class JvfsFileSystems {
     /**
      * Protocol portion of a {@link URI} to JVFS {@link java.nio.file.FileSystem file systems}.
      */
-    public static final String PROTOCOL = "file";
+    public static final String JVFS_PROTOCOL = "file";
+    /**
+     * The default file system protocol.
+     */
+    public static final String FILE_PROTOCOL = "file";
     /**
      * Name of property to set default file system provider implementations.
      *
@@ -83,7 +87,7 @@ public final class JvfsFileSystems {
      */
     public static URI getRootUri() {
         final StringBuilder sb = new StringBuilder();
-        sb.append(PROTOCOL);
+        sb.append(FILE_PROTOCOL);
         sb.append(URI_PROTOCOL_SUFFIX);
         sb.append(DIR_SEP);
         return URI.create(sb.toString());

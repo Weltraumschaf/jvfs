@@ -59,7 +59,7 @@ public final class JvfsFileSystemProviderOld extends FileSystemProvider {
 
     @Override
     public String getScheme() {
-        return JvfsFileSystems.PROTOCOL;
+        return JvfsFileSystems.FILE_PROTOCOL;
     }
 
     /**
