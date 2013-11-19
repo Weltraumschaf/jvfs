@@ -74,7 +74,7 @@ public class JvfsFileSystemsTest {
             is(anyOf(nullValue(), equalTo((Object) ""))));
         JvfsFileSystems.registerUnixAsDefault();
         assertThat(System.getProperty("java.nio.file.spi.DefaultFileSystemProvider"),
-            is(equalTo("de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider")));
+            is(equalTo("de.weltraumschaf.jvfs.impl.JvfsFileSystemProviderOld")));
         JvfsFileSystems.unregisterDefault();
         assertThat(System.getProperty(
             "java.nio.file.spi.DefaultFileSystemProvider"),

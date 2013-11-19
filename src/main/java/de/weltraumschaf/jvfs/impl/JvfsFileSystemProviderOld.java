@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutorService;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-public final class JvfsFileSystemProvider extends FileSystemProvider {
+public final class JvfsFileSystemProviderOld extends FileSystemProvider {
 
     /**
      * The one and only file system.
@@ -43,7 +43,7 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
      *
      * @param flag {@literal true} registers readonly file system
      */
-    public JvfsFileSystemProvider(final boolean flag) {
+    public JvfsFileSystemProviderOld(final boolean flag) {
         super();
         fileSystem = new JvfsFileSystem(this, flag);
     }
@@ -53,7 +53,7 @@ public final class JvfsFileSystemProvider extends FileSystemProvider {
      *
      * @param parent is ignored at the moment, necessary that JVM default factory can instantiate
      */
-    public JvfsFileSystemProvider(final FileSystemProvider parent) { // NOPMD Parameter for JVM facotry.
+    public JvfsFileSystemProviderOld(final FileSystemProvider parent) { // NOPMD Parameter for JVM facotry.
         this(JvfsFileSystems.isReadonly());
     }
 

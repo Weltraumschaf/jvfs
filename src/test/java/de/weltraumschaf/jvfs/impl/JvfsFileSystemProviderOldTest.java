@@ -35,17 +35,17 @@ import org.junit.rules.ExpectedException;
 import static org.mockito.Mockito.*;
 
 /**
- * Tests for {@link JvfsFileSystemProvider}.
+ * Tests for {@link JvfsFileSystemProviderOld}.
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-public class JvfsFileSystemProviderTest {
+public class JvfsFileSystemProviderOldTest {
 
     @Rule
     //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
-    private final JvfsFileSystemProvider sut = new JvfsFileSystemProvider(false);
+    private final JvfsFileSystemProviderOld sut = new JvfsFileSystemProviderOld(false);
 
     @Test
     public void getScheme() {
@@ -222,13 +222,13 @@ public class JvfsFileSystemProviderTest {
 
     @Test
     public void constructorForSystemProviderFacotryNeedsParameter() {
-        new JvfsFileSystemProvider(mock(FileSystemProvider.class));
+        new JvfsFileSystemProviderOld(mock(FileSystemProvider.class));
     }
 
     @Test
     public void toJvfsPath() {
         thrown.expect(ProviderMismatchException.class);
-        JvfsFileSystemProvider.toJvfsPath(mock(Path.class));
+        JvfsFileSystemProviderOld.toJvfsPath(mock(Path.class));
     }
 
     private abstract static class BasicFileAttributesStub implements BasicFileAttributes {

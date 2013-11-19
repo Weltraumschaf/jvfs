@@ -11,7 +11,7 @@
  */
 package de.weltraumschaf.jvfs;
 
-import de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider;
+import de.weltraumschaf.jvfs.impl.JvfsFileSystemProviderOld;
 import java.net.URI;
 import java.nio.file.spi.FileSystemProvider;
 
@@ -39,7 +39,7 @@ public final class JvfsFileSystems {
     /**
      * Full qualified class name of provider implementation.
      */
-    public static final String IMPLEMENTATION_CLASS_NAME = "de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider";
+    public static final String IMPLEMENTATION_CLASS_NAME = "de.weltraumschaf.jvfs.impl.JvfsFileSystemProviderOld";
     /**
      * Protocol suffix before ID portion of ShrinkWrap {@link URI}s.
      */
@@ -73,7 +73,7 @@ public final class JvfsFileSystems {
      * @return never {@literal null} always new instance
      */
     public static FileSystemProvider newUnixProvider(final boolean flag) {
-        return new JvfsFileSystemProvider(flag);
+        return new JvfsFileSystemProviderOld(flag);
     }
 
     /**
