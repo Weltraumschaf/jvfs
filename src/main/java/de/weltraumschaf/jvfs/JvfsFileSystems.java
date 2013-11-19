@@ -14,6 +14,8 @@ package de.weltraumschaf.jvfs;
 import de.weltraumschaf.jvfs.impl.JvfsFileSystemProviderOld;
 import java.net.URI;
 import java.nio.file.spi.FileSystemProvider;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Factory to get virtual file system stuff.
@@ -49,16 +51,35 @@ public final class JvfsFileSystems {
      */
     private static final String URI_PROTOCOL_SUFFIX = "://";
     /**
+     * Singleton instance.
+     */
+    private static final JvfsFileSystems INSTANCE = new JvfsFileSystems();
+    /**
      * Whether the registered default file system is readonly or not.
      */
     private static boolean readonly;
+    /**
+     * Mount points for virtual file systems to be hooked in.
+     */
+    private final List<String> mountpoints = new ArrayList<>();
 
     /**
-     * Hidden for pure static class.
+     * Hidden constructor.
+     *
+     * Use {@link #getInstance()} to get an instance.
      */
     private JvfsFileSystems() {
         super();
         throw new UnsupportedOperationException(); // Avoid reflective instantiation.
+    }
+
+    /**
+     * Get the single instance.
+     *
+     * @return never {@code null}
+     */
+    public static JvfsFileSystems getInstance() {
+        return INSTANCE;
     }
 
     /**
@@ -126,4 +147,27 @@ public final class JvfsFileSystems {
         System.setProperty(IMPLEMENTATION_PROPERTY_NAME, "");
     }
 
+    /**
+     * Mount a virtual file system.
+     *
+     * @param path must not be {@code null} or empty
+     */
+    public void mount(final String path) {
+        mountpoints.add(path);
+    }
+
+    /**
+     * Unmount a virtual file system.
+     *
+     * Throws an {@link IllegalStateException} if not mounted.
+     *
+     * @param path must not be {@code null} or empty
+     */
+    public void umount(final String path) {
+        if (!mountpoints.contains(path)) {
+            throw new IllegalStateException(String.format("Path not mounted to JVFS: '%s'!", path));
+        }
+
+        mountpoints.remove(path);
+    }
 }
