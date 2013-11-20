@@ -47,6 +47,9 @@ class JvfsSeekableByteChannel implements SeekableByteChannel {
      * Internal buffer for contents; guarded by "this".
      */
     private byte[] contents;
+    /**
+     * Associated file entry.
+     */
     private final JvfsFileEntry entry;
 
     /**

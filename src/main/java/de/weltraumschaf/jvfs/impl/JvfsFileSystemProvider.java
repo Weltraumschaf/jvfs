@@ -49,6 +49,9 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
      */
     private final JvfsFileSystem fileSystem;
 
+    /**
+     * Dedicated constructor.
+     */
     public JvfsFileSystemProvider() {
         super();
         fileSystem = new JvfsFileSystem(this, false);

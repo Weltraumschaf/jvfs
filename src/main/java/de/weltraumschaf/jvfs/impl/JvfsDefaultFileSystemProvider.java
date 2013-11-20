@@ -22,7 +22,6 @@ import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.LinkOption;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -60,7 +59,7 @@ public class JvfsDefaultFileSystemProvider extends FileSystemProvider {
     private final Map<String, FileSystem> fstab;
 
     /**
-     * Constructor used by {@link FileSystems} to create default provider.
+     * Constructor used by {@link java.nio.file.FileSystems} to create default provider.
      *
      * @param parent is ignored at the moment, necessary that JVM default factory can instantiate
      */
@@ -75,7 +74,8 @@ public class JvfsDefaultFileSystemProvider extends FileSystemProvider {
      * @param fstab must not be {@literal null}
      * @param jvfs must not be {@literal null}
      */
-    JvfsDefaultFileSystemProvider(final FileSystemProvider parent, final Map<String, FileSystem> fstab, final FileSystemProvider jvfs) {
+    JvfsDefaultFileSystemProvider(
+        final FileSystemProvider parent, final Map<String, FileSystem> fstab, final FileSystemProvider jvfs) {
         super();
         JvfsAssertions.notNull(parent, "parent");
         this.parent = parent;

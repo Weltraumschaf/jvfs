@@ -13,11 +13,7 @@ package de.weltraumschaf.jvfs.impl;
 
 import de.weltraumschaf.jvfs.JvfsCollections;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.ProviderMismatchException;

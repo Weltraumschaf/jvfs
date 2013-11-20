@@ -86,8 +86,6 @@ final class JvfsFileEntry {
     }
 
     /**
-     *
-     *
      * Hidden: Use either {@link #newDir(java.lang.String)} or {@link #newFile(java.lang.String)}.
      *
      * @param path must not be {@literal null} or empty
@@ -356,22 +354,40 @@ final class JvfsFileEntry {
         return content;
     }
 
+    /**
+     * Set the file content.
+     *
+     * @param content must not be {@code null}
+     */
     void setContent(final byte[] content) {
+        assert content != null : "content must be defined";
         this.content = content;
     }
 
+    /**
+     * Acquire write lock.
+     */
     void beginWrite() {
         rwlock.writeLock().lock();
     }
 
+    /**
+     * Return write lock.
+     */
     void endWrite() {
         rwlock.writeLock().unlock();
     }
 
+    /**
+     * Acquire read lock.
+     */
     void beginRead() {
         rwlock.readLock().lock();
     }
 
+    /**
+     * Return read lock.
+     */
     void endRead() {
         rwlock.readLock().unlock();
     }

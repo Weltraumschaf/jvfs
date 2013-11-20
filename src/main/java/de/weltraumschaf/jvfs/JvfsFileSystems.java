@@ -64,7 +64,7 @@ public final class JvfsFileSystems {
     /**
      * Mount points for virtual file systems to be hooked in.
      */
-    private final Map<String, FileSystem> fstab = new HashMap<>();
+    private final Map<String, FileSystem> fstab = JvfsCollections.newHashMap();
 
     /**
      * Hidden constructor.
@@ -112,6 +112,12 @@ public final class JvfsFileSystems {
         return createUri(DIR_SEP);
     }
 
+    /**
+     * Creates an URI for the JVFS protocol.
+     *
+     * @param path must not be {@code null} or empty
+     * @return never {@code null}
+     */
     public static URI createUri(final String path) {
         final StringBuilder sb = new StringBuilder();
         sb.append(PROTOCOL_JVFS);
