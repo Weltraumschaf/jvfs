@@ -52,7 +52,7 @@ public class JvfsFileSystemsTest {
 
     @Test
     public void getRootUri() throws URISyntaxException {
-        assertThat(JvfsFileSystems.getRootUri(), is(equalTo(new URI("file:///"))));
+        assertThat(JvfsFileSystems.createRootUri(), is(equalTo(new URI("file:///"))));
     }
 
     @Test

@@ -415,7 +415,7 @@ class JvfsPath implements Path {
 
     @Override
     public URI toUri() {
-        String location = JvfsFileSystems.getRootUri().toString();
+        String location = JvfsFileSystems.createRootUri().toString();
 
         // Compose a new URI location, stripping out the extra "/" root idabsolute
         if (isAbsolute()) {

@@ -13,9 +13,12 @@ package de.weltraumschaf.jvfs;
 
 import de.weltraumschaf.jvfs.impl.JvfsFileSystemProviderOld;
 import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.spi.FileSystemProvider;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Factory to get virtual file system stuff.
@@ -61,7 +64,7 @@ public final class JvfsFileSystems {
     /**
      * Mount points for virtual file systems to be hooked in.
      */
-    private final List<String> mountpoints = new ArrayList<>();
+    private final Map<String, FileSystem> fstab = new HashMap<>();
 
     /**
      * Hidden constructor.
@@ -75,7 +78,7 @@ public final class JvfsFileSystems {
     /**
      * Get the single instance.
      *
-     * @return never {@code null}
+     * @return never {@literal null}
      */
     public static JvfsFileSystems getInstance() {
         return INSTANCE;
@@ -105,11 +108,15 @@ public final class JvfsFileSystems {
      *
      * @return never {@literal null}
      */
-    public static URI getRootUri() {
+    public static URI createRootUri() {
+        return createUri(DIR_SEP);
+    }
+
+    public static URI createUri(final String path) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(PROTOCOL_FILE);
+        sb.append(PROTOCOL_JVFS);
         sb.append(URI_PROTOCOL_SUFFIX);
-        sb.append(DIR_SEP);
+        sb.append(path);
         return URI.create(sb.toString());
     }
 
@@ -149,11 +156,11 @@ public final class JvfsFileSystems {
     /**
      * Mount a virtual file system.
      *
-     * @param path must not be {@code null} or empty
+     * @param path must not be {@literal null} or empty
      */
     public void mount(final String path) {
         JvfsAssertions.notEmpty(path, "path");
-        mountpoints.add(path);
+        fstab.put(path, FileSystems.getFileSystem(createRootUri()));
     }
 
     /**
@@ -161,15 +168,25 @@ public final class JvfsFileSystems {
      *
      * Throws an {@link IllegalStateException} if not mounted.
      *
-     * @param path must not be {@code null} or empty
+     * @param path must not be {@literal null} or empty
      */
     public void umount(final String path) {
         JvfsAssertions.notEmpty(path, "path");
 
-        if (!mountpoints.contains(path)) {
+        if (!fstab.containsKey(path)) {
             throw new IllegalStateException(String.format("Path not mounted to JVFS: '%s'!", path));
         }
 
-        mountpoints.remove(path);
+        fstab.remove(path);
     }
+
+    /**
+     * Get map of mount points and file systems.
+     *
+     * @return never {@literal null}
+     */
+    public Map<String, FileSystem> getFstab() {
+        return Collections.unmodifiableMap(fstab);
+    }
+
 }
