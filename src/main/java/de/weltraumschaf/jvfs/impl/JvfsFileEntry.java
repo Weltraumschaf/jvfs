@@ -310,19 +310,6 @@ final class JvfsFileEntry {
     }
 
     /**
-     * If it has child entries if it is a directory.
-     *
-     * @return {@literal true} if it is an empty directory or file, else {@literal false}
-     */
-    boolean isEmpty() {
-        if (isDirectory()) {
-            // TODO Implement is empty functionality.
-        }
-
-        return false;
-    }
-
-    /**
      * Whether it is a symbolic link.
      *
      * @return {@literal true} if it is a symbolic link, else {@literal false}

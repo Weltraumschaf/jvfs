@@ -423,7 +423,8 @@ class JvfsFileSystem extends FileSystem {
         assertFileExists(path);
         final JvfsFileEntry entry = get(path);
 
-        if (entry.isDirectory() && entry.isEmpty()) {
+        if (entry.isDirectory() && false) {
+            // TODO Implement check if empty.
             throw new DirectoryNotEmptyException(path);
         }
 

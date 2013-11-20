@@ -27,7 +27,6 @@ public class JvfsFileEntryTest {
         final JvfsFileEntry dir = JvfsFileEntry.newDir("foo");
         assertThat(dir.getPath(), is(equalTo("foo")));
         assertThat(dir.isDirectory(), is(true));
-        assertThat(dir.isEmpty(), is(false));
         assertThat(dir.isHidden(), is(false));
         assertThat(dir.isReadable(), is(false));
         assertThat(dir.isWritable(), is(false));
@@ -43,7 +42,6 @@ public class JvfsFileEntryTest {
     public void defaults_file() {
         final JvfsFileEntry file = JvfsFileEntry.newFile("foo");
         assertThat(file.isDirectory(), is(false));
-        assertThat(file.isEmpty(), is(false));
         assertThat(file.isHidden(), is(false));
         assertThat(file.isReadable(), is(false));
         assertThat(file.isWritable(), is(false));
