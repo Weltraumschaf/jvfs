@@ -28,6 +28,7 @@ import static org.hamcrest.Matchers.is;
 import org.junit.After;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -39,16 +40,16 @@ public class JvfsIntegrationTest {
 
     @Before
     public void registerDefaultProvider() {
-        JvfsFileSystems.registerUnixAsDefault();
+//        JvfsFileSystems.registerUnixAsDefault();
     }
 
     @After
     public void unregisterDefaultProvider() {
-        JvfsFileSystems.unregisterDefault();
+//        JvfsFileSystems.unregisterDefault();
     }
 
     @Test
-//    @Ignore("Test is flaky. Real FS is used.")
+    @Ignore
     public void createWriteAndReadFiles() throws URISyntaxException, IOException {
         assertThat(
             System.getProperty(JvfsFileSystems.IMPLEMENTATION_PROPERTY_NAME),

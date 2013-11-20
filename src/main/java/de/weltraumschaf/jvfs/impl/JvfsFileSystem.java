@@ -55,9 +55,9 @@ class JvfsFileSystem extends FileSystem {
     static final String FILE_ATTR_VIEW_BASIC = "basic";
 
     /**
-     * Provider which created this {@link JvfsFileSystemProviderOld}.
+     * Provider which created this {@link JvfsFileSystemProvider}.
      */
-    private final JvfsFileSystemProviderOld provider;
+    private final JvfsFileSystemProvider provider;
     /**
      * Organizes the file hierarchy.
      *
@@ -81,7 +81,7 @@ class JvfsFileSystem extends FileSystem {
      * @param provider must not be {@literal null}
      * @param flag {@literal true} creates readonly file system
      */
-    JvfsFileSystem(final JvfsFileSystemProviderOld provider, final boolean flag) {
+    JvfsFileSystem(final JvfsFileSystemProvider provider, final boolean flag) {
         super();
         JvfsAssertions.notNull(provider, "provider");
         this.provider = provider;

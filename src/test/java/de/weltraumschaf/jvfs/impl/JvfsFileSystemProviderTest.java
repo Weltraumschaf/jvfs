@@ -24,7 +24,6 @@ import java.nio.file.ProviderMismatchException;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileAttributeView;
-import java.nio.file.spi.FileSystemProvider;
 import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
@@ -40,31 +39,17 @@ import static org.mockito.Mockito.*;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-public class JvfsFileSystemProviderOldTest {
+public class JvfsFileSystemProviderTest {
 
     @Rule
     //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
-    private final JvfsFileSystemProviderOld sut = new JvfsFileSystemProviderOld(false);
+    private final JvfsFileSystemProvider sut = new JvfsFileSystemProvider();
 
     @Test
     public void getScheme() {
         assertThat(sut.getScheme(), is(equalTo("file")));
-    }
-
-    @Test
-    public void newFileSystem_alwaysThrowException() throws IOException, URISyntaxException {
-        thrown.expect(FileSystemAlreadyExistsException.class);
-        thrown.expectMessage("JVFS is not supposed to create new file systems!");
-        sut.newFileSystem(new URI("file:///"), null);
-    }
-
-    @Test
-    public void getFileSystem_alwaysReturnSameInstance() throws URISyntaxException {
-        final FileSystem fs = sut.getFileSystem(new URI("file:///"));
-        assertThat(fs, is(not(nullValue())));
-        assertThat(fs, is(sameInstance(sut.getFileSystem(new URI("file:///")))));
     }
 
     @Test
@@ -222,14 +207,9 @@ public class JvfsFileSystemProviderOldTest {
     }
 
     @Test
-    public void constructorForSystemProviderFacotryNeedsParameter() {
-        new JvfsFileSystemProviderOld(mock(FileSystemProvider.class));
-    }
-
-    @Test
     public void toJvfsPath() {
         thrown.expect(ProviderMismatchException.class);
-        JvfsFileSystemProviderOld.toJvfsPath(mock(Path.class));
+        JvfsFileSystemProvider.toJvfsPath(mock(Path.class));
     }
 
     private abstract static class BasicFileAttributesStub implements BasicFileAttributes {

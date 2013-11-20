@@ -11,7 +11,7 @@
  */
 package de.weltraumschaf.jvfs;
 
-import de.weltraumschaf.jvfs.impl.JvfsFileSystemProviderOld;
+import de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
@@ -100,7 +100,7 @@ public final class JvfsFileSystems {
      * @return never {@literal null} always new instance
      */
     public static FileSystemProvider newUnixProvider(final boolean flag) {
-        return new JvfsFileSystemProviderOld(flag);
+        return new JvfsFileSystemProvider();
     }
 
     /**
