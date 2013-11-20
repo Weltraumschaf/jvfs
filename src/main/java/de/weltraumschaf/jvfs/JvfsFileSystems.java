@@ -33,7 +33,7 @@ public final class JvfsFileSystems {
     /**
      * Protocol portion of a {@link URI} to JVFS {@link java.nio.file.FileSystem file systems}.
      */
-    public static final String PROTOCOL_JVFS = "file";
+    public static final String PROTOCOL_JVFS = "jvfs";
     /**
      * The default file system protocol.
      */
