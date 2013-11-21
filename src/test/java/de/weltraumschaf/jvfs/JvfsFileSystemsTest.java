@@ -41,6 +41,7 @@ public class JvfsFileSystemsTest {
     @Test
     public void protocol() {
         assertThat(JvfsFileSystems.PROTOCOL_FILE, is(equalTo("file")));
+        assertThat(JvfsFileSystems.PROTOCOL_JVFS, is(equalTo("jvfs")));
     }
 
     @Test
@@ -52,7 +53,7 @@ public class JvfsFileSystemsTest {
 
     @Test
     public void getRootUri() throws URISyntaxException {
-        assertThat(JvfsFileSystems.createRootUri(), is(equalTo(new URI("file:///"))));
+        assertThat(JvfsFileSystems.createRootUri(), is(equalTo(new URI("jvfs:///"))));
     }
 
     @Test

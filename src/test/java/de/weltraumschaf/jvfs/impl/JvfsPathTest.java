@@ -240,7 +240,7 @@ public class JvfsPathTest {
     @Test
     public void toUri() throws URISyntaxException {
         assertThat(new JvfsPath(createPath(false, "foo", "bar", "baz"), fs).toUri(),
-            is(equalTo(new URI("file:///foo/bar/baz"))));
+            is(equalTo(new URI("jvfs:///foo/bar/baz"))));
     }
 
     @Test @Ignore

@@ -45,7 +45,7 @@ public class JvfsFileSystemProviderTest {
 
     @Test
     public void getScheme() {
-        assertThat(sut.getScheme(), is(equalTo("file")));
+        assertThat(sut.getScheme(), is(equalTo("jvfs")));
     }
 
     @Test
