@@ -130,16 +130,22 @@ public final class JvfsQuantity {
         return CACHE_BY_LONG.get(quantity);
     }
 
+    /**
+     * Parses string to long with respecting magnitudes ('k', 'K', 'm', 'M', "g', 'G').
+     *
+     * @param quantity must not be {@code null} or empty
+     * @return any long
+     */
     static long parseQuantity(final String quantity) {
         JvfsAssertions.notNull(quantity, "quantity");
         final String trimmedQuantity = quantity.trim();
         JvfsAssertions.notEmpty(trimmedQuantity, "quantity");
 
         final char last = trimmedQuantity.toLowerCase().charAt(trimmedQuantity.length() - 1);
-        final Factor factor = Factor.forValue(last);
+        final Magnitude factor = Magnitude.forValue(last);
         final String stringValue;
 
-        if (factor == Factor.NONE) {
+        if (factor == Magnitude.NONE) {
             stringValue = trimmedQuantity;
         } else {
             stringValue = trimmedQuantity.substring(0, trimmedQuantity.length() - 1);
@@ -149,22 +155,58 @@ public final class JvfsQuantity {
         return base * factor.factor;
     }
 
-    private enum Factor {
+    /**
+     * Magnitudes of bytes.
+     */
+    private enum Magnitude {
+        /**
+         * Magnitude of factor 2^1.
+         */
         NONE(' ', 1),
+        /**
+         * Magnitude kilo ('k') of factor 2^10 (1024).
+         */
         KILO('k', FACTOR),
+        /**
+         * Magnitude mega ('m') of factor 2^20 (1048576).
+         */
         MEGA('m', FACTOR * FACTOR),
+        /**
+         * Magnitude giga ('g') of factor 2^30 (1073741824).
+         */
         GIGA('g', FACTOR * FACTOR * FACTOR);
 
+        /**
+         * The nornmalized (lower case) meta character.
+         */
         private final char meta;
+        /**
+         * Concrete factor.
+         */
         private final long factor;
 
-        private Factor(final char meta, final long factor) {
+        /**
+         * Dedicated constructor.
+         *
+         * @param meta any character
+         * @param factor must not be less than one
+         */
+        private Magnitude(final char meta, final long factor) {
+            assert factor > 0 : "factor must be greater than 0";
             this.meta = meta;
             this.factor = factor;
         }
 
-        static Factor forValue(final char meta) {
-            for (final Factor f : values()) {
+        /**
+         * Finds the proper magnitude for a given meta character.
+         *
+         * If the character is not a valid meta character {@link #NONE} is returned.
+         *
+         * @param meta any character
+         * @return never {@code null}, as default {@link #NONE}
+         */
+        static Magnitude forValue(final char meta) {
+            for (final Magnitude f : values()) {
                 if (f.meta == meta) {
                     return f;
                 }
