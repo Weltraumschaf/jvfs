@@ -103,20 +103,44 @@ public class JvfsQuantityTest {
     }
 
     @Test
-    @Ignore
     public void testHashCode() {
+        final JvfsQuantity sut1 = JvfsQuantity.forValue("1M");
+        final JvfsQuantity sut2 = JvfsQuantity.forValue("1M");
+        final JvfsQuantity sut3 = JvfsQuantity.forValue("2M");
 
+        assertThat(sut1.hashCode(), is(sut1.hashCode()));
+        assertThat(sut1.hashCode(), is(sut2.hashCode()));
+        assertThat(sut2.hashCode(), is(sut1.hashCode()));
+        assertThat(sut2.hashCode(), is(sut2.hashCode()));
+
+        assertThat(sut3.hashCode(), is(sut3.hashCode()));
+        assertThat(sut3.hashCode(), is(not(sut1.hashCode())));
+        assertThat(sut3.hashCode(), is(not(sut2.hashCode())));
     }
 
     @Test
-    @Ignore
     public void testEquals() {
+        final JvfsQuantity sut1 = JvfsQuantity.forValue("1M");
+        final JvfsQuantity sut2 = JvfsQuantity.forValue("1M");
+        final JvfsQuantity sut3 = JvfsQuantity.forValue("2M");
 
+        assertThat(sut1.equals(null), is(false));
+        assertThat(sut1.equals("foo"), is(false));
+
+        assertThat(sut1.equals(sut1), is(true));
+        assertThat(sut1.equals(sut2), is(true));
+        assertThat(sut2.equals(sut1), is(true));
+        assertThat(sut2.equals(sut2), is(true));
+
+        assertThat(sut3.equals(sut3), is(true));
+        assertThat(sut3.equals(sut1), is(false));
+        assertThat(sut3.equals(sut2), is(false));
+        assertThat(sut1.equals(sut3), is(false));
+        assertThat(sut2.equals(sut3), is(false));
     }
 
     @Test
-    @Ignore
     public void testToString() {
-        
+        assertThat(JvfsQuantity.forValue("1M").toString(), is(equalTo("1048576")));
     }
 }

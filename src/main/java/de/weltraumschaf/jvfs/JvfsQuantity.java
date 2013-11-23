@@ -22,6 +22,10 @@ import java.util.Map;
 public final class JvfsQuantity {
 
     /**
+     * Empty quantity.
+     */
+    public static JvfsQuantity EMPTY = new JvfsQuantity(0L);
+    /**
      * Factor for magnitudes.
      */
     private static final long FACTOR = 1024L;
@@ -73,6 +77,11 @@ public final class JvfsQuantity {
 
         final JvfsQuantity other = (JvfsQuantity) obj;
         return value == other.value;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(value);
     }
 
     /**
