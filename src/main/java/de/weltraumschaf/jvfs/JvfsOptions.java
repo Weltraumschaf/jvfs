@@ -35,14 +35,14 @@ public final class JvfsOptions {
     /**
      * Holds the options.
      */
-    private final Map<String, Object> env;
+    private final Map<String, ?> env;
 
     /**
      * Dedicated constructor.
      *
      * @param env must not be {@literal null}
      */
-    private JvfsOptions(final Map<String, Object> env) {
+    private JvfsOptions(final Map<String, ?> env) {
         super();
         JvfsAssertions.notNull(env, "env");
         this.env = env;
@@ -53,7 +53,7 @@ public final class JvfsOptions {
      *
      * @return never {@literal null}
      */
-    public Map<String, Object> getEnv() {
+    public Map<String, ?> getEnv() {
         return env;
     }
 
@@ -72,7 +72,7 @@ public final class JvfsOptions {
      * @param env must not be {@literal null}
      * @return never {@literal null}
      */
-    public static JvfsOptions fromValue(final Map<String, Object> env) {
+    public static JvfsOptions fromValue(final Map<String, ?> env) {
         return new JvfsOptions(env);
     }
 
@@ -82,9 +82,17 @@ public final class JvfsOptions {
      * @return by default {@literal false}
      */
     public boolean isReadonly() {
-//        return Option.READONLY.type.cast(env.get(Option.READONLY.key));
         if (env.containsKey(Option.READONLY.key)) {
-            return (boolean) env.get(Option.READONLY.key);
+            final Object value = env.get(Option.READONLY.key);
+
+            if (value instanceof String) {
+                return Boolean.valueOf((String) value);
+            } else if (value instanceof Boolean) {
+                return (Boolean) value;
+            } else {
+                throw new IllegalArgumentException();
+            }
+
         }
 
         return false;
@@ -162,16 +170,51 @@ public final class JvfsOptions {
         }
     }
 
-    private enum Option {
+    /**
+     * Keys for environment map.
+     *
+     * You can create options like this:<br/>
+     * <code>
+     * final Map&lt;String, ?&gt; map = new HashMap&lt;String, ?&gt;();
+     * map.put(JvfsOption.Option.CAPACITY.key(), "12M");
+     * map.put(JvfsOption.Option.READONLY.key(), true);
+     *
+     * final JvfsOption opts = JvfsOption.forValue(map);
+     * </code>
+     */
+    public enum Option {
 
-        CAPACITY("capacity", JvfsQuantity.class),
-        READONLY("readonly", Boolean.class);
+        /**
+         * Key for capacity.
+         */
+        CAPACITY("capacity"),
+        /**
+         * Key for readonly flag.
+         */
+        READONLY("readonly");
+        /**
+         * The key for the map.
+         */
         private final String key;
-        private final Class<?> type;
 
-        Option(final String key, final Class<?> type) {
+        /**
+         * Dedicated constructor.
+         *
+         * @param key must not be {@code null} or empty
+         */
+        Option(final String key) {
+            assert null != key : "key must be specified";
+            assert !key.isEmpty() : "key must not be empty";
             this.key = key;
-            this.type = type;
+        }
+
+        /**
+         * Get the key.
+         *
+         * @return never {@code null} or empty
+         */
+        public String key() {
+            return key;
         }
 
     }
