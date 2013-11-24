@@ -38,16 +38,19 @@ final class JvfsFileStore extends FileStore {
      * Whether the sore is readonly or not.
      */
     private final JvfsOptions options;
+    private final JvfsFileSystem fs;
 
     /**
      * Dedicated constructor.
      *
-     * @param opts {@code true} registers readonly file system
+     * @param opts {@literal true} registers readonly file system
      */
-    JvfsFileStore(final JvfsOptions opts) {
+    JvfsFileStore(final JvfsOptions opts, final JvfsFileSystem fs) {
         super();
         assert null != opts : "opts must be defined";
-        options = opts;
+        assert null != fs : "store must be defined";
+        this.options = opts;
+        this.fs = fs;
     }
 
     @Override
@@ -63,7 +66,7 @@ final class JvfsFileStore extends FileStore {
 
     @Override
     public boolean isReadOnly() {
-        return options.isReadOnly();
+        return options.isReadonly();
     }
 
     @Override
@@ -77,12 +80,12 @@ final class JvfsFileStore extends FileStore {
      * @return non negative
      */
     public long getUsedSpace() {
-        return 0; // TODO Implement get usedspace.
+        return fs.getUsedSpace();
     }
 
     @Override
     public long getUsableSpace() throws IOException {
-        return Runtime.getRuntime().freeMemory();
+        return options.getCapacity().value();
     }
 
     @Override

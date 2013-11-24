@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.*;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
+import static org.mockito.Mockito.mock;
 
 /**
  * Tests for {@link JvfsFileStore}.
@@ -32,7 +33,7 @@ public class JvfsFileStoreTest {
     //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
-    private final JvfsFileStore sut = new JvfsFileStore(JvfsOptions.DEFAULT);
+    private final JvfsFileStore sut = new JvfsFileStore(JvfsOptions.DEFAULT, mock(JvfsFileSystem.class));
 
     @Test
     public void name() {
@@ -46,8 +47,14 @@ public class JvfsFileStoreTest {
 
     @Test
     public void isReadOnly() {
-        assertThat(new JvfsFileStore(JvfsOptions.DEFAULT).isReadOnly(), is(false));
-        assertThat(new JvfsFileStore(JvfsOptions.builder().readOnly(true).create()).isReadOnly(), is(true));
+        assertThat(
+            new JvfsFileStore(JvfsOptions.DEFAULT, mock(JvfsFileSystem.class)).isReadOnly(),
+            is(false));
+        assertThat(
+            new JvfsFileStore(
+                JvfsOptions.builder().readonly(true).create(),
+                mock(JvfsFileSystem.class)).isReadOnly(),
+            is(true));
     }
 
     @Test @Ignore

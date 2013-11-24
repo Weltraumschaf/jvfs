@@ -11,6 +11,7 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
+import static com.sun.org.apache.xalan.internal.lib.ExsltDynamic.map;
 import de.weltraumschaf.jvfs.JvfsAssertions;
 import de.weltraumschaf.jvfs.JvfsCollections;
 import de.weltraumschaf.jvfs.JvfsFileSystems;
@@ -38,6 +39,7 @@ import java.nio.file.attribute.FileTime;
 import java.nio.file.attribute.UserPrincipalLookupService;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -80,14 +82,14 @@ class JvfsFileSystem extends FileSystem {
      * Dedicated constructor.
      *
      * @param provider must not be {@literal null}
-     * @param flag {@literal true} creates readonly file system
+     * @param options
      */
     JvfsFileSystem(final JvfsFileSystemProvider provider, final JvfsOptions options) {
         super();
         JvfsAssertions.notNull(provider, "provider");
         this.provider = provider;
         this.open = true;
-        final FileStore store = new JvfsFileStore(options);
+        final FileStore store = new JvfsFileStore(options, this);
         final List<FileStore> stores = JvfsCollections.newArrayList(1);
         stores.add(store);
         this.fileStores = Collections.unmodifiableList(stores);
@@ -455,7 +457,7 @@ class JvfsFileSystem extends FileSystem {
      * @throws IOException if source does not exist
      */
     void setTimes(final String path, final FileTime mtime, final FileTime atime, final FileTime ctime)
-        throws IOException {
+            throws IOException {
         checkClosed();
         assertFileExists(path);
         final JvfsFileEntry entry = get(path);
@@ -534,6 +536,24 @@ class JvfsFileSystem extends FileSystem {
         checkClosed();
         assertFileExists(path);
         return get(path).isHidden();
+    }
+
+    long getUsedSpace() {
+        long usedBytes = 0L;
+
+        final Iterator<Map.Entry<String, JvfsFileEntry>> it  = attic.entrySet().iterator();
+
+        while (it.hasNext()) {
+            final JvfsFileEntry file = it.next().getValue();
+
+            if (file.isDirectory()) {
+                break;
+            }
+
+            usedBytes += file.size();
+        }
+
+        return usedBytes;
     }
 
 }

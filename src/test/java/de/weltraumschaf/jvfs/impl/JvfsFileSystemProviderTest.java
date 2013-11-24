@@ -53,7 +53,7 @@ public class JvfsFileSystemProviderTest {
 
     @Test
     public void newFileSystem() throws URISyntaxException, IOException {
-        final JvfsOptions opts= JvfsOptions.builder().capacity("10M").readOnly(false).create();
+        final JvfsOptions opts= JvfsOptions.builder().capacity("10M").readonly(false).create();
         sut.newFileSystem(new URI("jvfs:///foo/bar"), opts.getEnv());
     }
 
