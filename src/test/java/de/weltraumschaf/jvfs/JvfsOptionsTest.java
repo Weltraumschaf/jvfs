@@ -12,6 +12,7 @@
 
 package de.weltraumschaf.jvfs;
 
+import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -24,7 +25,13 @@ import static org.hamcrest.Matchers.*;
 public class JvfsOptionsTest {
 
     @Test
-    public void testSomeMethod() {
+    public void defaultOptions() {
+        assertThat(JvfsOptions.DEFAULT.getCapacity(), is(equalTo(JvfsQuantity.forValue(0L))));
+        assertThat(JvfsOptions.DEFAULT.isReadonly(), is(false));
+    }
+
+    @Test
+    public void createByBuilder() {
         final JvfsOptions opts = JvfsOptions.builder()
             .readonly(true)
             .capacity("1k")
@@ -34,4 +41,32 @@ public class JvfsOptionsTest {
         assertThat(opts.getCapacity(), is(equalTo(JvfsQuantity.forValue(1024L))));
     }
 
+    @Test
+    public void forValue() {
+        Map<String, Object> env = JvfsCollections.newHashMap();
+        JvfsOptions opts = JvfsOptions.forValue(env);
+        assertThat(opts.getCapacity(), is(equalTo(JvfsQuantity.forValue(0L))));
+        assertThat(opts.isReadonly(), is(false));
+
+        env = JvfsCollections.newHashMap();
+        env.put(JvfsOptions.Option.CAPACITY.key(), "1k");
+        env.put(JvfsOptions.Option.READONLY.key(), "true");
+        opts = JvfsOptions.forValue(env);
+        assertThat(opts.isReadonly(), is(true));
+        assertThat(opts.getCapacity(), is(equalTo(JvfsQuantity.forValue(1024L))));
+
+        env = JvfsCollections.newHashMap();
+        env.put(JvfsOptions.Option.CAPACITY.key(), 1024L);
+        env.put(JvfsOptions.Option.READONLY.key(), "true");
+        opts = JvfsOptions.forValue(env);
+        assertThat(opts.isReadonly(), is(true));
+        assertThat(opts.getCapacity(), is(equalTo(JvfsQuantity.forValue(1024L))));
+
+        env = JvfsCollections.newHashMap();
+        env.put(JvfsOptions.Option.CAPACITY.key(), JvfsQuantity.forValue(1024L));
+        env.put(JvfsOptions.Option.READONLY.key(), "true");
+        opts = JvfsOptions.forValue(env);
+        assertThat(opts.isReadonly(), is(true));
+        assertThat(opts.getCapacity(), is(equalTo(JvfsQuantity.forValue(1024L))));
+    }
 }

@@ -38,12 +38,16 @@ final class JvfsFileStore extends FileStore {
      * Whether the sore is readonly or not.
      */
     private final JvfsOptions options;
+    /**
+     * Associated file system.
+     */
     private final JvfsFileSystem fs;
 
     /**
      * Dedicated constructor.
      *
-     * @param opts {@literal true} registers readonly file system
+     * @param opts {@code true} registers readonly file system
+     * @param fs must not be {@code null}
      */
     JvfsFileStore(final JvfsOptions opts, final JvfsFileSystem fs) {
         super();

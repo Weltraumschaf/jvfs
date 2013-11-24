@@ -72,7 +72,7 @@ public final class JvfsOptions {
      * @param env must not be {@literal null}
      * @return never {@literal null}
      */
-    public static JvfsOptions fromValue(final Map<String, ?> env) {
+    public static JvfsOptions forValue(final Map<String, ?> env) {
         return new JvfsOptions(env);
     }
 
@@ -105,7 +105,17 @@ public final class JvfsOptions {
      */
     public JvfsQuantity getCapacity() {
         if (env.containsKey(Option.CAPACITY.key)) {
-            return (JvfsQuantity) env.get(Option.CAPACITY.key);
+            final Object value = env.get(Option.CAPACITY.key);
+
+            if (value instanceof JvfsQuantity) {
+                return (JvfsQuantity) value;
+            } else if (value instanceof String) {
+                return JvfsQuantity.forValue((String) value);
+            } else if (value instanceof Long) {
+                return JvfsQuantity.forValue((Long) value);
+            } else {
+                throw new IllegalArgumentException();
+            }
         }
 
         return JvfsQuantity.EMPTY;
@@ -160,7 +170,7 @@ public final class JvfsOptions {
          * If you call this method without setting any option by {@link #capacity(java.lang.String)} or
          * {@link #readonly(boolean)} then an instance equal to {@link JvfsOptions#DEFAULT} will be created.
          *
-         * @return never {@code null}, always new instance
+         * @return never {@literal null}, always new instance
          */
         public JvfsOptions create() {
             final Map<String, Object> env = JvfsCollections.newHashMap();
@@ -200,7 +210,7 @@ public final class JvfsOptions {
         /**
          * Dedicated constructor.
          *
-         * @param key must not be {@code null} or empty
+         * @param key must not be {@literal null} or empty
          */
         Option(final String key) {
             assert null != key : "key must be specified";
@@ -211,7 +221,7 @@ public final class JvfsOptions {
         /**
          * Get the key.
          *
-         * @return never {@code null} or empty
+         * @return never {@literal null} or empty
          */
         public String key() {
             return key;

@@ -15,7 +15,6 @@ package de.weltraumschaf.jvfs;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.*;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
@@ -124,8 +123,10 @@ public class JvfsQuantityTest {
         final JvfsQuantity sut2 = JvfsQuantity.forValue("1M");
         final JvfsQuantity sut3 = JvfsQuantity.forValue("2M");
 
+        //CHECKSTYLE:OFF Explicit test for that.
         assertThat(sut1.equals(null), is(false));
         assertThat(sut1.equals("foo"), is(false));
+        //CHECKSTYLE:ON
 
         assertThat(sut1.equals(sut1), is(true));
         assertThat(sut1.equals(sut2), is(true));
@@ -142,5 +143,10 @@ public class JvfsQuantityTest {
     @Test
     public void testToString() {
         assertThat(JvfsQuantity.forValue("1M").toString(), is(equalTo("1048576")));
+    }
+
+    @Test
+    public void empty() {
+        assertThat(JvfsQuantity.EMPTY.value(), is(0L));
     }
 }

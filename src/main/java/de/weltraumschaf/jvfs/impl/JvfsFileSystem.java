@@ -11,7 +11,6 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
-import static com.sun.org.apache.xalan.internal.lib.ExsltDynamic.map;
 import de.weltraumschaf.jvfs.JvfsAssertions;
 import de.weltraumschaf.jvfs.JvfsCollections;
 import de.weltraumschaf.jvfs.JvfsFileSystems;
@@ -81,12 +80,13 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Dedicated constructor.
      *
-     * @param provider must not be {@literal null}
-     * @param options
+     * @param provider must not be {@code null}
+     * @param options must not be {@code null}
      */
     JvfsFileSystem(final JvfsFileSystemProvider provider, final JvfsOptions options) {
         super();
         JvfsAssertions.notNull(provider, "provider");
+        JvfsAssertions.notNull(options, "options");
         this.provider = provider;
         this.open = true;
         final FileStore store = new JvfsFileStore(options, this);
@@ -457,7 +457,7 @@ class JvfsFileSystem extends FileSystem {
      * @throws IOException if source does not exist
      */
     void setTimes(final String path, final FileTime mtime, final FileTime atime, final FileTime ctime)
-            throws IOException {
+        throws IOException {
         checkClosed();
         assertFileExists(path);
         final JvfsFileEntry entry = get(path);
@@ -538,6 +538,11 @@ class JvfsFileSystem extends FileSystem {
         return get(path).isHidden();
     }
 
+    /**
+     * Sums up the sizes of all non directory file entries.
+     *
+     * @return non negative
+     */
     long getUsedSpace() {
         long usedBytes = 0L;
 
