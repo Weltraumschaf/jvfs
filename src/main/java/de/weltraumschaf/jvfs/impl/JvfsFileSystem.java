@@ -14,6 +14,7 @@ package de.weltraumschaf.jvfs.impl;
 import de.weltraumschaf.jvfs.JvfsAssertions;
 import de.weltraumschaf.jvfs.JvfsCollections;
 import de.weltraumschaf.jvfs.JvfsFileSystems;
+import de.weltraumschaf.jvfs.JvfsOptions;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SeekableByteChannel;
@@ -81,12 +82,12 @@ class JvfsFileSystem extends FileSystem {
      * @param provider must not be {@literal null}
      * @param flag {@literal true} creates readonly file system
      */
-    JvfsFileSystem(final JvfsFileSystemProvider provider, final boolean flag) {
+    JvfsFileSystem(final JvfsFileSystemProvider provider, final JvfsOptions options) {
         super();
         JvfsAssertions.notNull(provider, "provider");
         this.provider = provider;
         this.open = true;
-        final FileStore store = new JvfsFileStore(flag);
+        final FileStore store = new JvfsFileStore(options);
         final List<FileStore> stores = JvfsCollections.newArrayList(1);
         stores.add(store);
         this.fileStores = Collections.unmodifiableList(stores);

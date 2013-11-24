@@ -12,7 +12,10 @@
 package de.weltraumschaf.jvfs.impl;
 
 import de.weltraumschaf.jvfs.JvfsCollections;
+import de.weltraumschaf.jvfs.JvfsOptions;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -46,6 +49,12 @@ public class JvfsFileSystemProviderTest {
     @Test
     public void getScheme() {
         assertThat(sut.getScheme(), is(equalTo("jvfs")));
+    }
+
+    @Test
+    public void newFileSystem() throws URISyntaxException, IOException {
+        final JvfsOptions opts= JvfsOptions.builder().capacity("10M").readOnly(false).create();
+        sut.newFileSystem(new URI("jvfs:///foo/bar"), opts.getEnv());
     }
 
     @Test

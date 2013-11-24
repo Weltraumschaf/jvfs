@@ -12,6 +12,7 @@
 
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsOptions;
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.attribute.BasicFileAttributeView;
@@ -36,16 +37,17 @@ final class JvfsFileStore extends FileStore {
     /**
      * Whether the sore is readonly or not.
      */
-    private final boolean readonly;
+    private final JvfsOptions options;
 
     /**
      * Dedicated constructor.
      *
-     * @param flag {@code true} registers readonly file system
+     * @param opts {@code true} registers readonly file system
      */
-    JvfsFileStore(final boolean flag) {
+    JvfsFileStore(final JvfsOptions opts) {
         super();
-        readonly = flag;
+        assert null != opts : "opts must be defined";
+        options = opts;
     }
 
     @Override
@@ -61,7 +63,7 @@ final class JvfsFileStore extends FileStore {
 
     @Override
     public boolean isReadOnly() {
-        return readonly;
+        return options.isReadOnly();
     }
 
     @Override

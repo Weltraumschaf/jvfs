@@ -13,7 +13,9 @@
 package de.weltraumschaf.jvfs.impl;
 
 import de.weltraumschaf.jvfs.JvfsAssertions;
+import de.weltraumschaf.jvfs.JvfsCollections;
 import de.weltraumschaf.jvfs.JvfsFileSystems;
+import de.weltraumschaf.jvfs.JvfsOptions;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.channels.FileChannel;
@@ -48,13 +50,17 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
      * The one and only file system.
      */
     private final JvfsFileSystem fileSystem;
+    /**
+     * Hold the mounted file systems.
+     */
+    private final Map<String, JvfsFileSystem> fstab = JvfsCollections.newHashMap();
 
     /**
      * Dedicated constructor.
      */
     public JvfsFileSystemProvider() {
         super();
-        fileSystem = new JvfsFileSystem(this, false);
+        fileSystem = new JvfsFileSystem(this, JvfsOptions.DEFAULT);
     }
 
     @Override
@@ -63,13 +69,44 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
     }
 
     @Override
-    public FileSystem newFileSystem(URI uri, Map<String, ?> env) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public FileSystem newFileSystem(final URI uri, final Map<String, ?> env) throws IOException {
+        checkUri(uri);
+        String mountPount = uri.getPath();
+
+        if (!mountPount.startsWith(JvfsFileSystems.DIR_SEP)) {
+            throw new IllegalArgumentException("Mount point must be absolute!");
+        }
+
+        if (mountPount.endsWith(JvfsFileSystems.DIR_SEP)) {
+            mountPount = mountPount.substring(0, mountPount.length() - 1);
+        }
+
+        if (fstab.containsKey(mountPount)) {
+            throw new IllegalArgumentException("Already mounted " + mountPount);
+        }
+
+        fstab.put(mountPount, new JvfsFileSystem(this, JvfsOptions.fromValue((Map<String, Object>) env)));
+        return fstab.get(mountPount);
     }
 
     @Override
     public FileSystem getFileSystem(URI uri) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        checkUri(uri);
+        String mountPount = uri.getPath();
+
+        if (!mountPount.startsWith(JvfsFileSystems.DIR_SEP)) {
+            throw new IllegalArgumentException("Mount point must be absolute!");
+        }
+
+        if (mountPount.endsWith(JvfsFileSystems.DIR_SEP)) {
+            mountPount = mountPount.substring(0, mountPount.length() - 1);
+        }
+
+        if (!fstab.containsKey(mountPount)) {
+            throw new IllegalArgumentException("Not mounted " + mountPount);
+        }
+
+        return fstab.get(mountPount);
     }
 
     /**
@@ -100,12 +137,8 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
             throw new IllegalArgumentException("Authority component present!");
         }
 
-        if (uri.getPath() == null) {
+        if (uri.getPath() == null || uri.getPath().isEmpty()) {
             throw new IllegalArgumentException("Path component is undefined!");
-        }
-
-        if (!uri.getPath().equals(JvfsFileSystems.DIR_SEP)) {
-            throw new IllegalArgumentException(String.format("Path component should be '%s'", JvfsFileSystems.DIR_SEP));
         }
 
         if (uri.getQuery() != null) {

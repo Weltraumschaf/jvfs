@@ -22,9 +22,9 @@ import java.util.Map;
 public final class JvfsQuantity {
 
     /**
-     * Empty quantity.
+     * Quantity with size 0.
      */
-    public static JvfsQuantity EMPTY = new JvfsQuantity(0L);
+    public static final JvfsQuantity EMPTY = new JvfsQuantity(0L);
     /**
      * Factor for magnitudes.
      */

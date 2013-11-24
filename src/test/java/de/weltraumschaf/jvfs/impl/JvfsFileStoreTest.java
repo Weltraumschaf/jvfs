@@ -12,6 +12,7 @@
 
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsOptions;
 import java.io.IOException;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
@@ -31,7 +32,7 @@ public class JvfsFileStoreTest {
     //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
-    private final JvfsFileStore sut = new JvfsFileStore(false);
+    private final JvfsFileStore sut = new JvfsFileStore(JvfsOptions.DEFAULT);
 
     @Test
     public void name() {
@@ -45,8 +46,8 @@ public class JvfsFileStoreTest {
 
     @Test
     public void isReadOnly() {
-        assertThat(new JvfsFileStore(false).isReadOnly(), is(false));
-        assertThat(new JvfsFileStore(true).isReadOnly(), is(true));
+        assertThat(new JvfsFileStore(JvfsOptions.DEFAULT).isReadOnly(), is(false));
+        assertThat(new JvfsFileStore(JvfsOptions.builder().readOnly(true).create()).isReadOnly(), is(true));
     }
 
     @Test @Ignore
