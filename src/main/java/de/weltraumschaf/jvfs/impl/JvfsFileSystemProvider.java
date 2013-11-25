@@ -85,7 +85,7 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
             throw new IllegalArgumentException("Already mounted " + mountPount);
         }
 
-        fstab.put(mountPount, new JvfsFileSystem(this, JvfsOptions.forValue((Map<String, Object>) env)));
+        fstab.put(mountPount, new JvfsFileSystem(this, JvfsOptions.forValue((Map<String, ?>) env)));
         return fstab.get(mountPount);
     }
 

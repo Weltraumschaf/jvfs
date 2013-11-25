@@ -145,7 +145,7 @@ public final class JvfsOptions {
         /**
          * Set the capacity.
          *
-         * @param qunatity see {@link JvfsQuantity#forValue()}
+         * @param qunatity see {@link JvfsQuantity#forValue(java.lang.String)}
          * @return builder itself
          */
         public Builder capacity(final String qunatity) {
