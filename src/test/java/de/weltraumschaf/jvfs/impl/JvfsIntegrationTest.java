@@ -83,10 +83,17 @@ public class JvfsIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void jvfsProtocol() throws URISyntaxException, IOException {
         final Path path = Paths.get(new URI("jvfs:///foo"));
         assertThat(path, is(instanceOf(JvfsPath.class)));
         Files.createFile(path);
+
+        final OutputStream out = Files.newOutputStream(path);
+        IOUtils.write("helo", out);
+        IOUtils.closeQuietly(out);
+
+        final InputStream in = Files.newInputStream(path);
+        assertThat(IOUtils.toString(in), is("helo"));
+        IOUtils.closeQuietly(in);
     }
 }
