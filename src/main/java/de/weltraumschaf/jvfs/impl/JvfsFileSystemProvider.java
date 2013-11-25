@@ -35,6 +35,7 @@ import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.Map;
 import java.util.Set;
+import org.apache.log4j.Logger;
 
 /**
  * In memory file system.
@@ -45,6 +46,8 @@ import java.util.Set;
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
 public class JvfsFileSystemProvider extends FileSystemProvider {
+
+    private static final Logger LOG = Logger.getLogger(JvfsFileSystemProvider.class);
 
     /**
      * The one and only file system.
@@ -70,6 +73,7 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
 
     @Override
     public FileSystem newFileSystem(final URI uri, final Map<String, ?> env) throws IOException {
+        LOG.debug("Create new file system for " + uri.toString());
         checkUri(uri);
         String mountPount = uri.getPath();
 
@@ -90,7 +94,8 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
     }
 
     @Override
-    public FileSystem getFileSystem(URI uri) {
+    public FileSystem getFileSystem(final URI uri) {
+        LOG.debug("Geting file system for " + uri.toString());
         checkUri(uri);
         String mountPount = uri.getPath();
 
