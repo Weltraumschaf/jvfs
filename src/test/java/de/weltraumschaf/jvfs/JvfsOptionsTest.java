@@ -9,7 +9,6 @@
  *
  * Copyright (C) 2012 "Sven Strittmatter" <weltraumschaf@googlemail.com>
  */
-
 package de.weltraumschaf.jvfs;
 
 import java.util.Map;
@@ -28,17 +27,21 @@ public class JvfsOptionsTest {
     public void defaultOptions() {
         assertThat(JvfsOptions.DEFAULT.getCapacity(), is(equalTo(JvfsQuantity.forValue(0L))));
         assertThat(JvfsOptions.DEFAULT.isReadonly(), is(false));
+        assertThat(JvfsOptions.DEFAULT.isAutoMount(), is(true));
+
     }
 
     @Test
     public void createByBuilder() {
         final JvfsOptions opts = JvfsOptions.builder()
-            .readonly(true)
-            .capacity("1k")
-            .create();
+                .readonly(true)
+                .capacity("1k")
+                .autoMount(false)
+                .create();
 
         assertThat(opts.isReadonly(), is(true));
         assertThat(opts.getCapacity(), is(equalTo(JvfsQuantity.forValue(1024L))));
+        assertThat(opts.isAutoMount(), is(false));
     }
 
     @Test
@@ -51,9 +54,11 @@ public class JvfsOptionsTest {
         env = JvfsCollections.newHashMap();
         env.put(JvfsOptions.Option.CAPACITY.key(), "1k");
         env.put(JvfsOptions.Option.READONLY.key(), "true");
+        env.put(JvfsOptions.Option.AUTO_MOUNT.key(), "false");
         opts = JvfsOptions.forValue(env);
         assertThat(opts.isReadonly(), is(true));
         assertThat(opts.getCapacity(), is(equalTo(JvfsQuantity.forValue(1024L))));
+        assertThat(opts.isAutoMount(), is(false));
 
         env = JvfsCollections.newHashMap();
         env.put(JvfsOptions.Option.CAPACITY.key(), 1024L);

@@ -18,16 +18,28 @@ import java.util.Map;
  *
  * To create options use the builder:<br/>
  * <code>
- final JvfsOptions opts = JvfsOptions.builder()
-      .readonly(true)
-      .capacity("1k")
-      .create();
- </code>
+ * final JvfsOptions opts = JvfsOptions.builder()
+ *      .readonly(true)
+ *      .capacity("1k")
+ *      .create();
+ * </code>
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
 public final class JvfsOptions {
 
+    /**
+     * Default for read only option.
+     */
+    private static final boolean DEFAULT_READONLY = false;
+    /**
+     * Default for auto mount option.
+     */
+    private static final boolean DEFAULT_AUTOMOUNT = true;
+    /**
+     * Default for capacity option.
+     */
+    private static final JvfsQuantity DEFAULT_EMPTY = JvfsQuantity.EMPTY;
     /**
      * Default options.
      */
@@ -79,23 +91,49 @@ public final class JvfsOptions {
     /**
      * Option which indicates if the file system is readonly or not.
      *
-     * @return by default {@literal false}
+     * @return by default {@link #DEFAULT_READONLY}
      */
     public boolean isReadonly() {
         if (env.containsKey(Option.READONLY.key)) {
             final Object value = env.get(Option.READONLY.key);
-
-            if (value instanceof String) {
-                return Boolean.valueOf((String) value);
-            } else if (value instanceof Boolean) {
-                return (Boolean) value;
-            } else {
-                throw new IllegalArgumentException();
-            }
-
+            return castToBoolean(value);
         }
 
-        return false;
+        return DEFAULT_READONLY;
+    }
+
+    /**
+     * Whether the file system should auto mount a root file system ("/").
+     *
+     * @return by default {@link #DEFAULT_AUTOMOUNT}
+     */
+    public boolean isAutoMount() {
+        if (env.containsKey(Option.READONLY.key)) {
+            final Object value = env.get(Option.READONLY.key);
+            return castToBoolean(value);
+        }
+
+        return DEFAULT_AUTOMOUNT;
+    }
+
+    /**
+     * Try to cast a boolean from {@link java.lang.String} or {@link java.lang.Boolean}.
+     *
+     * Throws an {@link IllegalArgumentException} if unrecognized type.
+     *
+     * @param value must not be {@code null}
+     * @return {@code true} for string "true" or {@link java.lang.Boolean#TRUE}, else false
+     */
+    private boolean castToBoolean(final Object value) {
+        JvfsAssertions.notNull(value, "value");
+
+        if (value instanceof String) {
+            return Boolean.valueOf((String) value);
+        } else if (value instanceof Boolean) {
+            return (Boolean) value;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -118,7 +156,7 @@ public final class JvfsOptions {
             }
         }
 
-        return JvfsQuantity.EMPTY;
+        return DEFAULT_EMPTY;
     }
 
     /**
@@ -129,11 +167,16 @@ public final class JvfsOptions {
         /**
          * Capacity for created options.
          */
-        private JvfsQuantity capacity = JvfsQuantity.EMPTY;
+        private JvfsQuantity capacity = DEFAULT_EMPTY;
         /**
          * Readonly flag for created options.
          */
-        private boolean readOnly;
+        private boolean readOnly = DEFAULT_READONLY;
+        /**
+         * If a file system for a path is requested and there is no file system, then a root file system ("/") will be
+         * automatically mounted.
+         */
+        private boolean autoMount = DEFAULT_AUTOMOUNT;
 
         /**
          * Use {@link JvfsOptions#builder()} to get instance.
@@ -165,6 +208,17 @@ public final class JvfsOptions {
         }
 
         /**
+         * Set the auto mount flag.
+         *
+         * @param flag {@literal true} for auto mounted file system, else {@literal false}
+         * @return builder itself
+         */
+        public Builder autoMount(final boolean flag) {
+            autoMount = flag;
+            return this;
+        }
+
+        /**
          * Create a new options instance.
          *
          * If you call this method without setting any option by {@link #capacity(java.lang.String)} or
@@ -176,6 +230,7 @@ public final class JvfsOptions {
             final Map<String, Object> env = JvfsCollections.newHashMap();
             env.put(Option.CAPACITY.key, capacity);
             env.put(Option.READONLY.key, readOnly);
+            env.put(Option.AUTO_MOUNT.key, autoMount);
             return new JvfsOptions(env);
         }
     }
@@ -201,7 +256,12 @@ public final class JvfsOptions {
         /**
          * Key for readonly flag.
          */
-        READONLY("readonly");
+        READONLY("readonly"),
+        /**
+         * Key for auto mount flag.
+         */
+        AUTO_MOUNT("autoMount");
+
         /**
          * The key for the map.
          */
