@@ -34,13 +34,13 @@ final class JvfsPathUtil {
     /**
      * Splits the given string by the directory separator.
      *
-     * @param path must not be {@code null}
-     * @return never {@code null}
+     * @param path must not be {@literal null}
+     * @return never {@literal null}
      */
     static List<String> tokenize(final String path) {
         JvfsAssertions.notNull(path, "path");
         final StringTokenizer tokenizer = new StringTokenizer(path, JvfsPath.DIR_SEP);
-        final List<String> tokens = JvfsCollections.newArrayList();
+        final List<String> tokens = JvfsCollections.newList();
 
         while (tokenizer.hasMoreTokens()) {
             tokens.add(tokenizer.nextToken());
@@ -52,9 +52,9 @@ final class JvfsPathUtil {
     /**
      * Normalizes the tokenized view of the path.
      *
-     * @param tokens must not be {@code null}
+     * @param tokens must not be {@literal null}
      * @param absolute whether the tokenized path was absolute or not
-     * @return never {@code null}
+     * @return never {@literal null}
      */
     static String normalize(final List<String> tokens, boolean absolute) {
         assert tokens != null : "path must be specified";

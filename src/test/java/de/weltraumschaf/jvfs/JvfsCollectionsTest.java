@@ -39,51 +39,51 @@ public class JvfsCollectionsTest {
     }
 
     @Test
-    public void newArrayList() {
-        final List<Object> l = JvfsCollections.newArrayList();
+    public void newList() {
+            final List<Object> l = JvfsCollections.newList();
         assertThat(l, is(not(nullValue())));
-        assertThat(l, is(not(sameInstance(JvfsCollections.newArrayList()))));
-        assertThat(l, is(not(sameInstance(JvfsCollections.newArrayList()))));
-        assertThat(l, is(not(sameInstance(JvfsCollections.newArrayList()))));
+        assertThat(l, is(not(sameInstance(JvfsCollections.newList()))));
+        assertThat(l, is(not(sameInstance(JvfsCollections.newList()))));
+        assertThat(l, is(not(sameInstance(JvfsCollections.newList()))));
     }
 
     @Test
-    public void newArrayList_withSize() {
-        final List<Object> l = JvfsCollections.newArrayList(1);
+    public void newList_withSize() {
+        final List<Object> l = JvfsCollections.newList(1);
         assertThat(l, is(not(nullValue())));
-        assertThat(l, is(not(sameInstance(JvfsCollections.newArrayList(1)))));
-        assertThat(l, is(not(sameInstance(JvfsCollections.newArrayList(1)))));
-        assertThat(l, is(not(sameInstance(JvfsCollections.newArrayList(1)))));
+        assertThat(l, is(not(sameInstance(JvfsCollections.newList(1)))));
+        assertThat(l, is(not(sameInstance(JvfsCollections.newList(1)))));
+        assertThat(l, is(not(sameInstance(JvfsCollections.newList(1)))));
     }
 
     @Test
-    public void newArrayList_copy() {
-        final List<String> l = JvfsCollections.newArrayList();
+    public void newList_copy() {
+        final List<String> l = JvfsCollections.newList();
         l.add("foo");
         l.add("bar");
         l.add("baz");
 
-        final List<String> copy = JvfsCollections.newArrayList(l);
+        final List<String> copy = JvfsCollections.newList(l);
         assertThat(copy, is(not(sameInstance(l))));
         assertThat(copy, contains("foo", "bar", "baz"));
     }
 
     @Test
-    public void newHashMap() {
-        final Map<Object, Object> m = JvfsCollections.newHashMap();
+    public void newMap() {
+        final Map<Object, Object> m = JvfsCollections.newMap();
         assertThat(m, is(not(nullValue())));
-        assertThat(m, is(not(sameInstance(JvfsCollections.newHashMap()))));
-        assertThat(m, is(not(sameInstance(JvfsCollections.newHashMap()))));
-        assertThat(m, is(not(sameInstance(JvfsCollections.newHashMap()))));
+        assertThat(m, is(not(sameInstance(JvfsCollections.newMap()))));
+        assertThat(m, is(not(sameInstance(JvfsCollections.newMap()))));
+        assertThat(m, is(not(sameInstance(JvfsCollections.newMap()))));
     }
 
     @Test
-    public void newHashSet() {
-        final Set<Object> s = JvfsCollections.newHashSet();
+    public void newSet() {
+        final Set<Object> s = JvfsCollections.newSet();
         assertThat(s, is(not(nullValue())));
-        assertThat(s, is(not(sameInstance(JvfsCollections.newHashSet()))));
-        assertThat(s, is(not(sameInstance(JvfsCollections.newHashSet()))));
-        assertThat(s, is(not(sameInstance(JvfsCollections.newHashSet()))));
+        assertThat(s, is(not(sameInstance(JvfsCollections.newSet()))));
+        assertThat(s, is(not(sameInstance(JvfsCollections.newSet()))));
+        assertThat(s, is(not(sameInstance(JvfsCollections.newSet()))));
     }
 
     @Test

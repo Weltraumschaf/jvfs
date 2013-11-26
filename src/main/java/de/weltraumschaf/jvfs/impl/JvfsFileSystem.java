@@ -65,7 +65,7 @@ class JvfsFileSystem extends FileSystem {
      *
      * The key is the absolute pathname of the file ({@link JvfsFileEntry#path}).
      */
-    private final Map<String, JvfsFileEntry> attic = JvfsCollections.newHashMap();
+    private final Map<String, JvfsFileEntry> attic = JvfsCollections.newMap();
     /**
      * List of file stores.
      */
@@ -80,8 +80,8 @@ class JvfsFileSystem extends FileSystem {
     /**
      * Dedicated constructor.
      *
-     * @param provider must not be {@code null}
-     * @param options must not be {@code null}
+     * @param provider must not be {@literal null}
+     * @param options must not be {@literal null}
      */
     JvfsFileSystem(final JvfsFileSystemProvider provider, final JvfsOptions options) {
         super();
@@ -90,7 +90,7 @@ class JvfsFileSystem extends FileSystem {
         this.provider = provider;
         this.open = true;
         final FileStore store = new JvfsFileStore(options, this);
-        final List<FileStore> stores = JvfsCollections.newArrayList(1);
+        final List<FileStore> stores = JvfsCollections.newList(1);
         stores.add(store);
         this.fileStores = Collections.unmodifiableList(stores);
     }
@@ -135,7 +135,7 @@ class JvfsFileSystem extends FileSystem {
     @Override
     public Set<String> supportedFileAttributeViews() {
         this.checkClosed();
-        return JvfsCollections.newHashSet();
+        return JvfsCollections.newSet();
     }
 
     @Override

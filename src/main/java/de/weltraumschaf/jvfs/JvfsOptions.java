@@ -121,8 +121,8 @@ public final class JvfsOptions {
      *
      * Throws an {@link IllegalArgumentException} if unrecognized type.
      *
-     * @param value must not be {@code null}
-     * @return {@code true} for string "true" or {@link java.lang.Boolean#TRUE}, else false
+     * @param value must not be {@literal null}
+     * @return {@literal true} for string "true" or {@link java.lang.Boolean#TRUE}, else false
      */
     private boolean castToBoolean(final Object value) {
         JvfsAssertions.notNull(value, "value");
@@ -227,7 +227,7 @@ public final class JvfsOptions {
          * @return never {@literal null}, always new instance
          */
         public JvfsOptions create() {
-            final Map<String, Object> env = JvfsCollections.newHashMap();
+            final Map<String, Object> env = JvfsCollections.newMap();
             env.put(Option.CAPACITY.key, capacity);
             env.put(Option.READONLY.key, readOnly);
             env.put(Option.AUTO_MOUNT.key, autoMount);

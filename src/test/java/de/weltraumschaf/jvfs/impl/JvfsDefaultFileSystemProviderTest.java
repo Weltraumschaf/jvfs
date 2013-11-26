@@ -31,7 +31,7 @@ public class JvfsDefaultFileSystemProviderTest {
 
     @Test
     public void isMounted() {
-        final Map<String, FileSystem> fstab = JvfsCollections.newHashMap();
+        final Map<String, FileSystem> fstab = JvfsCollections.newMap();
         final JvfsDefaultFileSystemProvider sut = new JvfsDefaultFileSystemProvider(
             mock(FileSystemProvider.class),
             Collections.unmodifiableMap(fstab),

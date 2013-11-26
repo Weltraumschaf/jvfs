@@ -56,7 +56,7 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
     /**
      * Hold the mounted file systems.
      */
-    private final Map<String, JvfsFileSystem> fstab = JvfsCollections.newHashMap();
+    private final Map<String, JvfsFileSystem> fstab = JvfsCollections.newMap();
 
     /**
      * Dedicated constructor.

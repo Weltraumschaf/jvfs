@@ -67,7 +67,7 @@ public class JvfsFileSystemProviderTest {
     @SuppressWarnings("unchecked")
     public void newFileChannel() throws IOException {
         final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
-        final Set<OpenOption> opts = JvfsCollections.newHashSet();
+        final Set<OpenOption> opts = JvfsCollections.newSet();
         final FileAttribute<Object> attrs = mock(FileAttribute.class);
         sut.newFileChannel(path, opts, attrs);
         verify(path, times(1)).newFileChannel(opts, attrs);
@@ -77,7 +77,7 @@ public class JvfsFileSystemProviderTest {
     @SuppressWarnings("unchecked")
     public void newByteChannel() throws IOException {
         final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
-        final Set<OpenOption> opts = JvfsCollections.newHashSet();
+        final Set<OpenOption> opts = JvfsCollections.newSet();
         final FileAttribute<Object> attrs = mock(FileAttribute.class);
         sut.newByteChannel(path, opts, attrs);
         verify(path, times(1)).newByteChannel(opts, attrs);
@@ -184,7 +184,7 @@ public class JvfsFileSystemProviderTest {
     @Test
     @Ignore("Not supported yet.")
     public void readAttributes_returnsMap() throws IOException {
-        final Map<String, Object> expectedAttrs = JvfsCollections.newHashMap();
+        final Map<String, Object> expectedAttrs = JvfsCollections.newMap();
         final JvfsPath path = spy(new JvfsPath(mock(JvfsFileSystem.class)));
         when(path.readAttributes("foo")).thenReturn(expectedAttrs);
         final Map<String, Object> attrs = sut.readAttributes(path, "foo");

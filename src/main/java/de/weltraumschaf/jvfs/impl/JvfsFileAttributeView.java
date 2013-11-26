@@ -35,7 +35,7 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
     /**
      * Dedicated constructor.
      *
-     * @param path must not be {@code null}
+     * @param path must not be {@literal null}
      */
     JvfsFileAttributeView(final JvfsPath path) {
         super();
@@ -62,8 +62,8 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
     /**
      * Sets the value of a file attribute.
      *
-     * @param attribute must not be {@code nul} or empty
-     * @param value must not be {@code nul} or empty
+     * @param attribute must not be {@literal nul} or empty
+     * @param value must not be {@literal nul} or empty
      * @throws IOException IOException if file does not exist
      */
     void setAttribute(final String attribute, final Object value) throws IOException {
@@ -91,19 +91,19 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
      *
      * Examples:
      * <ul>
-     * <li>{@code "*"}: Read all basic-file-attributes.</li>
-     * <li>{@code "size,lastModifiedTime,lastAccessTime" }:
+     * <li>{@literal "*"}: Read all basic-file-attributes.</li>
+     * <li>{@literal "size,lastModifiedTime,lastAccessTime" }:
      * Reads the file size, last modified time, and last access time attributes.</li>
      * </ul>
      *
-     * @param attributes must not be {@code nul} or empty
-     * @return never {@code null}
+     * @param attributes must not be {@literal nul} or empty
+     * @return never {@literal null}
      * @throws IOException if file does not exist
      */
     Map<String, Object> readAttributes(final String attributes) throws IOException {
         JvfsAssertions.notEmpty(attributes, "attributes");
         final BasicFileAttributes attrs = readAttributes();
-        final Map<String, Object> map = JvfsCollections.newHashMap();
+        final Map<String, Object> map = JvfsCollections.newMap();
 
         if ("*".equals(attributes.trim())) {
             for (AttrID id : AttrID.values()) {
@@ -123,9 +123,9 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
     /**
      * Get a path attribute by its name.
      *
-     * @param id must not be {@code null}
-     * @param attrs must not {@code null}
-     * @return {@code null} if unsupported id given
+     * @param id must not be {@literal null}
+     * @param attrs must not {@literal null}
+     * @return {@literal null} if unsupported id given
      */
     Object attribute(final AttrID id, final BasicFileAttributes attrs) {
         assert id != null : "id must be defined";
@@ -158,7 +158,7 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
     /**
      * Get the path from which the attributes are viewed.
      *
-     * @return never {@code null}
+     * @return never {@literal null}
      */
     Path getPath() {
         return path;

@@ -46,12 +46,12 @@ public class JvfsOptionsTest {
 
     @Test
     public void forValue() {
-        Map<String, Object> env = JvfsCollections.newHashMap();
+        Map<String, Object> env = JvfsCollections.newMap();
         JvfsOptions opts = JvfsOptions.forValue(env);
         assertThat(opts.getCapacity(), is(equalTo(JvfsQuantity.forValue(0L))));
         assertThat(opts.isReadonly(), is(false));
 
-        env = JvfsCollections.newHashMap();
+        env = JvfsCollections.newMap();
         env.put(JvfsOptions.Option.CAPACITY.key(), "1k");
         env.put(JvfsOptions.Option.READONLY.key(), "true");
         env.put(JvfsOptions.Option.AUTO_MOUNT.key(), "false");
@@ -60,14 +60,14 @@ public class JvfsOptionsTest {
         assertThat(opts.getCapacity(), is(equalTo(JvfsQuantity.forValue(1024L))));
         assertThat(opts.isAutoMount(), is(false));
 
-        env = JvfsCollections.newHashMap();
+        env = JvfsCollections.newMap();
         env.put(JvfsOptions.Option.CAPACITY.key(), 1024L);
         env.put(JvfsOptions.Option.READONLY.key(), "true");
         opts = JvfsOptions.forValue(env);
         assertThat(opts.isReadonly(), is(true));
         assertThat(opts.getCapacity(), is(equalTo(JvfsQuantity.forValue(1024L))));
 
-        env = JvfsCollections.newHashMap();
+        env = JvfsCollections.newMap();
         env.put(JvfsOptions.Option.CAPACITY.key(), JvfsQuantity.forValue(1024L));
         env.put(JvfsOptions.Option.READONLY.key(), "true");
         opts = JvfsOptions.forValue(env);

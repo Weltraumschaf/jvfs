@@ -32,11 +32,11 @@ public final class JvfsQuantity {
     /**
      * Caches instances by its string representation.
      */
-    private static final Map<String, JvfsQuantity> CACHE_BY_STRING = JvfsCollections.newHashMap();
+    private static final Map<String, JvfsQuantity> CACHE_BY_STRING = JvfsCollections.newMap();
     /**
      * Caches instances by its value.
      */
-    private static final Map<Long, JvfsQuantity> CACHE_BY_LONG = JvfsCollections.newHashMap();
+    private static final Map<Long, JvfsQuantity> CACHE_BY_LONG = JvfsCollections.newMap();
     /**
      * Number of bytes.
      */
@@ -97,8 +97,8 @@ public final class JvfsQuantity {
      *
      * This method caches instances and returns the same for the same input value.
      *
-     * @param quantity must not be {@code null} or empty
-     * @return never {@code null}
+     * @param quantity must not be {@literal null} or empty
+     * @return never {@literal null}
      */
     public static JvfsQuantity forValue(final String quantity) {
         JvfsAssertions.notNull(quantity, "quantity");
@@ -118,7 +118,7 @@ public final class JvfsQuantity {
      * This method caches instances and returns the same for the same input value.
      *
      * @param quantity must not be negative
-     * @return never {@code null}
+     * @return never {@literal null}
      */
     public static JvfsQuantity forValue(final long quantity) {
         JvfsAssertions.greaterThanEqual(quantity, 0, "quantity");
@@ -133,7 +133,7 @@ public final class JvfsQuantity {
     /**
      * Parses string to long with respecting magnitudes ('k', 'K', 'm', 'M', "g', 'G').
      *
-     * @param quantity must not be {@code null} or empty
+     * @param quantity must not be {@literal null} or empty
      * @return any long
      */
     static long parseQuantity(final String quantity) {
@@ -203,7 +203,7 @@ public final class JvfsQuantity {
          * If the character is not a valid meta character {@link #NONE} is returned.
          *
          * @param meta any character
-         * @return never {@code null}, as default {@link #NONE}
+         * @return never {@literal null}, as default {@link #NONE}
          */
         static Magnitude forValue(final char meta) {
             for (final Magnitude f : values()) {
