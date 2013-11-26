@@ -47,8 +47,10 @@ import org.apache.log4j.Logger;
  */
 public class JvfsFileSystemProvider extends FileSystemProvider {
 
+    /**
+     * Logging facility.
+     */
     private static final Logger LOG = Logger.getLogger(JvfsFileSystemProvider.class);
-
     /**
      * The one and only file system.
      */

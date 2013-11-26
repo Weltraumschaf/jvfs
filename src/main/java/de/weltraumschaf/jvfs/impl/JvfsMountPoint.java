@@ -60,7 +60,30 @@ final class JvfsMountPoint implements Comparable<JvfsMountPoint> {
 
     @Override
     public int compareTo(final JvfsMountPoint other) {
-        return path.compareTo(other.path);
+        return path.compareTo(other.path) * -1;
+    }
+
+    @Override
+    public String toString() {
+        return path;
+    }
+
+    /**
+     * Get the mount point path.
+     *
+     * @return never {@code null} nor empty
+     */
+    String getPath() {
+        return path;
+    }
+
+    /**
+     * True if the mount point is equal the directory separator.
+     *
+     * @return {@code true} if the mount point is a root file system, else {@code false}
+     */
+    boolean isRootFileSystem() {
+        return JvfsFileSystems.DIR_SEP.equals(path);
     }
 
     /**

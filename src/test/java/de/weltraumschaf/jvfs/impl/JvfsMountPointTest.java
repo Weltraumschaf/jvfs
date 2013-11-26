@@ -9,9 +9,11 @@
  *
  * Copyright (C) 2012 "Sven Strittmatter" <weltraumschaf@googlemail.com>
  */
-
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsCollections;
+import java.util.Collections;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -19,7 +21,7 @@ import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 
 /**
- *Tests for {@link JvfsMountPoint}.
+ * Tests for {@link JvfsMountPoint}.
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
@@ -50,4 +52,30 @@ public class JvfsMountPointTest {
         assertThat(JvfsMountPoint.normalizePath("/"), is(equalTo("/")));
     }
 
+    @Test
+    public void isRootFileSystem() {
+        assertThat(new JvfsMountPoint("/").isRootFileSystem(), is(true));
+        assertThat(new JvfsMountPoint("/foo").isRootFileSystem(), is(false));
+        assertThat(new JvfsMountPoint("/foo/bar").isRootFileSystem(), is(false));
+        assertThat(new JvfsMountPoint("/foo/bar/baz").isRootFileSystem(), is(false));
+    }
+
+    @Test
+    public void compareTo() {
+        final List<JvfsMountPoint> mounts = JvfsCollections.asList(
+                new JvfsMountPoint("/foo"),
+                new JvfsMountPoint("/foo/bar"),
+                new JvfsMountPoint("/"),
+                new JvfsMountPoint("/foo/baz"),
+                new JvfsMountPoint("/snafu")
+        );
+        Collections.sort(mounts);
+        assertThat(mounts, contains(
+                new JvfsMountPoint("/snafu"),
+                new JvfsMountPoint("/foo/baz"),
+                new JvfsMountPoint("/foo/bar"),
+                new JvfsMountPoint("/foo"),
+                new JvfsMountPoint("/")
+        ));
+    }
 }
