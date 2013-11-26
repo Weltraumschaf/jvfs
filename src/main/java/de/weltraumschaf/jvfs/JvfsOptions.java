@@ -108,8 +108,8 @@ public final class JvfsOptions {
      * @return by default {@link #DEFAULT_AUTOMOUNT}
      */
     public boolean isAutoMount() {
-        if (env.containsKey(Option.READONLY.key)) {
-            final Object value = env.get(Option.READONLY.key);
+        if (env.containsKey(Option.AUTO_MOUNT.key)) {
+            final Object value = env.get(Option.AUTO_MOUNT.key);
             return castToBoolean(value);
         }
 
