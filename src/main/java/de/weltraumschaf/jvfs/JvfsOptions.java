@@ -33,14 +33,6 @@ public final class JvfsOptions {
      */
     public static final JvfsOptions DEFAULT = builder().create();
     /**
-     * Default for read only option.
-     */
-    private static final boolean DEFAULT_READONLY = false;
-    /**
-     * Default for capacity option.
-     */
-    private static final JvfsQuantity DEFAULT_EMPTY = JvfsQuantity.EMPTY;
-    /**
      * Holds the options.
      */
     private final Map<String, ?> env;
@@ -103,7 +95,7 @@ public final class JvfsOptions {
 
         }
 
-        return DEFAULT_READONLY;
+        return Builder.DEFAULT_READONLY;
     }
 
     /**
@@ -126,7 +118,7 @@ public final class JvfsOptions {
             }
         }
 
-        return JvfsQuantity.EMPTY;
+        return Builder.DEFAULT_CAPACITY;
     }
 
     /**
@@ -135,9 +127,17 @@ public final class JvfsOptions {
     public static final class Builder {
 
         /**
+         * Default value for capacity option.
+         */
+        private static final JvfsQuantity DEFAULT_CAPACITY = JvfsQuantity.EMPTY;
+        /**
+         * Default value for readonly option.
+         */
+        private static final boolean DEFAULT_READONLY = false;
+        /**
          * Capacity for created options.
          */
-        private JvfsQuantity capacity = DEFAULT_EMPTY;
+        private JvfsQuantity capacity = DEFAULT_CAPACITY;
         /**
          * Readonly flag for created options.
          */
