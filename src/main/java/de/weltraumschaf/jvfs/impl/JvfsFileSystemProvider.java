@@ -25,6 +25,7 @@ import java.nio.file.CopyOption;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.LinkOption;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -35,6 +36,7 @@ import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -54,18 +56,27 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
     /**
      * The one and only file system.
      */
+    @Deprecated
     private final JvfsFileSystem fileSystem;
     /**
      * Hold the mounted file systems.
      */
-    private final Map<String, JvfsFileSystem> fstab = JvfsCollections.newMap();
+    @Deprecated
+    private final Map<String, JvfsFileSystem> fstabOld = JvfsCollections.newMap();
+    private final JvfsFileSystemTable fstab = new JvfsFileSystemTable();
+    private final boolean autoMount;
 
     /**
      * Dedicated constructor.
      */
     public JvfsFileSystemProvider() {
+        this(true);
+    }
+
+    public JvfsFileSystemProvider(final boolean autoMount) {
         super();
-        fileSystem = new JvfsFileSystem(this, JvfsOptions.DEFAULT);
+        this.fileSystem = new JvfsFileSystem(this, JvfsOptions.DEFAULT);
+        this.autoMount = autoMount;
     }
 
     @Override
@@ -77,43 +88,29 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
     public FileSystem newFileSystem(final URI uri, final Map<String, ?> env) throws IOException {
         LOG.debug("Create new file system for " + uri.toString());
         checkUri(uri);
-        String mountPount = uri.getPath();
-
-        if (!mountPount.startsWith(JvfsFileSystems.DIR_SEP)) {
-            throw new IllegalArgumentException("Mount point must be absolute!");
-        }
-
-        if (mountPount.endsWith(JvfsFileSystems.DIR_SEP)) {
-            mountPount = mountPount.substring(0, mountPount.length() - 1);
-        }
-
-        if (fstab.containsKey(mountPount)) {
-            throw new IllegalArgumentException("Already mounted " + mountPount);
-        }
-
-        fstab.put(mountPount, new JvfsFileSystem(this, JvfsOptions.forValue((Map<String, ?>) env)));
-        return fstab.get(mountPount);
+        final JvfsMountPoint mountPount = new JvfsMountPoint(uri.getPath());
+        final JvfsFileSystem fs = new JvfsFileSystem(this, JvfsOptions.forValue((Map<String, ?>) env));
+        fstab.mount(mountPount, fs);
+        return fs;
     }
 
     @Override
     public FileSystem getFileSystem(final URI uri) {
         LOG.debug("Geting file system for " + uri.toString());
         checkUri(uri);
-        String mountPount = uri.getPath();
 
-        if (!mountPount.startsWith(JvfsFileSystems.DIR_SEP)) {
-            throw new IllegalArgumentException("Mount point must be absolute!");
+        try {
+            return fstab.get(new JvfsMountPoint(uri.getPath()));
+        } catch (final FileSystemNotFoundException e) {
+            if (!autoMount) {
+                throw e;
+            }
+            try {
+                return newFileSystem(uri, JvfsOptions.DEFAULT.getEnv());
+            } catch (IOException ex) {
+                throw new RuntimeException(e);
+            }
         }
-
-        if (mountPount.endsWith(JvfsFileSystems.DIR_SEP)) {
-            mountPount = mountPount.substring(0, mountPount.length() - 1);
-        }
-
-        if (!fstab.containsKey(mountPount)) {
-            throw new IllegalArgumentException("Not mounted " + mountPount);
-        }
-
-        return fstab.get(mountPount);
     }
 
     /**

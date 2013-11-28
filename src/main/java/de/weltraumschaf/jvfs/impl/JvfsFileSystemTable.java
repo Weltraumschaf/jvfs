@@ -15,6 +15,7 @@ import de.weltraumschaf.jvfs.JvfsAssertions;
 import de.weltraumschaf.jvfs.JvfsCollections;
 import java.io.IOException;
 import java.nio.file.FileSystemAlreadyExistsException;
+import java.nio.file.FileSystemNotFoundException;
 import java.util.Iterator;
 import java.util.Map;
 import org.apache.log4j.Logger;
@@ -50,18 +51,37 @@ final class JvfsFileSystemTable {
      * @param fs must not be {@code null}
      */
     public void mount(final String path, final JvfsFileSystem fs) {
-        final JvfsMountPoint mount = new JvfsMountPoint(path);
+        mount(new JvfsMountPoint(path), fs);
+    }
+
+    /**
+     * Mounts a file system on a path.
+     *
+     * Given paths will be normalized according to {@link JvfsMountPoint#normalizePath(java.lang.String)}.
+     *
+     * @param path must not be {@code null}
+     * @param fs must not be {@code null}
+     */
+    public void mount(final JvfsMountPoint path, final JvfsFileSystem fs) {
         JvfsAssertions.notNull(fs, "fs");
 
-        if (fstab.containsKey(mount) || fstab.containsValue(fs)) {
-            throw new FileSystemAlreadyExistsException(path);
+        if (fstab.containsKey(path) || fstab.containsValue(fs)) {
+            throw new FileSystemAlreadyExistsException(path.toString());
         }
 
-        if (mount.isRootFileSystem()) {
-            root = mount;
+        if (path.isRootFileSystem()) {
+            root = path;
         }
 
-        fstab.put(mount, fs);
+        fstab.put(path, fs);
+    }
+
+    public JvfsFileSystem get(final JvfsMountPoint path) {
+        if (fstab.containsKey(path)) {
+            return fstab.get(path);
+        }
+
+        throw new FileSystemNotFoundException(path.toString());
     }
 
     /**

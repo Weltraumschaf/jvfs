@@ -64,7 +64,7 @@ public class JvfsDefaultFileSystemProvider extends FileSystemProvider {
      * @param parent is ignored at the moment, necessary that JVM default factory can instantiate
      */
     public JvfsDefaultFileSystemProvider(final FileSystemProvider parent) {
-        this(parent, JvfsFileSystems.getInstance().getFstab(), new JvfsFileSystemProvider());
+        this(parent, JvfsFileSystems.getInstance().getFstab(), new JvfsFileSystemProvider(false));
     }
 
     /**
