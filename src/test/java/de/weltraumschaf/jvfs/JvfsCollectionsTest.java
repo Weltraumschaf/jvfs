@@ -40,7 +40,7 @@ public class JvfsCollectionsTest {
 
     @Test
     public void newList() {
-            final List<Object> l = JvfsCollections.newList();
+        final List<Object> l = JvfsCollections.newList();
         assertThat(l, is(not(nullValue())));
         assertThat(l, is(not(sameInstance(JvfsCollections.newList()))));
         assertThat(l, is(not(sameInstance(JvfsCollections.newList()))));

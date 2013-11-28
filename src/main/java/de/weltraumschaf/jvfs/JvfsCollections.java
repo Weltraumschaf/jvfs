@@ -37,7 +37,7 @@ public final class JvfsCollections {
     /**
      * Create new array list with {@link #DEFAULT_LIST_SIZE size}.
      *
-     * @param <>> type of list entries
+     * @param <T> type of list entries
      * @return never {@literal null}, always new instance
      */
     public static <T> List<T> newList() {
@@ -47,7 +47,7 @@ public final class JvfsCollections {
     /**
      * Create new array list with given size.
      *
-     * @param <>> type of list entries
+     * @param <T> type of list entries
      * @param size must be non negative
      * @return never {@literal null}, always new instance
      */
@@ -59,7 +59,7 @@ public final class JvfsCollections {
     /**
      * Creates a copy of given list.
      *
-     * @param <>> type of list entries
+     * @param <T> type of list entries
      * @param original must not be {@literal null}
      * @return never {@literal null}
      */
@@ -71,8 +71,8 @@ public final class JvfsCollections {
     /**
      * Creates new hash map.
      *
-     * @param <>> type of map keys
-     * @param <>> type of map values
+     * @param <K> type of map keys
+     * @param <V> type of map values
      * @return never {@literal null}, always new instance
      */
     public static <K, V> Map<K, V> newMap() {
@@ -82,8 +82,8 @@ public final class JvfsCollections {
     /**
      * Creates new concurrent map.
      *
-     * @param <>> type of map keys
-     * @param <>> type of map values
+     * @param <K> type of map keys
+     * @param <V> type of map values
      * @return never {@literal null}, always new instance
      */
     public static <K, V> Map<K, V> newConcurrentSortedMap() {
@@ -93,7 +93,7 @@ public final class JvfsCollections {
     /**
      * Creates new hash set.
      *
-     * @param <>> type of set entries
+     * @param <T> type of set entries
      * @return never {@literal null}, always new instance
      */
     public static <T> Set<T> newSet() {
@@ -103,7 +103,7 @@ public final class JvfsCollections {
     /**
      * Converts given varargs into a list.
      *
-     * @param <>> <T> type of set entries
+     * @param <T> type of set entries
      * @param a variable arguments or array
      * @return never {@literal null}
      */

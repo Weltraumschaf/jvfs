@@ -25,12 +25,12 @@ import org.junit.rules.ExpectedException;
  */
 public class JvfsQuantityTest {
 
+    private static final long FACTOR = 1024L;
+
     @Rule
     //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
-
-    private static final long FACTOR = 1024L;
 
     @Test
     public void forValue_string_throwsExceptionIfNull() {

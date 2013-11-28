@@ -29,6 +29,10 @@ import java.util.Map;
 public final class JvfsOptions {
 
     /**
+     * Default options.
+     */
+    public static final JvfsOptions DEFAULT = builder().create();
+    /**
      * Default for read only option.
      */
     private static final boolean DEFAULT_READONLY = false;
@@ -40,10 +44,6 @@ public final class JvfsOptions {
      * Default for capacity option.
      */
     private static final JvfsQuantity DEFAULT_EMPTY = JvfsQuantity.EMPTY;
-    /**
-     * Default options.
-     */
-    public static final JvfsOptions DEFAULT = builder().create();
     /**
      * Holds the options.
      */

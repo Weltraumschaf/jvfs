@@ -36,6 +36,9 @@ final class JvfsFileSystemTable {
      * Holds the mount points with their file system.
      */
     private final Map<JvfsMountPoint, JvfsFileSystem> fstab = JvfsCollections.newConcurrentSortedMap();
+    /**
+     * Mount point of the root file system.
+     */
     private JvfsMountPoint root;
 
     /**
@@ -80,6 +83,14 @@ final class JvfsFileSystemTable {
         }
     }
 
+    /**
+     * Find a mounted file system for given path.
+     *
+     * Throws an {@link IllegalStateException} if no mount point matches.
+     *
+     * @param path must not be {@code null} or empty
+     * @return never {@code null}
+     */
     public JvfsFileSystem findMountedFilesystem(final String path) {
         JvfsAssertions.notEmpty(path, "path");
         final String normalizedPath = JvfsMountPoint.normalizePath(path);
