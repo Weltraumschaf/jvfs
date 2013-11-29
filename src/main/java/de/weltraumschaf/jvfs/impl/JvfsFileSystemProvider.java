@@ -13,7 +13,6 @@
 package de.weltraumschaf.jvfs.impl;
 
 import de.weltraumschaf.jvfs.JvfsAssertions;
-import de.weltraumschaf.jvfs.JvfsCollections;
 import de.weltraumschaf.jvfs.JvfsFileSystems;
 import de.weltraumschaf.jvfs.JvfsOptions;
 import java.io.IOException;
@@ -36,7 +35,6 @@ import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -53,7 +51,13 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
      * Logging facility.
      */
     private static final Logger LOG = Logger.getLogger(JvfsFileSystemProvider.class);
+    /**
+     * Holds the file systems.
+     */
     private final JvfsFileSystemTable fstab = new JvfsFileSystemTable();
+    /**
+     * If true a root file system will be mounted if one is requested and nothing is mounted ({@link #fstab} is empty).
+     */
     private final boolean autoMount;
 
     /**
@@ -63,6 +67,11 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
         this(true);
     }
 
+    /**
+     * Constructor with auto mount option.
+     *
+     * @param autoMount {@code true} if a root file system will be auto mounted on first access
+     */
     public JvfsFileSystemProvider(final boolean autoMount) {
         super();
         this.autoMount = autoMount;

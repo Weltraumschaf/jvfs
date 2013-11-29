@@ -53,7 +53,7 @@ public class JvfsFileSystemProviderTest {
     }
 
     @Test
-    public void newFileSystem_callsCheckUri() throws URISyntaxException, IOException{
+    public void newFileSystem_callsCheckUri() throws URISyntaxException, IOException {
         final JvfsFileSystemProvider spy = spy(sut);
         final URI uri = new URI("jvfs:///foo/bar");
         spy.newFileSystem(uri, JvfsOptions.DEFAULT.getEnv());
@@ -61,7 +61,7 @@ public class JvfsFileSystemProviderTest {
     }
 
     @Test
-    public void newFileSystem_ThrowsExceptionIfDuplicate() throws URISyntaxException, IOException{
+    public void newFileSystem_ThrowsExceptionIfDuplicate() throws URISyntaxException, IOException {
         final URI uri = new URI("jvfs:///foo/bar");
         sut.newFileSystem(uri, JvfsOptions.DEFAULT.getEnv());
         thrown.expect(FileSystemAlreadyExistsException.class);
