@@ -154,8 +154,7 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
 
     @Override
     public Path getPath(final URI uri) {
-        // TODO Read API doc and react correct for not mounted fs.
-        return new JvfsPath(uri.getPath(), fstab.findMountedFilesystem(uri.getPath()));
+        return new JvfsPath(uri.getPath(), (JvfsFileSystem) getFileSystem(uri));
     }
 
     @Override
