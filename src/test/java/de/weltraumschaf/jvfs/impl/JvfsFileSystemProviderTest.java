@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.ProviderMismatchException;
@@ -57,6 +58,15 @@ public class JvfsFileSystemProviderTest {
         final URI uri = new URI("jvfs:///foo/bar");
         spy.newFileSystem(uri, JvfsOptions.DEFAULT.getEnv());
         verify(spy, times(1)).checkUri(uri);
+    }
+
+    @Test
+    public void newFileSystem_ThrowsExceptionIfDuplicate() throws URISyntaxException, IOException{
+        final URI uri = new URI("jvfs:///foo/bar");
+        sut.newFileSystem(uri, JvfsOptions.DEFAULT.getEnv());
+        thrown.expect(FileSystemAlreadyExistsException.class);
+        thrown.expectMessage(uri.getPath());
+        sut.newFileSystem(uri, JvfsOptions.DEFAULT.getEnv());
     }
 
     @Test
