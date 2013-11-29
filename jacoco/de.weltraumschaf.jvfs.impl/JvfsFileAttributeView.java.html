@@ -11,6 +11,8 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsAssertions;
+import de.weltraumschaf.jvfs.JvfsCollections;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributeView;
@@ -23,7 +25,7 @@ import java.util.Map;
  *
  * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
  */
-<span class="pc bpc" id="L26" title="1 of 2 branches missed.">final class JvfsFileAttributeView implements BasicFileAttributeView {</span>
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">final class JvfsFileAttributeView implements BasicFileAttributeView {</span>
 
     /**
      * To get attributes from.
@@ -33,157 +35,157 @@ import java.util.Map;
     /**
      * Dedicated constructor.
      *
-     * @param path must not be {@code null}
+     * @param path must not be {@literal null}
      */
     JvfsFileAttributeView(final JvfsPath path) {
-<span class="fc" id="L39">        super();</span>
-<span class="pc bpc" id="L40" title="2 of 4 branches missed.">        assert path != null : &quot;path must be specified&quot;;</span>
-<span class="fc" id="L41">        this.path = path;</span>
-<span class="fc" id="L42">    }</span>
+<span class="fc" id="L41">        super();</span>
+<span class="pc bpc" id="L42" title="2 of 4 branches missed.">        assert path != null : &quot;path must be specified&quot;;</span>
+<span class="fc" id="L43">        this.path = path;</span>
+<span class="fc" id="L44">    }</span>
 
     @Override
     public String name() {
-<span class="fc" id="L46">        return JvfsFileSystem.FILE_ATTR_VIEW_BASIC;</span>
+<span class="fc" id="L48">        return JvfsFileSystem.FILE_ATTR_VIEW_BASIC;</span>
     }
 
     @Override
     public BasicFileAttributes readAttributes() throws IOException {
-<span class="fc" id="L51">        return path.getAttributes();</span>
+<span class="fc" id="L53">        return path.getAttributes();</span>
     }
 
     @Override
     public void setTimes(final FileTime lastModifiedTime, final FileTime lastAccessTime, final FileTime createTime)
         throws IOException {
-<span class="fc" id="L57">        path.setTimes(lastModifiedTime, lastAccessTime, createTime);</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L59">        path.setTimes(lastModifiedTime, lastAccessTime, createTime);</span>
+<span class="fc" id="L60">    }</span>
 
     /**
      * Sets the value of a file attribute.
      *
-     * @param attribute must not be {@code nul} or empty
-     * @param value must not be {@code nul} or empty
+     * @param attribute must not be {@literal nul} or empty
+     * @param value must not be {@literal nul} or empty
      * @throws IOException IOException if file does not exist
      */
     void setAttribute(final String attribute, final Object value) throws IOException {
-<span class="fc" id="L68">        JvfsAssertions.notEmpty(attribute, &quot;attribute&quot;);</span>
-<span class="fc" id="L69">        JvfsAssertions.notNull(value, &quot;value&quot;);</span>
+<span class="fc" id="L70">        JvfsAssertions.notEmpty(attribute, &quot;attribute&quot;);</span>
+<span class="fc" id="L71">        JvfsAssertions.notNull(value, &quot;value&quot;);</span>
 
-<span class="pc bfc" id="L71" title="All 4 branches covered.">        switch (AttrID.valueOf(attribute)) {</span>
+<span class="pc bfc" id="L73" title="All 4 branches covered.">        switch (AttrID.valueOf(attribute)) {</span>
             case creationTime:
-<span class="fc" id="L73">                setTimes(null, null, (FileTime) value);</span>
-<span class="fc" id="L74">                break;</span>
+<span class="fc" id="L75">                setTimes(null, null, (FileTime) value);</span>
+<span class="fc" id="L76">                break;</span>
             case lastAccessTime:
-<span class="fc" id="L76">                setTimes(null, (FileTime) value, null);</span>
-<span class="fc" id="L77">                break;</span>
+<span class="fc" id="L78">                setTimes(null, (FileTime) value, null);</span>
+<span class="fc" id="L79">                break;</span>
             case lastModifiedTime:
-<span class="fc" id="L79">                setTimes((FileTime) value, null, null);</span>
-<span class="fc" id="L80">                break;</span>
+<span class="fc" id="L81">                setTimes((FileTime) value, null, null);</span>
+<span class="fc" id="L82">                break;</span>
             default:
-<span class="fc" id="L82">                throw new UnsupportedOperationException(&quot;Attribute '&quot; + attribute</span>
+<span class="fc" id="L84">                throw new UnsupportedOperationException(&quot;Attribute '&quot; + attribute</span>
                     + &quot;' is unknown or read-only attribute!&quot;);
         }
-<span class="fc" id="L85">    }</span>
+<span class="fc" id="L87">    }</span>
 
     /**
      * Reads a set of file attributes as a bulk operation.
      *
      * Examples:
      * &lt;ul&gt;
-     * &lt;li&gt;{@code &quot;*&quot;}: Read all basic-file-attributes.&lt;/li&gt;
-     * &lt;li&gt;{@code &quot;size,lastModifiedTime,lastAccessTime&quot; }:
+     * &lt;li&gt;{@literal &quot;*&quot;}: Read all basic-file-attributes.&lt;/li&gt;
+     * &lt;li&gt;{@literal &quot;size,lastModifiedTime,lastAccessTime&quot; }:
      * Reads the file size, last modified time, and last access time attributes.&lt;/li&gt;
      * &lt;/ul&gt;
      *
-     * @param attributes must not be {@code nul} or empty
-     * @return never {@code null}
+     * @param attributes must not be {@literal nul} or empty
+     * @return never {@literal null}
      * @throws IOException if file does not exist
      */
     Map&lt;String, Object&gt; readAttributes(final String attributes) throws IOException {
-<span class="fc" id="L102">        JvfsAssertions.notEmpty(attributes, &quot;attributes&quot;);</span>
-<span class="fc" id="L103">        final BasicFileAttributes attrs = readAttributes();</span>
-<span class="fc" id="L104">        final Map&lt;String, Object&gt; map = JvfsCollections.newHashMap();</span>
+<span class="fc" id="L104">        JvfsAssertions.notEmpty(attributes, &quot;attributes&quot;);</span>
+<span class="fc" id="L105">        final BasicFileAttributes attrs = readAttributes();</span>
+<span class="fc" id="L106">        final Map&lt;String, Object&gt; map = JvfsCollections.newMap();</span>
 
-<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        if (&quot;*&quot;.equals(attributes.trim())) {</span>
-<span class="fc bfc" id="L107" title="All 2 branches covered.">            for (AttrID id : AttrID.values()) {</span>
-<span class="fc" id="L108">                map.put(id.name(), attribute(id, attrs));</span>
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">        if (&quot;*&quot;.equals(attributes.trim())) {</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">            for (AttrID id : AttrID.values()) {</span>
+<span class="fc" id="L110">                map.put(id.name(), attribute(id, attrs));</span>
             }
         } else {
-<span class="nc" id="L111">            final String[] as = attributes.trim().split(&quot;,&quot;);</span>
+<span class="nc" id="L113">            final String[] as = attributes.trim().split(&quot;,&quot;);</span>
 
-<span class="nc bnc" id="L113" title="All 2 branches missed.">            for (String a : as) {</span>
-<span class="nc" id="L114">                map.put(a, attribute(AttrID.valueOf(a.trim()), attrs));</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">            for (String a : as) {</span>
+<span class="nc" id="L116">                map.put(a, attribute(AttrID.valueOf(a.trim()), attrs));</span>
             }
         }
 
-<span class="fc" id="L118">        return map;</span>
+<span class="fc" id="L120">        return map;</span>
     }
 
     /**
      * Get a path attribute by its name.
      *
-     * @param id must not be {@code null}
-     * @param attrs must not {@code null}
-     * @return {@code null} if unsupported id given
+     * @param id must not be {@literal null}
+     * @param attrs must not {@literal null}
+     * @return {@literal null} if unsupported id given
      */
     Object attribute(final AttrID id, final BasicFileAttributes attrs) {
-<span class="pc bpc" id="L129" title="2 of 4 branches missed.">        assert id != null : &quot;id must be defined&quot;;</span>
-<span class="pc bpc" id="L130" title="2 of 4 branches missed.">        assert attrs != null : &quot;attrs must be defined&quot;;</span>
+<span class="pc bpc" id="L131" title="2 of 4 branches missed.">        assert id != null : &quot;id must be defined&quot;;</span>
+<span class="pc bpc" id="L132" title="2 of 4 branches missed.">        assert attrs != null : &quot;attrs must be defined&quot;;</span>
 
-<span class="pc bpc" id="L132" title="1 of 10 branches missed.">        switch (id) {</span>
+<span class="pc bpc" id="L134" title="1 of 10 branches missed.">        switch (id) {</span>
             case size:
-<span class="fc" id="L134">                return attrs.size();</span>
+<span class="fc" id="L136">                return attrs.size();</span>
             case creationTime:
-<span class="fc" id="L136">                return attrs.creationTime();</span>
+<span class="fc" id="L138">                return attrs.creationTime();</span>
             case lastAccessTime:
-<span class="fc" id="L138">                return attrs.lastAccessTime();</span>
+<span class="fc" id="L140">                return attrs.lastAccessTime();</span>
             case lastModifiedTime:
-<span class="fc" id="L140">                return attrs.lastModifiedTime();</span>
+<span class="fc" id="L142">                return attrs.lastModifiedTime();</span>
             case isDirectory:
-<span class="fc" id="L142">                return attrs.isDirectory();</span>
+<span class="fc" id="L144">                return attrs.isDirectory();</span>
             case isRegularFile:
-<span class="fc" id="L144">                return attrs.isRegularFile();</span>
+<span class="fc" id="L146">                return attrs.isRegularFile();</span>
             case isSymbolicLink:
-<span class="fc" id="L146">                return attrs.isSymbolicLink();</span>
+<span class="fc" id="L148">                return attrs.isSymbolicLink();</span>
             case isOther:
-<span class="fc" id="L148">                return attrs.isOther();</span>
+<span class="fc" id="L150">                return attrs.isOther();</span>
             case fileKey:
-<span class="fc" id="L150">                return attrs.fileKey();</span>
+<span class="fc" id="L152">                return attrs.fileKey();</span>
             default:
-<span class="nc" id="L152">                return null;</span>
+<span class="nc" id="L154">                return null;</span>
         }
     }
 
     /**
      * Get the path from which the attributes are viewed.
      *
-     * @return never {@code null}
+     * @return never {@literal null}
      */
     Path getPath() {
-<span class="fc" id="L162">        return path;</span>
+<span class="fc" id="L164">        return path;</span>
     }
 
     /**
      * Names of attributes.
      */
-<span class="fc" id="L168">    private static enum AttrID {</span>
+<span class="fc" id="L170">    private static enum AttrID {</span>
         /** Size attribute. */
-<span class="fc" id="L170">        size,</span>
+<span class="fc" id="L172">        size,</span>
         /** Creation time attribute. */
-<span class="fc" id="L172">        creationTime,</span>
+<span class="fc" id="L174">        creationTime,</span>
         /** Last access time attribute. */
-<span class="fc" id="L174">        lastAccessTime,</span>
+<span class="fc" id="L176">        lastAccessTime,</span>
         /** Last modification time attribute. */
-<span class="fc" id="L176">        lastModifiedTime,</span>
+<span class="fc" id="L178">        lastModifiedTime,</span>
         /** Is directory attribute. */
-<span class="fc" id="L178">        isDirectory,</span>
+<span class="fc" id="L180">        isDirectory,</span>
         /** Is regular file attribute. */
-<span class="fc" id="L180">        isRegularFile,</span>
+<span class="fc" id="L182">        isRegularFile,</span>
         /** Is symbolic link attribute. */
-<span class="fc" id="L182">        isSymbolicLink,</span>
+<span class="fc" id="L184">        isSymbolicLink,</span>
         /** Is other file attribute. */
-<span class="fc" id="L184">        isOther,</span>
+<span class="fc" id="L186">        isOther,</span>
         /** File key attribute. */
-<span class="fc" id="L186">        fileKey</span>
+<span class="fc" id="L188">        fileKey</span>
     };
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

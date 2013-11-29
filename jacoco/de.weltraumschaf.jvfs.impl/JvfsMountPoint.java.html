@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JvfsMountPoint.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JVFS</a> &gt; <a href="index.html" class="el_package">de.weltraumschaf.jvfs.impl</a> &gt; <span class="el_source">JvfsMountPoint.java</span></div><h1>JvfsMountPoint.java</h1><pre class="source lang-java linenums">/*
+ *  LICENSE
+ *
+ * &quot;THE BEER-WARE LICENSE&quot; (Revision 43):
+ * &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt; wrote this file.
+ * As long as you retain this notice you can do whatever you want with
+ * this stuff. If we meet some day, and you think this stuff is worth it,
+ * you can buy me a non alcohol-free beer in return.
+ *
+ * Copyright (C) 2012 &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt;
+ */
+package de.weltraumschaf.jvfs.impl;
+
+import de.weltraumschaf.jvfs.JvfsAssertions;
+import de.weltraumschaf.jvfs.JvfsFileSystems;
+import de.weltraumschaf.jvfs.JvfsObject;
+
+/**
+ * Immutable representation of a mount point.
+ *
+ * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
+ */
+final class JvfsMountPoint implements Comparable&lt;JvfsMountPoint&gt; {
+
+    /**
+     * Directory separator as character.
+     */
+<span class="fc" id="L28">    private static final char DIR_SEP = JvfsFileSystems.DIR_SEP.charAt(0);</span>
+    /**
+     * The mount point.
+     *
+     * Normalized by {@link #normalizePath(java.lang.String)}.
+     */
+    private final String path;
+
+    /**
+     * Dedicated constructor.
+     *
+     * @param path must not be {@code null} or empty
+     */
+    public JvfsMountPoint(final String path) {
+<span class="fc" id="L42">        super();</span>
+<span class="fc" id="L43">        this.path = normalizePath(path);</span>
+<span class="fc" id="L44">    }</span>
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L48">        return path.hashCode();</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">        if (!(obj instanceof JvfsMountPoint)) {</span>
+<span class="nc" id="L54">            return false;</span>
+        }
+
+<span class="fc" id="L57">        final JvfsMountPoint other = (JvfsMountPoint) obj;</span>
+<span class="fc" id="L58">        return JvfsObject.equal(path, other.path);</span>
+    }
+
+    @Override
+    public int compareTo(final JvfsMountPoint other) {
+<span class="fc" id="L63">        return path.compareTo(other.path) * -1;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L68">        return path;</span>
+    }
+
+    /**
+     * Get the mount point path.
+     *
+     * @return never {@code null} nor empty
+     */
+    String getPath() {
+<span class="nc" id="L77">        return path;</span>
+    }
+
+    /**
+     * True if the mount point is equal the directory separator.
+     *
+     * @return {@code true} if the mount point is a root file system, else {@code false}
+     */
+    boolean isRootFileSystem() {
+<span class="fc" id="L86">        return JvfsFileSystems.DIR_SEP.equals(path);</span>
+    }
+
+    /**
+     * Add leading directory separator if missing and remove trailing one if present.
+     *
+     * @param path must not be {@code null} or empty
+     * @return never {@code null} nor empty
+     */
+    static String normalizePath(final String path) {
+<span class="fc" id="L96">        JvfsAssertions.notEmpty(path, &quot;path&quot;);</span>
+<span class="fc" id="L97">        final StringBuilder buffer = new StringBuilder();</span>
+
+<span class="fc bfc" id="L99" title="All 2 branches covered.">        if (DIR_SEP != path.charAt(0)) {</span>
+<span class="fc" id="L100">            buffer.append(DIR_SEP);</span>
+        }
+
+<span class="fc bfc" id="L103" title="All 4 branches covered.">        if (path.length() &gt; 1 &amp;&amp; DIR_SEP == path.charAt(path.length() - 1)) {</span>
+<span class="fc" id="L104">            buffer.append(path.substring(0, path.length() - 1));</span>
+        } else {
+<span class="fc" id="L106">            buffer.append(path);</span>
+        }
+
+<span class="fc" id="L109">        return buffer.toString();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

@@ -12,6 +12,7 @@
 
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsOptions;
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.attribute.BasicFileAttributeView;
@@ -23,33 +24,58 @@ import java.nio.file.attribute.FileStoreAttributeView;
  *
  * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
  */
-final class JvfsFileStore extends FileStore {
+<span class="pc bpc" id="L27" title="1 of 2 branches missed.">final class JvfsFileStore extends FileStore {</span>
+
+    /**
+     * Name of the store.
+     */
+    private static final String NAME = &quot;jvfs&quot;;
+    /**
+     * Type of the store.
+     */
+    private static final String TYPE = &quot;in-memory&quot;;
+    /**
+     * Whether the sore is readonly or not.
+     */
+    private final JvfsOptions options;
+    /**
+     * Associated file system.
+     */
+    private final JvfsFileSystem fs;
 
     /**
      * Dedicated constructor.
+     *
+     * @param opts {@code true} registers readonly file system
+     * @param fs must not be {@code null}
      */
-    JvfsFileStore() {
-<span class="fc" id="L32">        super();</span>
-<span class="fc" id="L33">    }</span>
+    JvfsFileStore(final JvfsOptions opts, final JvfsFileSystem fs) {
+<span class="fc" id="L53">        super();</span>
+<span class="pc bpc" id="L54" title="2 of 4 branches missed.">        assert null != opts : &quot;opts must be defined&quot;;</span>
+<span class="pc bpc" id="L55" title="2 of 4 branches missed.">        assert null != fs : &quot;store must be defined&quot;;</span>
+<span class="fc" id="L56">        this.options = opts;</span>
+<span class="fc" id="L57">        this.fs = fs;</span>
+<span class="fc" id="L58">    }</span>
 
     @Override
     public String name() {
-<span class="nc" id="L37">        return &quot;jvfs&quot;;</span>
+<span class="fc" id="L62">        return NAME;</span>
     }
 
     @Override
     public String type() {
-<span class="nc" id="L42">        return &quot;in-memory&quot;;</span>
+<span class="fc" id="L67">        return TYPE;</span>
     }
+
 
     @Override
     public boolean isReadOnly() {
-<span class="nc" id="L47">        return false;</span>
+<span class="fc" id="L73">        return options.isReadonly();</span>
     }
 
     @Override
     public long getTotalSpace() throws IOException {
-<span class="nc" id="L52">        return this.getUsableSpace() + this.getUsedSpace();</span>
+<span class="nc" id="L78">        return this.getUsableSpace() + this.getUsedSpace();</span>
     }
 
     /**
@@ -58,37 +84,39 @@ final class JvfsFileStore extends FileStore {
      * @return non negative
      */
     public long getUsedSpace() {
-<span class="nc" id="L61">        return 0; // TODO Implement get usedspace.</span>
+<span class="fc" id="L87">        return fs.getUsedSpace();</span>
     }
 
     @Override
     public long getUsableSpace() throws IOException {
-<span class="nc" id="L66">        return Runtime.getRuntime().freeMemory();</span>
+<span class="nc" id="L92">        return options.getCapacity().value();</span>
     }
 
     @Override
     public long getUnallocatedSpace() throws IOException {
-<span class="nc" id="L71">        return this.getUsableSpace();</span>
+<span class="nc" id="L97">        return this.getUsableSpace();</span>
     }
 
     @Override
-    public boolean supportsFileAttributeView(Class&lt;? extends FileAttributeView&gt; type) {
-<span class="nc" id="L76">        return BasicFileAttributeView.class.equals(type);</span>
+    public boolean supportsFileAttributeView(final Class&lt;? extends FileAttributeView&gt; type) {
+<span class="nc" id="L102">        return BasicFileAttributeView.class.equals(type);</span>
     }
 
     @Override
-    public boolean supportsFileAttributeView(String name) {
-<span class="nc" id="L81">        return JvfsFileSystem.FILE_ATTR_VIEW_BASIC.equals(name);</span>
+    public boolean supportsFileAttributeView(final String name) {
+<span class="fc" id="L107">        return JvfsFileSystem.FILE_ATTR_VIEW_BASIC.equals(name);</span>
     }
 
     @Override
-    public &lt;V extends FileStoreAttributeView&gt; V getFileStoreAttributeView(Class&lt;V&gt; type) {
-<span class="nc" id="L86">        return null;</span>
+    public &lt;V extends FileStoreAttributeView&gt; V getFileStoreAttributeView(final Class&lt;V&gt; type) {
+        // XXX: Considder to implement this.
+<span class="fc" id="L113">        return null;</span>
     }
 
     @Override
-    public Object getAttribute(String attribute) throws IOException {
-<span class="nc" id="L91">        throw new UnsupportedOperationException(this.getClass().getSimpleName() + &quot; does not support attributes.&quot;);</span>
+    public Object getAttribute(final String attribute) throws IOException {
+        // XXX: Considder to implement this.
+<span class="fc" id="L119">        throw new UnsupportedOperationException(this.getClass().getSimpleName() + &quot; does not support attributes.&quot;);</span>
     }
 
 }

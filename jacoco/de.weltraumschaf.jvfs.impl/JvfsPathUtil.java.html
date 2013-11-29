@@ -11,6 +11,8 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsAssertions;
+import de.weltraumschaf.jvfs.JvfsCollections;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -19,78 +21,78 @@ import java.util.StringTokenizer;
  *
  * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
  */
-<span class="pc bpc" id="L22" title="1 of 2 branches missed.">final class JvfsPathUtil {</span>
+<span class="pc bpc" id="L24" title="1 of 2 branches missed.">final class JvfsPathUtil {</span>
 
     /**
      * Hidden for pure static class.
      */
     private JvfsPathUtil() {
-<span class="fc" id="L28">        super();</span>
-<span class="fc" id="L29">        throw new UnsupportedOperationException();</span>
+<span class="fc" id="L30">        super();</span>
+<span class="fc" id="L31">        throw new UnsupportedOperationException();</span>
     }
 
     /**
      * Splits the given string by the directory separator.
      *
-     * @param path must not be {@code null}
-     * @return never {@code null}
+     * @param path must not be {@literal null}
+     * @return never {@literal null}
      */
     static List&lt;String&gt; tokenize(final String path) {
-<span class="fc" id="L39">        JvfsAssertions.notNull(path, &quot;path&quot;);</span>
-<span class="fc" id="L40">        final StringTokenizer tokenizer = new StringTokenizer(path, JvfsPath.DIR_SEP);</span>
-<span class="fc" id="L41">        final List&lt;String&gt; tokens = JvfsCollections.newArrayList();</span>
+<span class="fc" id="L41">        JvfsAssertions.notNull(path, &quot;path&quot;);</span>
+<span class="fc" id="L42">        final StringTokenizer tokenizer = new StringTokenizer(path, JvfsPath.DIR_SEP);</span>
+<span class="fc" id="L43">        final List&lt;String&gt; tokens = JvfsCollections.newList();</span>
 
-<span class="fc bfc" id="L43" title="All 2 branches covered.">        while (tokenizer.hasMoreTokens()) {</span>
-<span class="fc" id="L44">            tokens.add(tokenizer.nextToken());</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        while (tokenizer.hasMoreTokens()) {</span>
+<span class="fc" id="L46">            tokens.add(tokenizer.nextToken());</span>
         }
 
-<span class="fc" id="L47">        return tokens;</span>
+<span class="fc" id="L49">        return tokens;</span>
     }
 
     /**
      * Normalizes the tokenized view of the path.
      *
-     * @param tokens must not be {@code null}
+     * @param tokens must not be {@literal null}
      * @param absolute whether the tokenized path was absolute or not
-     * @return never {@code null}
+     * @return never {@literal null}
      */
     static String normalize(final List&lt;String&gt; tokens, boolean absolute) {
-<span class="pc bpc" id="L58" title="2 of 4 branches missed.">        assert tokens != null : &quot;path must be specified&quot;;</span>
+<span class="pc bpc" id="L60" title="2 of 4 branches missed.">        assert tokens != null : &quot;path must be specified&quot;;</span>
 
         // Remove unnecessary references to this dir
-<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (tokens.contains(JvfsPath.DIR_THIS)) {</span>
-<span class="fc" id="L62">            tokens.remove(JvfsPath.DIR_THIS);</span>
-<span class="fc" id="L63">            normalize(tokens, absolute);</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (tokens.contains(JvfsPath.DIR_THIS)) {</span>
+<span class="fc" id="L64">            tokens.remove(JvfsPath.DIR_THIS);</span>
+<span class="fc" id="L65">            normalize(tokens, absolute);</span>
         }
 
         // Remove unnecessary references to the back dir, and its parent
-<span class="fc" id="L67">        final int indexDirBack = tokens.indexOf(JvfsPath.DIR_UP);</span>
+<span class="fc" id="L69">        final int indexDirBack = tokens.indexOf(JvfsPath.DIR_UP);</span>
 
-<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (indexDirBack != -1) {</span>
-<span class="pc bpc" id="L70" title="1 of 2 branches missed.">            if (indexDirBack &gt; 0) {</span>
-<span class="fc" id="L71">                tokens.remove(indexDirBack);</span>
-<span class="fc" id="L72">                tokens.remove(indexDirBack - 1);</span>
-<span class="fc" id="L73">                normalize(tokens, absolute);</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (indexDirBack != -1) {</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">            if (indexDirBack &gt; 0) {</span>
+<span class="fc" id="L73">                tokens.remove(indexDirBack);</span>
+<span class="fc" id="L74">                tokens.remove(indexDirBack - 1);</span>
+<span class="fc" id="L75">                normalize(tokens, absolute);</span>
             } else {
-<span class="nc" id="L75">                throw new IllegalArgumentException(&quot;Cannot specify to go back \&quot;../\&quot; past the root&quot;);</span>
+<span class="nc" id="L77">                throw new IllegalArgumentException(&quot;Cannot specify to go back \&quot;../\&quot; past the root&quot;);</span>
             }
         }
 
         // Nothing left to do; reconstruct
-<span class="fc" id="L80">        final StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L82">        final StringBuilder sb = new StringBuilder();</span>
 
-<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        if (absolute) {</span>
-<span class="nc" id="L83">            sb.append(JvfsPath.DIR_SEP);</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        if (absolute) {</span>
+<span class="nc" id="L85">            sb.append(JvfsPath.DIR_SEP);</span>
         }
 
-<span class="fc bfc" id="L86" title="All 2 branches covered.">        for (int i = 0; i &lt; tokens.size(); i++) {</span>
-<span class="fc bfc" id="L87" title="All 2 branches covered.">            if (i &gt; 0) {</span>
-<span class="fc" id="L88">                sb.append(JvfsPath.DIR_SEP);</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        for (int i = 0; i &lt; tokens.size(); i++) {</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            if (i &gt; 0) {</span>
+<span class="fc" id="L90">                sb.append(JvfsPath.DIR_SEP);</span>
             }
-<span class="fc" id="L90">            sb.append(tokens.get(i));</span>
+<span class="fc" id="L92">            sb.append(tokens.get(i));</span>
         }
 
-<span class="fc" id="L93">        return sb.toString();</span>
+<span class="fc" id="L95">        return sb.toString();</span>
     }
 
 }

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JvfsFileSystemTable.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JVFS</a> &gt; <a href="index.html" class="el_package">de.weltraumschaf.jvfs.impl</a> &gt; <span class="el_source">JvfsFileSystemTable.java</span></div><h1>JvfsFileSystemTable.java</h1><pre class="source lang-java linenums">/*
+ *  LICENSE
+ *
+ * &quot;THE BEER-WARE LICENSE&quot; (Revision 43):
+ * &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt; wrote this file.
+ * As long as you retain this notice you can do whatever you want with
+ * this stuff. If we meet some day, and you think this stuff is worth it,
+ * you can buy me a non alcohol-free beer in return.
+ *
+ * Copyright (C) 2012 &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt;
+ */
+package de.weltraumschaf.jvfs.impl;
+
+import de.weltraumschaf.jvfs.JvfsAssertions;
+import de.weltraumschaf.jvfs.JvfsCollections;
+import java.io.IOException;
+import java.nio.file.FileSystemAlreadyExistsException;
+import java.nio.file.FileSystemNotFoundException;
+import java.util.Iterator;
+import java.util.Map;
+import org.apache.log4j.Logger;
+
+/**
+ * Represents a file system table which maintains mount points and the associated file system.
+ *
+ * The class is thread safe.
+ *
+ * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
+ */
+<span class="fc" id="L30">final class JvfsFileSystemTable {</span>
+
+    /**
+     * Logging facility.
+     */
+<span class="fc" id="L35">    private static final Logger LOG = Logger.getLogger(JvfsFileSystemTable.class);</span>
+    /**
+     * Holds the mount points with their file system.
+     */
+<span class="fc" id="L39">    private final Map&lt;JvfsMountPoint, JvfsFileSystem&gt; fstab = JvfsCollections.newConcurrentSortedMap();</span>
+    /**
+     * Mount point of the root file system.
+     */
+    private JvfsMountPoint root;
+
+    /**
+     * Mounts a file system on a path.
+     *
+     * Given paths will be normalized according to {@link JvfsMountPoint#normalizePath(java.lang.String)}.
+     *
+     * @param path must not be {@code null} or empty
+     * @param fs must not be {@code null}
+     */
+    public void mount(final String path, final JvfsFileSystem fs) {
+<span class="fc" id="L54">        mount(new JvfsMountPoint(path), fs);</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * Mounts a file system on a path.
+     *
+     * Given paths will be normalized according to {@link JvfsMountPoint#normalizePath(java.lang.String)}.
+     *
+     * @param path must not be {@code null}
+     * @param fs must not be {@code null}
+     */
+    public void mount(final JvfsMountPoint path, final JvfsFileSystem fs) {
+<span class="fc" id="L66">        JvfsAssertions.notNull(fs, &quot;fs&quot;);</span>
+
+<span class="fc bfc" id="L68" title="All 4 branches covered.">        if (fstab.containsKey(path) || fstab.containsValue(fs)) {</span>
+<span class="fc" id="L69">            throw new FileSystemAlreadyExistsException(path.toString());</span>
+        }
+
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">        if (path.isRootFileSystem()) {</span>
+<span class="nc" id="L73">            root = path;</span>
+        }
+
+<span class="fc" id="L76">        fstab.put(path, fs);</span>
+<span class="fc" id="L77">    }</span>
+
+    public JvfsFileSystem get(final JvfsMountPoint path) {
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        if (fstab.containsKey(path)) {</span>
+<span class="nc" id="L81">            return fstab.get(path);</span>
+        }
+
+<span class="fc" id="L84">        throw new FileSystemNotFoundException(path.toString());</span>
+    }
+
+    /**
+     * Unmounts a file system on a path.
+     *
+     * Given paths will be normalized according to {@link JvfsMountPoint#normalizePath(java.lang.String)}.
+     *
+     * @param path must not be {@code null} or empty
+     */
+    public void umount(final String path) {
+<span class="fc" id="L95">        final JvfsFileSystem fs = fstab.remove(new JvfsMountPoint(path));</span>
+
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">        if (null != fs) {</span>
+            try {
+<span class="nc" id="L99">                fs.close();</span>
+<span class="nc" id="L100">            } catch (IOException e) {</span>
+<span class="nc" id="L101">                LOG.error(&quot;Can't unmount fs correct &quot; + path, e);</span>
+<span class="nc" id="L102">            }</span>
+        }
+<span class="fc" id="L104">    }</span>
+
+    /**
+     * Find a mounted file system for given path.
+     *
+     * Throws an {@link IllegalStateException} if no mount point matches.
+     *
+     * @param path must not be {@code null} or empty
+     * @return never {@code null}
+     */
+    public JvfsFileSystem findMountedFilesystem(final String path) {
+<span class="nc" id="L115">        JvfsAssertions.notEmpty(path, &quot;path&quot;);</span>
+<span class="nc" id="L116">        final String normalizedPath = JvfsMountPoint.normalizePath(path);</span>
+
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (fstab.isEmpty()) {</span>
+<span class="nc" id="L119">            throw new IllegalStateException(&quot;No file system mounted!&quot;);</span>
+        }
+
+<span class="nc" id="L122">        final Iterator&lt;Map.Entry&lt;JvfsMountPoint, JvfsFileSystem&gt;&gt; it = fstab.entrySet().iterator();</span>
+
+<span class="nc bnc" id="L124" title="All 2 branches missed.">        while (it.hasNext()) {</span>
+<span class="nc" id="L125">            final Map.Entry&lt;JvfsMountPoint, JvfsFileSystem&gt; entry = it.next();</span>
+<span class="nc" id="L126">            final String mountPoint = entry.getKey().getPath();</span>
+
+<span class="nc bnc" id="L128" title="All 2 branches missed.">            if (normalizedPath.startsWith(mountPoint)) {</span>
+<span class="nc" id="L129">                return entry.getValue();</span>
+            }
+<span class="nc" id="L131">        }</span>
+
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (root != null) {</span>
+<span class="nc" id="L134">            return fstab.get(root);</span>
+        }
+
+<span class="nc" id="L137">        throw new IllegalStateException(&quot;No file system mounted for &quot; + path);</span>
+    }
+
+    /**
+     * Get the number of mounted file systems.
+     *
+     * @return non negative
+     */
+    int size() {
+<span class="fc" id="L146">        return fstab.size();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

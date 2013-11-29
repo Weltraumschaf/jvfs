@@ -11,19 +11,17 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
-import java.io.IOException;
+import de.weltraumschaf.jvfs.JvfsAssertions;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Holds the administrative data of a file entry in the virtual file system.
  *
  * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
  */
-<span class="pc bpc" id="L21" title="1 of 2 branches missed.">final class JvfsFileEntry {</span>
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">final class JvfsFileEntry {</span>
 
-    /**
-     * Holds the file data.
-     */
-    private final JvfsSeekableByteChannel content;
     /**
      * Absolute path name of the file system entry.
      */
@@ -32,6 +30,14 @@ import java.io.IOException;
      * Whether it is a directory or not.
      */
     private final boolean direcotry;
+    /**
+     * R/W lock.
+     */
+<span class="fc" id="L36">    private final ReadWriteLock rwlock = new ReentrantReadWriteLock();</span>
+    /**
+     * Holds the file data.
+     */
+    private byte[] content;
     /**
      * Last modification time.
      */
@@ -69,27 +75,25 @@ import java.io.IOException;
      * @param src must not be {@literal null}
      */
     private JvfsFileEntry(final JvfsFileEntry src) {
-<span class="fc" id="L72">        this(src.path, src.direcotry, src.getContent().copy());</span>
-<span class="fc" id="L73">        this.lastModifiedTime = src.getLastModifiedTime();</span>
-<span class="fc" id="L74">        this.lastAccessTime = src.getLastAccessTime();</span>
-<span class="fc" id="L75">        this.creationTime = src.getCreationTime();</span>
-<span class="fc" id="L76">        this.readable = src.isReadable();</span>
-<span class="fc" id="L77">        this.writable = src.isWritable();</span>
-<span class="fc" id="L78">        this.executable = src.isExecutable();</span>
-<span class="fc" id="L79">        this.hidden = src.isHidden();</span>
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L78">        this(src.path, src.direcotry, src.getContent());</span>
+<span class="fc" id="L79">        this.lastModifiedTime = src.getLastModifiedTime();</span>
+<span class="fc" id="L80">        this.lastAccessTime = src.getLastAccessTime();</span>
+<span class="fc" id="L81">        this.creationTime = src.getCreationTime();</span>
+<span class="fc" id="L82">        this.readable = src.isReadable();</span>
+<span class="fc" id="L83">        this.writable = src.isWritable();</span>
+<span class="fc" id="L84">        this.executable = src.isExecutable();</span>
+<span class="fc" id="L85">        this.hidden = src.isHidden();</span>
+<span class="fc" id="L86">    }</span>
 
     /**
-     *
-     *
      * Hidden: Use either {@link #newDir(java.lang.String)} or {@link #newFile(java.lang.String)}.
      *
      * @param path must not be {@literal null} or empty
      * @param direcotry {@literal true} if it is a directory, else {@literal false}
      */
     private JvfsFileEntry(final String path, final boolean direcotry) {
-<span class="fc" id="L91">        this(path, direcotry, new JvfsSeekableByteChannel());</span>
-<span class="fc" id="L92">    }</span>
+<span class="fc" id="L95">        this(path, direcotry, new byte[0]);</span>
+<span class="fc" id="L96">    }</span>
 
     /**
      * Dedicated constructor.
@@ -98,16 +102,16 @@ import java.io.IOException;
      * @param direcotry {@literal true} if it is a directory, else {@literal false}
      * @param content must not be {@code null}
      */
-    private JvfsFileEntry(final String path, final boolean direcotry, final JvfsSeekableByteChannel content) {
-<span class="fc" id="L102">        super();</span>
-<span class="pc bpc" id="L103" title="2 of 4 branches missed.">        assert path != null : &quot;path must not be null&quot;;</span>
-<span class="pc bpc" id="L104" title="2 of 4 branches missed.">        assert !path.isEmpty() : &quot;path must not be empty&quot;;</span>
-<span class="pc bpc" id="L105" title="2 of 4 branches missed.">        assert content != null : &quot;content must not be null&quot;;</span>
+    JvfsFileEntry(final String path, final boolean direcotry, final byte[] content) {
+<span class="fc" id="L106">        super();</span>
+<span class="pc bpc" id="L107" title="2 of 4 branches missed.">        assert path != null : &quot;path must not be null&quot;;</span>
+<span class="pc bpc" id="L108" title="2 of 4 branches missed.">        assert !path.isEmpty() : &quot;path must not be empty&quot;;</span>
+<span class="pc bpc" id="L109" title="2 of 4 branches missed.">        assert content != null : &quot;content must not be null&quot;;</span>
 
-<span class="fc" id="L107">        this.path = path;</span>
-<span class="fc" id="L108">        this.direcotry = direcotry;</span>
-<span class="fc" id="L109">        this.content = content;</span>
-<span class="fc" id="L110">    }</span>
+<span class="fc" id="L111">        this.path = path;</span>
+<span class="fc" id="L112">        this.direcotry = direcotry;</span>
+<span class="fc" id="L113">        this.content = content;</span>
+<span class="fc" id="L114">    }</span>
 
     /**
      * Creates a new directory entry.
@@ -115,8 +119,8 @@ import java.io.IOException;
      * @param path must not be {@literal null} or empty
      * @return never {@literal null}
      */
-    public static JvfsFileEntry newDir(final String path) {
-<span class="fc" id="L119">        return new JvfsFileEntry(path, true);</span>
+    static JvfsFileEntry newDir(final String path) {
+<span class="fc" id="L123">        return new JvfsFileEntry(path, true);</span>
     }
 
     /**
@@ -125,8 +129,8 @@ import java.io.IOException;
      * @param path must not be {@literal null} or empty
      * @return never {@literal null}
      */
-    public static JvfsFileEntry newFile(final String path) {
-<span class="fc" id="L129">        return new JvfsFileEntry(path, false);</span>
+    static JvfsFileEntry newFile(final String path) {
+<span class="fc" id="L133">        return new JvfsFileEntry(path, false);</span>
     }
 
     /**
@@ -134,28 +138,28 @@ import java.io.IOException;
      *
      * @return never {@literal null}
      */
-    public JvfsFileEntry copy() {
-<span class="fc" id="L138">        return new JvfsFileEntry(this);</span>
+    JvfsFileEntry copy() {
+<span class="fc" id="L142">        return new JvfsFileEntry(this);</span>
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L143">        return path.hashCode();</span>
+<span class="fc" id="L147">        return path.hashCode();</span>
     }
 
     @Override
     public boolean equals(final Object obj) {
-<span class="pc bpc" id="L148" title="1 of 2 branches missed.">        if (!(obj instanceof JvfsFileEntry)) {</span>
-<span class="nc" id="L149">            return false;</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        if (!(obj instanceof JvfsFileEntry)) {</span>
+<span class="fc" id="L153">            return false;</span>
         }
 
-<span class="fc" id="L152">        final JvfsFileEntry other = (JvfsFileEntry) obj;</span>
-<span class="fc" id="L153">        return path.equals(other.path);</span>
+<span class="fc" id="L156">        final JvfsFileEntry other = (JvfsFileEntry) obj;</span>
+<span class="fc" id="L157">        return path.equals(other.path);</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L158">        return path;</span>
+<span class="fc" id="L162">        return path;</span>
     }
 
     /**
@@ -164,7 +168,7 @@ import java.io.IOException;
      * @return never {@literal null} or empty
      */
     String getPath() {
-<span class="fc" id="L167">        return path;</span>
+<span class="fc" id="L171">        return path;</span>
     }
 
     /**
@@ -173,7 +177,7 @@ import java.io.IOException;
      * @return {@literal true} means it is a directory, {@literal false} means file
      */
     boolean isDirectory() {
-<span class="fc" id="L176">        return direcotry;</span>
+<span class="fc" id="L180">        return direcotry;</span>
     }
 
     /**
@@ -182,7 +186,7 @@ import java.io.IOException;
      * @return {@literal true} if it is hidden, else {@literal false}
      */
     boolean isHidden() {
-<span class="fc" id="L185">        return hidden;</span>
+<span class="fc" id="L189">        return hidden;</span>
     }
 
     /**
@@ -191,7 +195,7 @@ import java.io.IOException;
      * @return non negative number
      */
     long getLastModifiedTime() {
-<span class="fc" id="L194">        return lastModifiedTime;</span>
+<span class="fc" id="L198">        return lastModifiedTime;</span>
     }
 
     /**
@@ -200,9 +204,9 @@ import java.io.IOException;
      * @param timestamp must be non negative
      */
     void setLastModifiedTime(final long timestamp) {
-<span class="fc" id="L203">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
-<span class="fc" id="L204">        this.lastModifiedTime = timestamp;</span>
-<span class="fc" id="L205">    }</span>
+<span class="fc" id="L207">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
+<span class="fc" id="L208">        this.lastModifiedTime = timestamp;</span>
+<span class="fc" id="L209">    }</span>
 
     /**
      * Get last access time in seconds.
@@ -210,7 +214,7 @@ import java.io.IOException;
      * @return non negative number
      */
     long getLastAccessTime() {
-<span class="fc" id="L213">        return lastAccessTime;</span>
+<span class="fc" id="L217">        return lastAccessTime;</span>
     }
 
     /**
@@ -219,9 +223,9 @@ import java.io.IOException;
      * @param timestamp must be non negative
      */
     void setLastAccessTime(final long timestamp) {
-<span class="fc" id="L222">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
-<span class="fc" id="L223">        this.lastAccessTime = timestamp;</span>
-<span class="fc" id="L224">    }</span>
+<span class="fc" id="L226">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
+<span class="fc" id="L227">        this.lastAccessTime = timestamp;</span>
+<span class="fc" id="L228">    }</span>
 
     /**
      * Get last creation in seconds.
@@ -229,7 +233,7 @@ import java.io.IOException;
      * @return non negative number
      */
     long getCreationTime() {
-<span class="fc" id="L232">        return creationTime;</span>
+<span class="fc" id="L236">        return creationTime;</span>
     }
 
     /**
@@ -238,9 +242,9 @@ import java.io.IOException;
      * @param timestamp must be non negative
      */
     void setCreationTime(final long timestamp) {
-<span class="fc" id="L241">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
-<span class="fc" id="L242">        this.creationTime = timestamp;</span>
-<span class="fc" id="L243">    }</span>
+<span class="fc" id="L245">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
+<span class="fc" id="L246">        this.creationTime = timestamp;</span>
+<span class="fc" id="L247">    }</span>
 
     /**
      * Whether the file is readable.
@@ -248,7 +252,7 @@ import java.io.IOException;
      * @return {@literal true} if readable, else {@literal false}
      */
     boolean isReadable() {
-<span class="fc" id="L251">        return readable;</span>
+<span class="fc" id="L255">        return readable;</span>
     }
 
     /**
@@ -257,7 +261,7 @@ import java.io.IOException;
      * @return {@literal true} if writable, else {@literal false}
      */
     boolean isWritable() {
-<span class="fc" id="L260">        return writable;</span>
+<span class="fc" id="L264">        return writable;</span>
     }
 
     /**
@@ -266,7 +270,7 @@ import java.io.IOException;
      * @return {@literal true} if executable, else {@literal false}
      */
     boolean isExecutable() {
-<span class="fc" id="L269">        return executable;</span>
+<span class="fc" id="L273">        return executable;</span>
     }
 
     /**
@@ -275,8 +279,8 @@ import java.io.IOException;
      * @param readable {@code true} for readable, else {@code false}
      */
     public void setReadable(boolean readable) {
-<span class="fc" id="L278">        this.readable = readable;</span>
-<span class="fc" id="L279">    }</span>
+<span class="fc" id="L282">        this.readable = readable;</span>
+<span class="fc" id="L283">    }</span>
 
     /**
      * Set writable attribute.
@@ -284,8 +288,8 @@ import java.io.IOException;
      * @param writable {@code true} for writable, else {@code false}
      */
     public void setWritable(boolean writable) {
-<span class="fc" id="L287">        this.writable = writable;</span>
-<span class="fc" id="L288">    }</span>
+<span class="fc" id="L291">        this.writable = writable;</span>
+<span class="fc" id="L292">    }</span>
 
     /**
      * Set executable attribute.
@@ -293,8 +297,8 @@ import java.io.IOException;
      * @param executable {@code true} for executable, else {@code false}
      */
     public void setExecutable(boolean executable) {
-<span class="fc" id="L296">        this.executable = executable;</span>
-<span class="fc" id="L297">    }</span>
+<span class="fc" id="L300">        this.executable = executable;</span>
+<span class="fc" id="L301">    }</span>
 
     /**
      * Set hidden attribute.
@@ -302,18 +306,8 @@ import java.io.IOException;
      * @param hidden {@code true} for hidden, else {@code false}
      */
     public void setHidden(boolean hidden) {
-<span class="fc" id="L305">        this.hidden = hidden;</span>
-<span class="fc" id="L306">    }</span>
-
-    /**
-     * If it has child entries if it is a directory.
-     *
-     * @return {@literal true} if it is an empty directory or file, else {@literal false}
-     */
-    boolean isEmpty() {
-        // TODO Implement is empty functionality.
-<span class="nc" id="L315">        return false;</span>
-    }
+<span class="fc" id="L309">        this.hidden = hidden;</span>
+<span class="fc" id="L310">    }</span>
 
     /**
      * Whether it is a symbolic link.
@@ -322,7 +316,7 @@ import java.io.IOException;
      */
     boolean isSymbolicLink() {
         // TODO Implement symbolic links.
-<span class="fc" id="L325">        return false;</span>
+<span class="fc" id="L319">        return false;</span>
     }
 
     /**
@@ -331,24 +325,59 @@ import java.io.IOException;
      * @return -1 if it is a directory, else size
      */
     long size() {
-<span class="fc bfc" id="L334" title="All 2 branches covered.">        if (this.isDirectory()) {</span>
-<span class="fc" id="L335">            return -1L;</span>
+<span class="fc bfc" id="L328" title="All 2 branches covered.">        if (this.isDirectory()) {</span>
+<span class="fc" id="L329">            return -1L;</span>
         }
-        try {
-<span class="fc" id="L338">            return content.size();</span>
-<span class="nc" id="L339">        } catch (IOException ex) {</span>
-<span class="nc" id="L340">            return -1L;</span>
-        }
+
+<span class="fc" id="L332">        return content.length;</span>
     }
 
     /**
-     * Get the file content as seekable byte channel.
+     * Get the file content.
      *
      * @return never {@literal null}
      */
-    JvfsSeekableByteChannel getContent() {
-<span class="fc" id="L350">        return content;</span>
+    byte[] getContent() {
+<span class="fc" id="L341">        return content;</span>
     }
+
+    /**
+     * Set the file content.
+     *
+     * @param content must not be {@code null}
+     */
+    void setContent(final byte[] content) {
+<span class="pc bpc" id="L350" title="2 of 4 branches missed.">        assert content != null : &quot;content must be defined&quot;;</span>
+<span class="fc" id="L351">        this.content = content;</span>
+<span class="fc" id="L352">    }</span>
+
+    /**
+     * Acquire write lock.
+     */
+    void beginWrite() {
+<span class="fc" id="L358">        rwlock.writeLock().lock();</span>
+<span class="fc" id="L359">    }</span>
+
+    /**
+     * Return write lock.
+     */
+    void endWrite() {
+<span class="fc" id="L365">        rwlock.writeLock().unlock();</span>
+<span class="fc" id="L366">    }</span>
+
+    /**
+     * Acquire read lock.
+     */
+    void beginRead() {
+<span class="fc" id="L372">        rwlock.readLock().lock();</span>
+<span class="fc" id="L373">    }</span>
+
+    /**
+     * Return read lock.
+     */
+    void endRead() {
+<span class="fc" id="L379">        rwlock.readLock().unlock();</span>
+<span class="fc" id="L380">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

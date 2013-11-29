@@ -6,6 +6,7 @@
 
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsAssertions;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
@@ -27,19 +28,19 @@ final class JvfsDirectoryStream implements DirectoryStream&lt;Path&gt; {
      * @param filter must not be {@code null}
      */
     public JvfsDirectoryStream(final JvfsPath path, final Filter&lt;? super Path&gt; filter) {
-<span class="fc" id="L30">        super();</span>
-<span class="fc" id="L31">        JvfsAssertions.notNull(path, &quot;path&quot;);</span>
-<span class="fc" id="L32">        JvfsAssertions.notNull(filter, &quot;filter&quot;);</span>
-<span class="fc" id="L33">    }</span>
+<span class="fc" id="L31">        super();</span>
+<span class="fc" id="L32">        JvfsAssertions.notNull(path, &quot;path&quot;);</span>
+<span class="fc" id="L33">        JvfsAssertions.notNull(filter, &quot;filter&quot;);</span>
+<span class="fc" id="L34">    }</span>
 
     @Override
     public Iterator&lt;Path&gt; iterator() {
-<span class="nc" id="L37">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+<span class="nc" id="L38">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
     }
 
     @Override
     public void close() throws IOException {
-<span class="nc" id="L42">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+<span class="nc" id="L43">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
     }
 
 }

@@ -9,12 +9,15 @@
  *
  * Copyright (C) 2012 &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt;
  */
-
 package de.weltraumschaf.jvfs;
 
 import de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider;
 import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.spi.FileSystemProvider;
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * Factory to get virtual file system stuff.
@@ -26,41 +29,77 @@ public final class JvfsFileSystems {
     /**
      * OS dependent directory separator.
      */
-<span class="fc" id="L29">    public static final String DIR_SEP = System.getProperty(&quot;file.separator&quot;);</span>
+<span class="fc" id="L32">    public static final String DIR_SEP = System.getProperty(&quot;file.separator&quot;);</span>
     /**
      * Protocol portion of a {@link URI} to JVFS {@link java.nio.file.FileSystem file systems}.
      */
-    public static final String PROTOCOL = &quot;file&quot;;
+    public static final String PROTOCOL_JVFS = &quot;jvfs&quot;;
     /**
-     * Protocol suffix before ID portion of ShrinkWrap {@link URI}s.
+     * The default file system protocol.
      */
-    private static final String URI_PROTOCOL_SUFFIX = &quot;://&quot;;
+    public static final String PROTOCOL_FILE = &quot;file&quot;;
     /**
      * Name of property to set default file system provider implementations.
      *
      * @see java.nio.file.FileSystems.DefaultFileSystemHolder#getDefaultProvider()
      */
-    private static final String IMPLEMENTATION_PROPERTY_NAME = &quot;java.nio.file.spi.DefaultFileSystemProvider&quot;;
+    public static final String IMPLEMENTATION_PROPERTY_NAME = &quot;java.nio.file.spi.DefaultFileSystemProvider&quot;;
     /**
      * Full qualified class name of provider implementation.
      */
-    private static final String IMPLEMENTATION = &quot;de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider&quot;;
+    public static final String IMPLEMENTATION_CLASS_NAME = &quot;de.weltraumschaf.jvfs.impl.JvfsFileSystemProviderOld&quot;;
+    /**
+     * Protocol suffix before ID portion of ShrinkWrap {@link URI}s.
+     */
+    private static final String URI_PROTOCOL_SUFFIX = &quot;://&quot;;
+    /**
+     * Singleton instance.
+     */
+<span class="fc" id="L58">    private static final JvfsFileSystems INSTANCE = new JvfsFileSystems();</span>
+    /**
+     * Whether the registered default file system is readonly or not.
+     */
+    private static boolean readonly;
+    /**
+     * Mount points for virtual file systems to be hooked in.
+     */
+<span class="fc" id="L66">    private final Map&lt;String, FileSystem&gt; fstab = JvfsCollections.newMap();</span>
 
     /**
-     * Hidden for pure static class.
+     * Hidden constructor.
+     *
+     * Use {@link #getInstance()} to get an instance.
      */
     private JvfsFileSystems() {
-<span class="fc" id="L53">        super();</span>
-<span class="fc" id="L54">        throw new UnsupportedOperationException(); // Avoid reflective instantiation.</span>
+<span class="fc" id="L74">        super();</span>
+<span class="fc" id="L75">    }</span>
+
+    /**
+     * Get the single instance.
+     *
+     * @return never {@literal null}
+     */
+    public static JvfsFileSystems getInstance() {
+<span class="nc" id="L83">        return INSTANCE;</span>
+    }
+
+    /**
+     * Returns writable a new file system provider.
+     *
+     * @return never {@literal null} always new instance
+     */
+    public static FileSystemProvider newUnixProvider() {
+<span class="fc" id="L92">        return newUnixProvider(false);</span>
     }
 
     /**
      * Returns a new file system provider.
      *
+     * @param flag {@literal true} creates readonly file system
      * @return never {@literal null} always new instance
      */
-    public static FileSystemProvider newProvider() {
-<span class="fc" id="L63">        return new JvfsFileSystemProvider();</span>
+    public static FileSystemProvider newUnixProvider(final boolean flag) {
+<span class="fc" id="L102">        return new JvfsFileSystemProvider();</span>
     }
 
     /**
@@ -68,27 +107,92 @@ public final class JvfsFileSystems {
      *
      * @return never {@literal null}
      */
-    public static URI getRootUri() {
-<span class="fc" id="L72">        final StringBuilder sb = new StringBuilder();</span>
-<span class="fc" id="L73">        sb.append(PROTOCOL);</span>
-<span class="fc" id="L74">        sb.append(URI_PROTOCOL_SUFFIX);</span>
-<span class="fc" id="L75">        sb.append(DIR_SEP);</span>
-<span class="fc" id="L76">        return URI.create(sb.toString());</span>
+    public static URI createRootUri() {
+<span class="fc" id="L111">        return createUri(DIR_SEP);</span>
     }
 
     /**
-     * Registers the JVFS implementation of {@link FileSystemProvider} as default file system.
+     * Creates an URI for the JVFS protocol.
+     *
+     * @param path must not be {@literal null} or empty
+     * @return never {@literal null}
      */
-    public static void registerAsDefault() {
-<span class="fc" id="L83">        System.setProperty(IMPLEMENTATION_PROPERTY_NAME, IMPLEMENTATION);</span>
-<span class="fc" id="L84">    }</span>
+    public static URI createUri(final String path) {
+<span class="fc" id="L121">        final StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L122">        sb.append(PROTOCOL_JVFS);</span>
+<span class="fc" id="L123">        sb.append(URI_PROTOCOL_SUFFIX);</span>
+<span class="fc" id="L124">        sb.append(path);</span>
+<span class="fc" id="L125">        return URI.create(sb.toString());</span>
+    }
+
+    /**
+     * Whether the registered default file system is readonly.
+     *
+     * @return {@literal true} means that the registered default file system is not writable
+     */
+    public static boolean isReadonly() {
+<span class="nc" id="L134">        return readonly;</span>
+    }
+
+    /**
+     * Registers writable the JVFS implementation of {@link FileSystemProvider} as default file system.
+     */
+    public static void registerUnixAsDefault() {
+<span class="fc" id="L141">        registerUnixAsDefault(false);</span>
+<span class="fc" id="L142">    }</span>
+
+    /**
+     * Registers the JVFS implementation of {@link FileSystemProvider} as default file system.
+     *
+     * @param flag {@literal true} registers readonly file system
+     */
+    public static void registerUnixAsDefault(final boolean flag) {
+<span class="fc" id="L150">        readonly = flag;</span>
+<span class="fc" id="L151">        System.setProperty(IMPLEMENTATION_PROPERTY_NAME, IMPLEMENTATION_CLASS_NAME);</span>
+<span class="fc" id="L152">    }</span>
 
     /**
      * Removes the custom implementation.
      */
-    public static void unregisterAsDefault() {
-<span class="fc" id="L90">        System.setProperty(IMPLEMENTATION_PROPERTY_NAME, &quot;&quot;);</span>
-<span class="fc" id="L91">    }</span>
+    public static void unregisterDefault() {
+<span class="fc" id="L158">        System.setProperty(IMPLEMENTATION_PROPERTY_NAME, &quot;&quot;);</span>
+<span class="fc" id="L159">    }</span>
+
+    /**
+     * Mount a virtual file system.
+     *
+     * @param path must not be {@literal null} or empty
+     */
+    public void mount(final String path) {
+<span class="nc" id="L167">        JvfsAssertions.notEmpty(path, &quot;path&quot;);</span>
+<span class="nc" id="L168">        fstab.put(path, FileSystems.getFileSystem(createRootUri()));</span>
+<span class="nc" id="L169">    }</span>
+
+    /**
+     * Unmount a virtual file system.
+     *
+     * Throws an {@link IllegalStateException} if not mounted.
+     *
+     * @param path must not be {@literal null} or empty
+     */
+    public void umount(final String path) {
+<span class="nc" id="L179">        JvfsAssertions.notEmpty(path, &quot;path&quot;);</span>
+
+<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (!fstab.containsKey(path)) {</span>
+<span class="nc" id="L182">            throw new IllegalStateException(String.format(&quot;Path not mounted to JVFS: '%s'!&quot;, path));</span>
+        }
+
+<span class="nc" id="L185">        fstab.remove(path);</span>
+<span class="nc" id="L186">    }</span>
+
+    /**
+     * Get map of mount points and file systems.
+     *
+     * @return never {@literal null}
+     */
+    public Map&lt;String, FileSystem&gt; getFstab() {
+<span class="nc" id="L194">        return Collections.unmodifiableMap(fstab);</span>
+    }
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>
