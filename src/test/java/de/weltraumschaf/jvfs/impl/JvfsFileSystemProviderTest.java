@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -72,7 +73,20 @@ public class JvfsFileSystemProviderTest {
     @Test
     public void newFileSystem() throws URISyntaxException, IOException {
         final JvfsOptions opts = JvfsOptions.builder().capacity("10M").readonly(false).create();
-        sut.newFileSystem(new URI("jvfs:///foo/bar"), opts.getEnv());
+        final URI uri = new URI("jvfs:///foo/bar");
+        final FileSystem fs = sut.newFileSystem(uri, opts.getEnv());
+        assertThat(fs, is(not(nullValue())));
+        assertThat(sut.getFileSystem(uri), is(sameInstance(fs)));
+        assertThat(sut.getFileSystem(uri), is(sameInstance(fs)));
+    }
+
+    @Test
+    public void getFileSystem_automounts() throws URISyntaxException {
+        final URI uri = new URI("jvfs:///foo/bar");
+        final FileSystem fs = sut.getFileSystem(uri);
+        assertThat(fs, is(not(nullValue())));
+        assertThat(sut.getFileSystem(uri), is(sameInstance(fs)));
+        assertThat(sut.getFileSystem(uri), is(sameInstance(fs)));
     }
 
     @Test
