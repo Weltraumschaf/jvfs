@@ -9,10 +9,8 @@
  *
  * Copyright (C) 2012 "Sven Strittmatter" <weltraumschaf@googlemail.com>
  */
-
 package de.weltraumschaf.jvfs.impl;
 
-import de.weltraumschaf.jvfs.JvfsFileSystems;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,46 +19,34 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import org.junit.After;
 import static org.junit.Assert.assertThat;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Tests the whole setup.
+ * Tests JVFS via the NIO API.
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
 public class JvfsIntegrationTest {
 
-    @Before
-    public void registerDefaultProvider() {
-//        JvfsFileSystems.registerUnixAsDefault();
-    }
-
-    @After
-    public void unregisterDefaultProvider() {
-//        JvfsFileSystems.unregisterDefault();
-    }
-
     @Test
-    @Ignore
     public void createWriteAndReadFiles() throws URISyntaxException, IOException {
-        assertThat(
-            System.getProperty(JvfsFileSystems.IMPLEMENTATION_PROPERTY_NAME),
-            is(equalTo(JvfsFileSystems.IMPLEMENTATION_CLASS_NAME)));
-        final Path foo = Paths.get(URI.create("file:///tmp/foo"));
+        final Path foo = Paths.get(URI.create("jvfs:///tmp/foo"));
         assertThat(foo, is(instanceOf(JvfsPath.class)));
         Files.createFile(foo);
-        final Path bar = Paths.get(URI.create("file:///tmp/bar"));
+        final Path bar = Paths.get(URI.create("jvfs:///tmp/bar"));
         assertThat(bar, is(instanceOf(JvfsPath.class)));
         Files.createFile(bar);
-        final Path baz = Paths.get(URI.create("file:///tmp/baz"));
+        final Path baz = Paths.get(URI.create("jvfs:///tmp/baz"));
         assertThat(baz, is(instanceOf(JvfsPath.class)));
         Files.createFile(baz);
 
@@ -83,17 +69,58 @@ public class JvfsIntegrationTest {
     }
 
     @Test
-    public void jvfsProtocol() throws URISyntaxException, IOException {
-        final Path path = Paths.get(new URI("jvfs:///foo"));
-        assertThat(path, is(instanceOf(JvfsPath.class)));
-        Files.createFile(path);
+    @Ignore
+    public void createFile() throws IOException {
+        Set<PosixFilePermission> permissions = new HashSet<PosixFilePermission>();
+        permissions.add(PosixFilePermission.OWNER_READ);
+        permissions.add(PosixFilePermission.OWNER_WRITE);
+        permissions.add(PosixFilePermission.OWNER_EXECUTE);
+        final Path uri = Paths.get(URI.create("jvfs:///tmp/foo"));
+        final Path foo = Files.createFile(uri, PosixFilePermissions.asFileAttribute(permissions));
+        assertThat(foo.isAbsolute(), is(true));
+        assertThat(Files.isDirectory(foo), is(false));
+        assertThat(Files.isReadable(foo), is(true));
+        assertThat(Files.isWritable(foo), is(true));
+        assertThat(Files.isExecutable(foo), is(true));
 
-        final OutputStream out = Files.newOutputStream(path);
-        IOUtils.write("helo", out);
-        IOUtils.closeQuietly(out);
-
-        final InputStream in = Files.newInputStream(path);
-        assertThat(IOUtils.toString(in), is("helo"));
-        IOUtils.closeQuietly(in);
+        final Path parent = foo.getParent();
+        assertThat(parent.toString(), is(equalTo("/tmp")));
+        assertThat(parent.isAbsolute(), is(true));
+        assertThat(Files.isDirectory(parent), is(true));
+        assertThat(Files.isReadable(parent), is(true));
+        assertThat(Files.isWritable(parent), is(true));
+        assertThat(Files.isExecutable(parent), is(true));
     }
+
+    @Test
+    @Ignore
+    public void createDirecotries() throws IOException {
+        final Path foo = Files.createDirectories(Paths.get(URI.create("jvfs:///tmp/foo")));
+        assertThat(foo.isAbsolute(), is(true));
+        assertThat(Files.isDirectory(foo), is(true));
+        assertThat(Files.isReadable(foo), is(true));
+        assertThat(Files.isWritable(foo), is(true));
+        assertThat(Files.isExecutable(foo), is(true));
+    }
+
+    @Test
+    @Ignore
+    public void deleteFiles() {
+    }
+
+    @Test
+    @Ignore
+    public void copyFiles() {
+    }
+
+    @Test
+    @Ignore
+    public void moveFiles() {
+    }
+
+    @Test
+    @Ignore
+    public void fileAttributes() {
+    }
+
 }

@@ -313,6 +313,8 @@ class JvfsFileSystem extends FileSystem {
             final Set<? extends OpenOption> options,
             final FileAttribute<?>... attrs) throws IOException {
         checkClosed();
+        // TODO Implement attrs
+        final JvfsFilePermissions permissions = JvfsFilePermissions.forValue(attrs);
 
         // Writing?
         if (options.contains(StandardOpenOption.CREATE)
