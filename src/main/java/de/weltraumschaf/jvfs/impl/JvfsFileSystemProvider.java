@@ -53,16 +53,6 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
      * Logging facility.
      */
     private static final Logger LOG = Logger.getLogger(JvfsFileSystemProvider.class);
-    /**
-     * The one and only file system.
-     */
-    @Deprecated
-    private final JvfsFileSystem fileSystem;
-    /**
-     * Hold the mounted file systems.
-     */
-    @Deprecated
-    private final Map<String, JvfsFileSystem> fstabOld = JvfsCollections.newMap();
     private final JvfsFileSystemTable fstab = new JvfsFileSystemTable();
     private final boolean autoMount;
 
@@ -75,7 +65,6 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
 
     public JvfsFileSystemProvider(final boolean autoMount) {
         super();
-        this.fileSystem = new JvfsFileSystem(this, JvfsOptions.DEFAULT);
         this.autoMount = autoMount;
     }
 
@@ -156,7 +145,8 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
 
     @Override
     public Path getPath(final URI uri) {
-        return new JvfsPath(uri.getPath(), fileSystem);
+        // TODO Read API doc and react correct for not mounted fs.
+        return new JvfsPath(uri.getPath(), fstab.findMountedFilesystem(uri.getPath()));
     }
 
     @Override
