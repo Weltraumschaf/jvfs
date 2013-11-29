@@ -47,14 +47,30 @@ public class JvfsFileSystemProviderTest {
     private final JvfsFileSystemProvider sut = new JvfsFileSystemProvider();
 
     @Test
-    public void getScheme() {
+    public void getScheme() throws URISyntaxException, IOException {
         assertThat(sut.getScheme(), is(equalTo("jvfs")));
+    }
+
+    @Test
+    public void newFileSystem_callsCheckUri() throws URISyntaxException, IOException{
+        final JvfsFileSystemProvider spy = spy(sut);
+        final URI uri = new URI("jvfs:///foo/bar");
+        spy.newFileSystem(uri, JvfsOptions.DEFAULT.getEnv());
+        verify(spy, times(1)).checkUri(uri);
     }
 
     @Test
     public void newFileSystem() throws URISyntaxException, IOException {
         final JvfsOptions opts = JvfsOptions.builder().capacity("10M").readonly(false).create();
         sut.newFileSystem(new URI("jvfs:///foo/bar"), opts.getEnv());
+    }
+
+    @Test
+    public void getFileSystem_callsCheckUri() throws URISyntaxException {
+        final JvfsFileSystemProvider spy = spy(sut);
+        final URI uri = new URI("jvfs:///foo/bar");
+        spy.getFileSystem(uri);
+        verify(spy, atLeast(1)).checkUri(uri);
     }
 
     @Test
