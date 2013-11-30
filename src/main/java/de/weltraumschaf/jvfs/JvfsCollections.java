@@ -100,6 +100,13 @@ public final class JvfsCollections {
         return new HashSet<T>();
     }
 
+    /**
+     * Creates a copy of given set.
+     *
+     * @param <T> type of set entries
+     * @param original must not be {@literal null}
+     * @return never {@literal null}
+     */
     public static <T> Set<T> newSet(final Set<T> original) {
         return new HashSet<T>(original);
     }

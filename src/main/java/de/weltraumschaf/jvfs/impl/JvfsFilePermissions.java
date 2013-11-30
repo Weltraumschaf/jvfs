@@ -37,6 +37,11 @@ class JvfsFilePermissions {
      */
     private final Set<PosixFilePermission> permissions;
 
+    /**
+     * Convenience constructor to create default permissions.
+     *
+     * All defaults are {@code false}.
+     */
     public JvfsFilePermissions() {
         this(JvfsCollections.<PosixFilePermission>newSet());
     }

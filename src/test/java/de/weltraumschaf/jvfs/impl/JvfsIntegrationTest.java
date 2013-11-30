@@ -71,7 +71,7 @@ public class JvfsIntegrationTest {
     @Test
     @Ignore
     public void createFile() throws IOException {
-        Set<PosixFilePermission> permissions = new HashSet<PosixFilePermission>();
+        final Set<PosixFilePermission> permissions = new HashSet<PosixFilePermission>();
         permissions.add(PosixFilePermission.OWNER_READ);
         permissions.add(PosixFilePermission.OWNER_WRITE);
         permissions.add(PosixFilePermission.OWNER_EXECUTE);

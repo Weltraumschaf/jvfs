@@ -76,7 +76,17 @@ final class JvfsFileSystemTable {
         fstab.put(path, fs);
     }
 
+    /**
+     * Get the file system associated with a mount point.
+     *
+     * Throws a {@link FileSystemNotFoundException} if the file system is not mounted.
+     *
+     * @param path must not be {@code null}
+     * @return never {@code null}
+     */
     public JvfsFileSystem get(final JvfsMountPoint path) {
+        JvfsAssertions.notNull(path, "path");
+
         if (fstab.containsKey(path)) {
             return fstab.get(path);
         }
