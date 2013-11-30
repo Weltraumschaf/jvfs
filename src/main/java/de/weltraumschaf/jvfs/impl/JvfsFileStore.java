@@ -106,7 +106,7 @@ final class JvfsFileStore extends FileStore {
 
     @Override
     public boolean supportsFileAttributeView(final String name) {
-        return JvfsFileSystem.FILE_ATTR_VIEW_BASIC.equals(name);
+        return JvfsFileAttributeView.BASIC_VIEW_NAME.equals(name);
     }
 
     @Override

@@ -53,10 +53,12 @@ import java.util.concurrent.TimeUnit;
 class JvfsFileSystem extends FileSystem {
 
     /**
-     * Contracted name of the {@link java.nio.file.attribute.BasicFileAttributeView}.
+     * Supported views.
      */
-    static final String FILE_ATTR_VIEW_BASIC = "basic";
-
+    private static final Set<String> SUPPORTED_ATTRIBUTE_VIEWS = JvfsCollections.newSet();
+    static {
+        SUPPORTED_ATTRIBUTE_VIEWS.add(JvfsFileAttributeView.BASIC_VIEW_NAME);
+    }
     /**
      * Provider which created this {@link JvfsFileSystemProvider}.
      */
@@ -136,7 +138,7 @@ class JvfsFileSystem extends FileSystem {
     @Override
     public Set<String> supportedFileAttributeViews() {
         this.checkClosed();
-        return JvfsCollections.newSet();
+        return SUPPORTED_ATTRIBUTE_VIEWS;
     }
 
     @Override

@@ -28,6 +28,10 @@ import java.util.Map;
 final class JvfsFileAttributeView implements BasicFileAttributeView {
 
     /**
+     * Contracted name of the {@link java.nio.file.attribute.BasicFileAttributeView}.
+     */
+    static final String BASIC_VIEW_NAME = "basic";
+    /**
      * To get attributes from.
      */
     private final JvfsPath path;
@@ -45,7 +49,7 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
 
     @Override
     public String name() {
-        return JvfsFileSystem.FILE_ATTR_VIEW_BASIC;
+        return BASIC_VIEW_NAME;
     }
 
     @Override
