@@ -26,22 +26,22 @@ import org.junit.rules.ExpectedException;
 import static org.mockito.Mockito.*;
 
 /**
- * Tests for {@link JvfTemporaryPathRule}.
+ * Tests for {@link JvfsTemporaryPathRule}.
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
 @Ignore
-public class JvfTemporaryPathRuleTest {
+public class JvfsTemporaryPathRuleTest {
 
     @Rule
     //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
-    private final JvfTemporaryPathRule sut = new JvfTemporaryPathRule();
+    private final JvfsTemporaryPathRule sut = new JvfsTemporaryPathRule();
 
     @Test
     public void beforeAndAfter() throws Throwable {
-        final JvfTemporaryPathRule spy = spy(sut);
+        final JvfsTemporaryPathRule spy = spy(sut);
         spy.before();
         verify(spy, times(1)).create();
         spy.after();

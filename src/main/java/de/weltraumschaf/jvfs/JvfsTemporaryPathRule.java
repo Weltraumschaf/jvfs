@@ -27,9 +27,9 @@ import org.junit.rules.ExternalResource;
  * <pre>
  * public static class HasTempFolder {
  *      &#064;Rule
- *      public JvfTemporaryPathRule folder= new JvfTemporaryPathRule();
- *
- *      &#064;Test
+      public JvfsTemporaryPathRule folder= new JvfsTemporaryPathRule();
+
+      &#064;Test
  *      public void testUsingTempFolder() throws IOException {
  *          final Path createdFile= folder.newFile(&quot;myfile.txt&quot;);
  *          final Path createdFolder= folder.newFolder(&quot;subfolder&quot;);
@@ -44,7 +44,7 @@ import org.junit.rules.ExternalResource;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-public class JvfTemporaryPathRule extends ExternalResource {
+public class JvfsTemporaryPathRule extends ExternalResource {
 
     /**
      * Root folder.
