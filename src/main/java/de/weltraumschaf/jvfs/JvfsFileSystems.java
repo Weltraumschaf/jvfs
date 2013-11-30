@@ -15,7 +15,6 @@ import de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -165,7 +164,7 @@ public final class JvfsFileSystems {
     }
 
     /**
-     * Creates Posix file permissions usable for {@link Files#createFile(java.nio.file.Path,
+     * Creates Posix file permissions usable for {@link java.nio.file.Files#createFile(java.nio.file.Path,
      * java.nio.file.attribute.FileAttribute...)}.
      *
      * Example:<br/>
@@ -179,7 +178,8 @@ public final class JvfsFileSystems {
      * @param perms must not be {@code null}
      * @return never {@code nul}
      */
-    public static final FileAttribute<Set<PosixFilePermission>> createFileAttribute(final PosixFilePermission ... perms) {
+    public static final FileAttribute<Set<PosixFilePermission>> createFileAttribute(
+        final PosixFilePermission ... perms) {
         JvfsAssertions.notNull(perms, "perms");
         final Set<PosixFilePermission> permissions = JvfsCollections.newSet();
         permissions.addAll(Arrays.asList(perms));
