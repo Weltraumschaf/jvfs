@@ -91,7 +91,7 @@ public class JvfsFileAttributesTest {
             is(true));
     }
 
-    @Test @Ignore("\"Not supported yet.\"")
+    @Test
     public void isSymbolicLink() {
         assertThat(
             new JvfsFileAttributes(JvfsFileEntry.newFile(PATH)).isSymbolicLink(),
