@@ -69,4 +69,44 @@ public class JvfsOptionsTest {
         assertThat(opts.isReadonly(), is(true));
         assertThat(opts.getCapacity(), is(equalTo(JvfsQuantity.forValue(1024L))));
     }
+
+    @Test
+    public void testHashCode() {
+        final JvfsOptions sut1 = JvfsOptions.builder().capacity("1M").create();
+        final JvfsOptions sut2 = JvfsOptions.builder().capacity("1M").create();
+        final JvfsOptions sut3 = JvfsOptions.builder().capacity("2M").create();
+
+        assertThat(sut1.hashCode(), is(sut1.hashCode()));
+        assertThat(sut1.hashCode(), is(sut2.hashCode()));
+        assertThat(sut2.hashCode(), is(sut1.hashCode()));
+        assertThat(sut2.hashCode(), is(sut2.hashCode()));
+
+        assertThat(sut3.hashCode(), is(sut3.hashCode()));
+        assertThat(sut3.hashCode(), is(not(sut2.hashCode())));
+        assertThat(sut3.hashCode(), is(not(sut1.hashCode())));
+    }
+
+    @Test
+    public void equals() {
+        final JvfsOptions sut1 = JvfsOptions.builder().capacity("1M").create();
+        final JvfsOptions sut2 = JvfsOptions.builder().capacity("1M").create();
+        final JvfsOptions sut3 = JvfsOptions.builder().capacity("2M").create();
+
+        assertThat(sut1.equals(null), is(false));
+        assertThat(sut1.equals(""), is(false));
+
+        assertThat(sut1.equals(sut1), is(true));
+        assertThat(sut1.equals(sut2), is(true));
+        assertThat(sut2.equals(sut1), is(true));
+        assertThat(sut2.equals(sut2), is(true));
+
+        assertThat(sut3.equals(sut3), is(true));
+        assertThat(sut3.equals(sut2), is(false));
+        assertThat(sut3.equals(sut1), is(false));
+    }
+
+    @Test
+    public void testToString() {
+        assertThat(JvfsOptions.DEFAULT.toString(), is(equalTo("JvfsOptions{id=, capacity=0, readonly=false}")));
+    }
 }
