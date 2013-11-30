@@ -199,6 +199,114 @@ public class JvfsFilePermissionsTest {
     }
 
     @Test
+    public void setAndUnsetOwnerRead() {
+        final JvfsFilePermissions sut = new JvfsFilePermissions();
+        assertThat(sut.ownerRead(), is(false));
+        assertThat(sut.ownerWrite(), is(false));
+        assertThat(sut.ownerExecute(), is(false));
+        assertThat(sut.groupRead(), is(false));
+        assertThat(sut.groupWrite(), is(false));
+        assertThat(sut.groupExecute(), is(false));
+        assertThat(sut.othersRead(), is(false));
+        assertThat(sut.othersWrite(), is(false));
+        assertThat(sut.othersExecute(), is(false));
+
+        sut.ownerRead(true);
+        assertThat(sut.ownerRead(), is(true));
+        assertThat(sut.ownerWrite(), is(false));
+        assertThat(sut.ownerExecute(), is(false));
+        assertThat(sut.groupRead(), is(false));
+        assertThat(sut.groupWrite(), is(false));
+        assertThat(sut.groupExecute(), is(false));
+        assertThat(sut.othersRead(), is(false));
+        assertThat(sut.othersWrite(), is(false));
+        assertThat(sut.othersExecute(), is(false));
+
+        sut.ownerRead(false);
+        assertThat(sut.ownerRead(), is(false));
+        assertThat(sut.ownerWrite(), is(false));
+        assertThat(sut.ownerExecute(), is(false));
+        assertThat(sut.groupRead(), is(false));
+        assertThat(sut.groupWrite(), is(false));
+        assertThat(sut.groupExecute(), is(false));
+        assertThat(sut.othersRead(), is(false));
+        assertThat(sut.othersWrite(), is(false));
+        assertThat(sut.othersExecute(), is(false));
+    }
+
+    @Test
+    public void setAndUnsetOwnerWrite() {
+        final JvfsFilePermissions sut = new JvfsFilePermissions();
+        assertThat(sut.ownerRead(), is(false));
+        assertThat(sut.ownerWrite(), is(false));
+        assertThat(sut.ownerExecute(), is(false));
+        assertThat(sut.groupRead(), is(false));
+        assertThat(sut.groupWrite(), is(false));
+        assertThat(sut.groupExecute(), is(false));
+        assertThat(sut.othersRead(), is(false));
+        assertThat(sut.othersWrite(), is(false));
+        assertThat(sut.othersExecute(), is(false));
+
+        sut.ownerWrite(true);
+        assertThat(sut.ownerRead(), is(false));
+        assertThat(sut.ownerWrite(), is(true));
+        assertThat(sut.ownerExecute(), is(false));
+        assertThat(sut.groupRead(), is(false));
+        assertThat(sut.groupWrite(), is(false));
+        assertThat(sut.groupExecute(), is(false));
+        assertThat(sut.othersRead(), is(false));
+        assertThat(sut.othersWrite(), is(false));
+        assertThat(sut.othersExecute(), is(false));
+
+        sut.ownerWrite(false);
+        assertThat(sut.ownerRead(), is(false));
+        assertThat(sut.ownerWrite(), is(false));
+        assertThat(sut.ownerExecute(), is(false));
+        assertThat(sut.groupRead(), is(false));
+        assertThat(sut.groupWrite(), is(false));
+        assertThat(sut.groupExecute(), is(false));
+        assertThat(sut.othersRead(), is(false));
+        assertThat(sut.othersWrite(), is(false));
+        assertThat(sut.othersExecute(), is(false));
+    }
+
+    @Test
+    public void setAndUnsetOwnerExecute() {
+        final JvfsFilePermissions sut = new JvfsFilePermissions();
+        assertThat(sut.ownerRead(), is(false));
+        assertThat(sut.ownerWrite(), is(false));
+        assertThat(sut.ownerExecute(), is(false));
+        assertThat(sut.groupRead(), is(false));
+        assertThat(sut.groupWrite(), is(false));
+        assertThat(sut.groupExecute(), is(false));
+        assertThat(sut.othersRead(), is(false));
+        assertThat(sut.othersWrite(), is(false));
+        assertThat(sut.othersExecute(), is(false));
+
+        sut.ownerExecute(true);
+        assertThat(sut.ownerRead(), is(false));
+        assertThat(sut.ownerWrite(), is(false));
+        assertThat(sut.ownerExecute(), is(true));
+        assertThat(sut.groupRead(), is(false));
+        assertThat(sut.groupWrite(), is(false));
+        assertThat(sut.groupExecute(), is(false));
+        assertThat(sut.othersRead(), is(false));
+        assertThat(sut.othersWrite(), is(false));
+        assertThat(sut.othersExecute(), is(false));
+
+        sut.ownerExecute(false);
+        assertThat(sut.ownerRead(), is(false));
+        assertThat(sut.ownerWrite(), is(false));
+        assertThat(sut.ownerExecute(), is(false));
+        assertThat(sut.groupRead(), is(false));
+        assertThat(sut.groupWrite(), is(false));
+        assertThat(sut.groupExecute(), is(false));
+        assertThat(sut.othersRead(), is(false));
+        assertThat(sut.othersWrite(), is(false));
+        assertThat(sut.othersExecute(), is(false));
+    }
+
+    @Test
     public void testHashCode() {
         final Set<PosixFilePermission> permissions1 = new HashSet<PosixFilePermission>();
         permissions1.add(PosixFilePermission.OWNER_READ);
