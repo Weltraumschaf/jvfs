@@ -33,7 +33,8 @@ public class JvfsFileStoreTest {
     //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
-    private final JvfsFileStore sut = new JvfsFileStore(JvfsOptions.DEFAULT, new JvfsFileSystem(new JvfsFileSystemProvider(), JvfsOptions.DEFAULT));
+    private final JvfsFileStore sut = new JvfsFileStore(
+        JvfsOptions.DEFAULT, new JvfsFileSystem(new JvfsFileSystemProvider(), JvfsOptions.DEFAULT));
 
     @Test
     public void name() {
