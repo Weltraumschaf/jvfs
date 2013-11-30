@@ -15,9 +15,15 @@ import de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.nio.file.spi.FileSystemProvider;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Factory to get virtual file system stuff.
@@ -156,6 +162,28 @@ public final class JvfsFileSystems {
      */
     public static void unregisterDefault() {
         System.setProperty(IMPLEMENTATION_PROPERTY_NAME, "");
+    }
+
+    /**
+     * Creates Posix file permissions usable for {@link Files#createFile(java.nio.file.Path,
+     * java.nio.file.attribute.FileAttribute...)}.
+     *
+     * Example:<br/>
+     * <code>
+     * final Path foo = Files.createFile(uri, JvfsFileSystems.createFileAttribute(
+     *       PosixFilePermission.OWNER_READ,
+     *       PosixFilePermission.OWNER_WRITE,
+     *       PosixFilePermission.OWNER_EXECUTE));
+     * </code>
+     *
+     * @param perms must not be {@code null}
+     * @return never {@code nul}
+     */
+    public static final FileAttribute<Set<PosixFilePermission>> createFileAttribute(final PosixFilePermission ... perms) {
+        JvfsAssertions.notNull(perms, "perms");
+        final Set<PosixFilePermission> permissions = JvfsCollections.newSet();
+        permissions.addAll(Arrays.asList(perms));
+        return PosixFilePermissions.asFileAttribute(permissions);
     }
 
     /**

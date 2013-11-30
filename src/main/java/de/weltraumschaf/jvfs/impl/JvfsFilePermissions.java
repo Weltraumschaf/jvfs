@@ -210,7 +210,9 @@ class JvfsFilePermissions {
                 final Object value = attribute.value();
 
                 if (NAME.equals(name) && value instanceof Set) {
-                    return new JvfsFilePermissions((Set) value);
+                    @SuppressWarnings("unchecked") // Checked via #NAME
+                    final JvfsFilePermissions perms = new JvfsFilePermissions((Set) value);
+                    return perms;
                 }
             }
         }

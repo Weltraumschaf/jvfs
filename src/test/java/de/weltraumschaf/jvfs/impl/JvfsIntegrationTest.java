@@ -11,6 +11,8 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsCollections;
+import de.weltraumschaf.jvfs.JvfsFileSystems;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,8 +21,10 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.io.IOUtils;
@@ -71,12 +75,11 @@ public class JvfsIntegrationTest {
     @Test
     @Ignore
     public void createFile() throws IOException {
-        final Set<PosixFilePermission> permissions = new HashSet<PosixFilePermission>();
-        permissions.add(PosixFilePermission.OWNER_READ);
-        permissions.add(PosixFilePermission.OWNER_WRITE);
-        permissions.add(PosixFilePermission.OWNER_EXECUTE);
         final Path uri = Paths.get(URI.create("jvfs:///tmp/foo"));
-        final Path foo = Files.createFile(uri, PosixFilePermissions.asFileAttribute(permissions));
+        final Path foo = Files.createFile(uri, JvfsFileSystems.createFileAttribute(
+            PosixFilePermission.OWNER_READ,
+            PosixFilePermission.OWNER_WRITE,
+            PosixFilePermission.OWNER_EXECUTE));
         assertThat(foo.isAbsolute(), is(true));
         assertThat(Files.isDirectory(foo), is(false));
         assertThat(Files.isReadable(foo), is(true));

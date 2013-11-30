@@ -401,6 +401,7 @@ public class JvfsFilePermissionsTest {
         assertThat(sut, is(not(sameInstance(copy))));
     }
 
+    @SuppressWarnings("unchecked")
     @Test public void forVsalue_withNullCreatesDefault() {
         final JvfsFilePermissions sut = JvfsFilePermissions.forValue(null);
         assertThat(sut.ownerRead(), is(false));
