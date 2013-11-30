@@ -100,4 +100,17 @@ public class JvfsFileStoreTest {
         thrown.expect(UnsupportedOperationException.class);
         sut.getAttribute("foobar");
     }
+
+    @Test
+    @Ignore
+    public void testHashCode() {}
+
+    @Test
+    @Ignore
+    public void equals() {}
+
+    @Test
+    @Ignore
+    public void testToString() {}
+
 }

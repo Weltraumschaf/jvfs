@@ -34,6 +34,7 @@ import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import org.apache.log4j.Logger;
 
@@ -276,5 +277,15 @@ public class JvfsFileSystemProvider extends FileSystemProvider {
 
         return (JvfsPath) obj;
     }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "{"
+                + "fstab=" + Objects.toString(fstab) + ", "
+                + "autoMount=" + Objects.toString(autoMount)
+                + '}';
+    }
+
+
 
 }

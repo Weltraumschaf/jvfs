@@ -11,7 +11,9 @@
  */
 package de.weltraumschaf.jvfs;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Holds options of a JVFS file system.
@@ -54,7 +56,40 @@ public final class JvfsOptions {
      * @return never {@literal null}
      */
     public Map<String, ?> getEnv() {
-        return env;
+        return Collections.unmodifiableMap(env);
+    }
+
+    @Override
+    public int hashCode() {
+        return env.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof JvfsOptions)) {
+            return false;
+        }
+
+        final JvfsOptions other = (JvfsOptions) obj;
+        return env.equals(other.env);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder buffer = new StringBuilder(getClass().getSimpleName() + "{");
+        boolean first = true;
+
+        for (final Map.Entry<String, ?> entry : env.entrySet()) {
+            if (!first) {
+                buffer.append(", ");
+            }
+
+            buffer.append(entry.getKey()).append("=").append(Objects.toString(entry.getValue()));
+            first = false;
+        }
+
+        buffer.append('}');
+        return buffer.toString();
     }
 
     /**
@@ -134,6 +169,8 @@ public final class JvfsOptions {
          * Default value for readonly option.
          */
         private static final boolean DEFAULT_READONLY = false;
+
+        private static final String DEFAULT_ID = "";
         /**
          * Capacity for created options.
          */
@@ -142,6 +179,7 @@ public final class JvfsOptions {
          * Readonly flag for created options.
          */
         private boolean readOnly = DEFAULT_READONLY;
+        private String id = DEFAULT_ID;
 
         /**
          * Use {@link JvfsOptions#builder()} to get instance.
@@ -172,6 +210,11 @@ public final class JvfsOptions {
             return this;
         }
 
+        public Builder id(final String id) {
+            this.id = id;
+            return this;
+        }
+
         /**
          * Create a new options instance.
          *
@@ -184,6 +227,7 @@ public final class JvfsOptions {
             final Map<String, Object> env = JvfsCollections.newMap();
             env.put(Option.CAPACITY.key, capacity);
             env.put(Option.READONLY.key, readOnly);
+            env.put(Option.ID.key, id);
             return new JvfsOptions(env);
         }
     }
@@ -209,7 +253,8 @@ public final class JvfsOptions {
         /**
          * Key for readonly flag.
          */
-        READONLY("readonly");
+        READONLY("readonly"),
+        ID("id");
         /**
          * The key for the map.
          */

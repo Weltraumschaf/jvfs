@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -183,15 +184,13 @@ class JvfsFileSystem extends FileSystem {
         throw new UnsupportedOperationException("JVFS archives do not support a watch services!");
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @see java.lang.Object#toString()
-     */
     @Override
     public String toString() {
-        return this.getClass().getSimpleName();
+        return this.getClass().getSimpleName() + '{'
+                + "fileStores=" + Objects.toString(fileStores)
+                + '}';
     }
+
 
     /**
      * Checks if the {@link JvfsFileSystem} is closed, and throws a {@link ClosedFileSystemException} if so.
@@ -564,5 +563,6 @@ class JvfsFileSystem extends FileSystem {
 
         return usedBytes;
     }
+
 
 }

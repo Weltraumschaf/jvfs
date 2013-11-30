@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * Helper class which infers generic types for collections.
@@ -86,8 +87,19 @@ public final class JvfsCollections {
      * @param <V> type of map values
      * @return never {@literal null}, always new instance
      */
-    public static <K, V> Map<K, V> newConcurrentSortedMap() {
+    public static <K, V> Map<K, V> newConcurrentMap() {
         return new ConcurrentHashMap<K, V>();
+    }
+
+    /**
+     * Creates new concurrent sorted map.
+     *
+     * @param <K> type of map keys
+     * @param <V> type of map values
+     * @return never {@literal null}, always new instance
+     */
+    public static <K, V> Map<K, V> newConcurrentSortedMap() {
+        return new ConcurrentSkipListMap<K, V>();
     }
 
     /**

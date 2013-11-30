@@ -12,12 +12,14 @@
 
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsObject;
 import de.weltraumschaf.jvfs.JvfsOptions;
 import java.io.IOException;
 import java.nio.file.FileStore;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.attribute.FileStoreAttributeView;
+import java.util.Objects;
 
 /**
  * Implementation of the JVFS file store.
@@ -118,5 +120,29 @@ final class JvfsFileStore extends FileStore {
         // XXX: Considder to implement this.
         throw new UnsupportedOperationException(this.getClass().getSimpleName() + " does not support attributes.");
     }
+
+    @Override
+    public int hashCode() {
+        return JvfsObject.hashCode(options, fs);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof JvfsFileStore)) {
+            return false;
+        }
+
+        final JvfsFileStore other = (JvfsFileStore) obj;
+        return JvfsObject.equal(options, other.options) && JvfsObject.equal(fs, other.fs);
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + "{"
+            + "options=" + Objects.toString(options) + ", "
+            + "fs=" + fs.getClass().getSimpleName()
+            + '}';
+    }
+
 
 }

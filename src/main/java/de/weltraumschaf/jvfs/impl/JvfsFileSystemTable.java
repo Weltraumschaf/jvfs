@@ -13,11 +13,13 @@ package de.weltraumschaf.jvfs.impl;
 
 import de.weltraumschaf.jvfs.JvfsAssertions;
 import de.weltraumschaf.jvfs.JvfsCollections;
+import de.weltraumschaf.jvfs.JvfsObject;
 import java.io.IOException;
 import java.nio.file.FileSystemAlreadyExistsException;
 import java.nio.file.FileSystemNotFoundException;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.log4j.Logger;
 
 /**
@@ -147,6 +149,22 @@ final class JvfsFileSystemTable {
         throw new IllegalStateException("No file system mounted for " + path);
     }
 
+    String list() {
+        final StringBuilder buffer = new StringBuilder();
+
+        final Iterator<Map.Entry<JvfsMountPoint, JvfsFileSystem>> it = fstab.entrySet().iterator();
+
+        while (it.hasNext()) {
+            final Map.Entry<JvfsMountPoint, JvfsFileSystem> entry = it.next();
+            buffer.append(entry.getKey().getPath());
+            buffer.append("    ");
+            buffer.append(entry.getValue().toString());
+            buffer.append('\n');
+        }
+
+        return buffer.toString();
+    }
+
     /**
      * Get the number of mounted file systems.
      *
@@ -155,5 +173,42 @@ final class JvfsFileSystemTable {
     int size() {
         return fstab.size();
     }
+
+    @Override
+    public int hashCode() {
+        return JvfsObject.hashCode(fstab, root);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof JvfsFileSystemTable)) {
+            return false;
+        }
+
+        final JvfsFileSystemTable other = (JvfsFileSystemTable) obj;
+        return JvfsObject.equal(fstab, other.fstab) && JvfsObject.equal(root, other.root);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder buffer = new StringBuilder(getClass().getSimpleName() + "{");
+        boolean first = true;
+        final Iterator<Map.Entry<JvfsMountPoint, JvfsFileSystem>> it = fstab.entrySet().iterator();
+
+        while (it.hasNext()) {
+            final Map.Entry<JvfsMountPoint, JvfsFileSystem> entry = it.next();
+
+            if (!first) {
+                buffer.append(", ");
+            }
+
+            buffer.append(entry.getKey()).append("=").append(Objects.toString(entry.getValue()));
+            first = false;
+        }
+
+        buffer.append(", root=").append(Objects.toString(root)).append('}');
+        return buffer.toString();
+    }
+
 
 }

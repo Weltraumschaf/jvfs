@@ -85,7 +85,7 @@ final class JvfsMountPoint implements Comparable<JvfsMountPoint> {
     boolean isRootFileSystem() {
         return JvfsFileSystems.DIR_SEP.equals(path);
     }
-
+    
     /**
      * Add leading directory separator if missing and remove trailing one if present.
      *
