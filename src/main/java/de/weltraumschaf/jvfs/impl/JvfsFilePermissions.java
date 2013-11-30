@@ -201,7 +201,7 @@ class JvfsFilePermissions {
      * Factory to create permissions from {@link PosixFilePermissions#asFileAttribute(java.util.Set)}.
      *
      * @param attributes may be {@code null}
-     * @return returns {@link JvfsFilePermissions() default permissions}
+     * @return returns {@link #JvfsFilePermissions() default permissions}
      */
     static JvfsFilePermissions forValue(final FileAttribute<?>... attributes) {
         if (attributes != null) {
