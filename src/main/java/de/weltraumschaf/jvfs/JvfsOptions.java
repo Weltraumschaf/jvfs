@@ -20,10 +20,11 @@ import java.util.Objects;
  *
  * To create options use the builder:<br/>
  * <code>
- final JvfsOptions opts = JvfsOptions.builder()
-      .readonly(true)
-      .capacity("1k")
-      .create();
+ * final JvfsOptions opts = JvfsOptions.builder()
+ *      .readonly(true)
+ *      .capacity("1k")
+ *      .id("a name")
+ *      .create();
  </code>
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
@@ -169,7 +170,9 @@ public final class JvfsOptions {
          * Default value for readonly option.
          */
         private static final boolean DEFAULT_READONLY = false;
-
+        /**
+         * Default value for id option.
+         */
         private static final String DEFAULT_ID = "";
         /**
          * Capacity for created options.
@@ -179,6 +182,9 @@ public final class JvfsOptions {
          * Readonly flag for created options.
          */
         private boolean readOnly = DEFAULT_READONLY;
+        /**
+         * Id for created options.
+         */
         private String id = DEFAULT_ID;
 
         /**
@@ -210,7 +216,14 @@ public final class JvfsOptions {
             return this;
         }
 
+        /**
+         * Set the capacity.
+         *
+         * @param id must not be {@code null}
+         * @return builder itself
+         */
         public Builder id(final String id) {
+            JvfsAssertions.notNull(id, "id");
             this.id = id;
             return this;
         }
@@ -240,7 +253,7 @@ public final class JvfsOptions {
      * final Map&lt;String, ?&gt; map = new HashMap&lt;String, ?&gt;();
      * map.put(JvfsOption.Option.CAPACITY.key(), "12M");
      * map.put(JvfsOption.Option.READONLY.key(), true);
-     *
+     * // ...
      * final JvfsOption opts = JvfsOption.forValue(map);
      * </code>
      */
@@ -254,6 +267,9 @@ public final class JvfsOptions {
          * Key for readonly flag.
          */
         READONLY("readonly"),
+        /**
+         * Key for id.
+         */
         ID("id");
         /**
          * The key for the map.
