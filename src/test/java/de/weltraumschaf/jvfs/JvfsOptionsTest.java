@@ -92,8 +92,10 @@ public class JvfsOptionsTest {
         final JvfsOptions sut2 = JvfsOptions.builder().capacity("1M").create();
         final JvfsOptions sut3 = JvfsOptions.builder().capacity("2M").create();
 
+        //CHECKSTYLE:OFF
         assertThat(sut1.equals(null), is(false));
         assertThat(sut1.equals(""), is(false));
+        //CHECKSTYLE:ON
 
         assertThat(sut1.equals(sut1), is(true));
         assertThat(sut1.equals(sut2), is(true));

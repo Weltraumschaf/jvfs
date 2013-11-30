@@ -33,7 +33,7 @@ public class JvfsFileStoreTest {
     //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
-    private final JvfsFileStore sut = new JvfsFileStore(JvfsOptions.DEFAULT, mock(JvfsFileSystem.class));
+    private final JvfsFileStore sut = new JvfsFileStore(JvfsOptions.DEFAULT, new JvfsFileSystem(new JvfsFileSystemProvider(), JvfsOptions.DEFAULT));
 
     @Test
     public void name() {
@@ -102,15 +102,48 @@ public class JvfsFileStoreTest {
     }
 
     @Test
-    @Ignore
-    public void testHashCode() {}
+    public void testHashCode() {
+        final JvfsFileSystem fs1 = mock(JvfsFileSystem.class);
+        final JvfsFileStore sut1 = new JvfsFileStore(JvfsOptions.DEFAULT, fs1);
+        final JvfsFileStore sut2 = new JvfsFileStore(JvfsOptions.DEFAULT, fs1);
+        final JvfsFileStore sut3 = new JvfsFileStore(JvfsOptions.DEFAULT, mock(JvfsFileSystem.class));
+
+        assertThat(sut1.hashCode(), is(sut1.hashCode()));
+        assertThat(sut1.hashCode(), is(sut2.hashCode()));
+        assertThat(sut2.hashCode(), is(sut1.hashCode()));
+        assertThat(sut2.hashCode(), is(sut2.hashCode()));
+
+        assertThat(sut3.hashCode(), is(sut3.hashCode()));
+        assertThat(sut3.hashCode(), is(not(sut2.hashCode())));
+        assertThat(sut3.hashCode(), is(not(sut1.hashCode())));
+    }
 
     @Test
-    @Ignore
-    public void equals() {}
+    public void equals() {
+        final JvfsFileSystem fs1 = mock(JvfsFileSystem.class);
+        final JvfsFileStore sut1 = new JvfsFileStore(JvfsOptions.DEFAULT, fs1);
+        final JvfsFileStore sut2 = new JvfsFileStore(JvfsOptions.DEFAULT, fs1);
+        final JvfsFileStore sut3 = new JvfsFileStore(JvfsOptions.DEFAULT, mock(JvfsFileSystem.class));
+
+        //CHECKSTYLE:OFF
+        assertThat(sut1.equals(null), is(false));
+        assertThat(sut1.equals(""), is(false));
+        //CHECKSTYLE:ON
+
+        assertThat(sut1.equals(sut1), is(true));
+        assertThat(sut1.equals(sut2), is(true));
+        assertThat(sut2.equals(sut1), is(true));
+        assertThat(sut2.equals(sut2), is(true));
+
+        assertThat(sut3.equals(sut3), is(true));
+        assertThat(sut3.equals(sut2), is(false));
+        assertThat(sut3.equals(sut1), is(false));
+    }
 
     @Test
-    @Ignore
-    public void testToString() {}
+    public void testToString() {
+        assertThat(sut.toString(), is(equalTo(
+            "JvfsFileStore{options=JvfsOptions{id=, capacity=0, readonly=false}, fs=JvfsFileSystem}")));
+    }
 
 }

@@ -149,6 +149,11 @@ final class JvfsFileSystemTable {
         throw new IllegalStateException("No file system mounted for " + path);
     }
 
+    /**
+     * List all mounted file systems.
+     *
+     * @return never {@code null}
+     */
     String list() {
         final StringBuilder buffer = new StringBuilder();
 

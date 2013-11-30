@@ -223,7 +223,7 @@ public class JvfsFileSystemTableTest {
     }
 
     private JvfsFileSystem createFs(final String id) {
-        final JvfsOptions options = JvfsOptions.builder().capacity("1M").id(id).create();
+        final JvfsOptions options = JvfsOptions.builder().capacity("1M").identifier(id).create();
         return new JvfsFileSystem(provider, options);
     }
 }

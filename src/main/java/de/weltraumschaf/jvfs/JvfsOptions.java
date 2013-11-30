@@ -20,11 +20,11 @@ import java.util.Objects;
  *
  * To create options use the builder:<br/>
  * <code>
- * final JvfsOptions opts = JvfsOptions.builder()
- *      .readonly(true)
- *      .capacity("1k")
- *      .id("a name")
- *      .create();
+ final JvfsOptions opts = JvfsOptions.builder()
+      .readonly(true)
+      .capacity("1k")
+      .identifier("a name")
+      .create();
  </code>
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
@@ -171,7 +171,7 @@ public final class JvfsOptions {
          */
         private static final boolean DEFAULT_READONLY = false;
         /**
-         * Default value for id option.
+         * Default value for identifier option.
          */
         private static final String DEFAULT_ID = "";
         /**
@@ -185,7 +185,7 @@ public final class JvfsOptions {
         /**
          * Id for created options.
          */
-        private String id = DEFAULT_ID;
+        private String identifier = DEFAULT_ID;
 
         /**
          * Use {@link JvfsOptions#builder()} to get instance.
@@ -222,9 +222,9 @@ public final class JvfsOptions {
          * @param id must not be {@code null}
          * @return builder itself
          */
-        public Builder id(final String id) {
+        public Builder identifier(final String id) {
             JvfsAssertions.notNull(id, "id");
-            this.id = id;
+            this.identifier = id;
             return this;
         }
 
@@ -240,7 +240,7 @@ public final class JvfsOptions {
             final Map<String, Object> env = JvfsCollections.newMap();
             env.put(Option.CAPACITY.key, capacity);
             env.put(Option.READONLY.key, readOnly);
-            env.put(Option.ID.key, id);
+            env.put(Option.ID.key, identifier);
             return new JvfsOptions(env);
         }
     }
@@ -268,7 +268,7 @@ public final class JvfsOptions {
          */
         READONLY("readonly"),
         /**
-         * Key for id.
+         * Key for identifier.
          */
         ID("id");
         /**
