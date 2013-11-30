@@ -12,6 +12,7 @@
 package de.weltraumschaf.jvfs.impl;
 
 import de.weltraumschaf.jvfs.JvfsAssertions;
+import de.weltraumschaf.jvfs.JvfsCollections;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -51,21 +52,13 @@ final class JvfsFileEntry {
      */
     private long creationTime;
     /**
-     * Whether it is readable.
-     */
-    private boolean readable;
-    /**
-     * Whether it is writable.
-     */
-    private boolean writable;
-    /**
-     * Whether it is executable.
-     */
-    private boolean executable;
-    /**
      * Whether it is hidden.
      */
     private boolean hidden;
+    /**
+     * Holds the file permissions.
+     */
+    private JvfsFilePermissions permissions = new JvfsFilePermissions();
 
     /**
      * Copy constructor.
@@ -79,9 +72,7 @@ final class JvfsFileEntry {
         this.lastModifiedTime = src.getLastModifiedTime();
         this.lastAccessTime = src.getLastAccessTime();
         this.creationTime = src.getCreationTime();
-        this.readable = src.isReadable();
-        this.writable = src.isWritable();
-        this.executable = src.isExecutable();
+        this.permissions = src.permissions.copy();
         this.hidden = src.isHidden();
     }
 
@@ -252,7 +243,7 @@ final class JvfsFileEntry {
      * @return {@literal true} if readable, else {@literal false}
      */
     boolean isReadable() {
-        return readable;
+        return permissions.ownerRead();
     }
 
     /**
@@ -261,7 +252,7 @@ final class JvfsFileEntry {
      * @return {@literal true} if writable, else {@literal false}
      */
     boolean isWritable() {
-        return writable;
+        return permissions.ownerWrite();
     }
 
     /**
@@ -270,7 +261,7 @@ final class JvfsFileEntry {
      * @return {@literal true} if executable, else {@literal false}
      */
     boolean isExecutable() {
-        return executable;
+        return permissions.ownerExecute();
     }
 
     /**
@@ -279,7 +270,7 @@ final class JvfsFileEntry {
      * @param readable {@code true} for readable, else {@code false}
      */
     public void setReadable(boolean readable) {
-        this.readable = readable;
+        permissions.ownerRead(readable);
     }
 
     /**
@@ -288,7 +279,7 @@ final class JvfsFileEntry {
      * @param writable {@code true} for writable, else {@code false}
      */
     public void setWritable(boolean writable) {
-        this.writable = writable;
+        permissions.ownerWrite(writable);
     }
 
     /**
@@ -297,7 +288,7 @@ final class JvfsFileEntry {
      * @param executable {@code true} for executable, else {@code false}
      */
     public void setExecutable(boolean executable) {
-        this.executable = executable;
+        permissions.ownerExecute(executable);
     }
 
     /**
@@ -377,6 +368,16 @@ final class JvfsFileEntry {
      */
     void endRead() {
         rwlock.readLock().unlock();
+    }
+
+    /**
+     * Set file permissions in bulk operation.
+     *
+     * @param permissions must not be {@code null}
+     */
+    void setPermissions(final JvfsFilePermissions permissions) {
+        JvfsAssertions.notNull(permissions, "permissions");
+        this.permissions = permissions;
     }
 
 }

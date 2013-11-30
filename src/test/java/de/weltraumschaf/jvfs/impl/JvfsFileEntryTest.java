@@ -112,6 +112,10 @@ public class JvfsFileEntryTest {
     @Test
     public void copy() {
         final JvfsFileEntry original = JvfsFileEntry.newFile("foo");
+        assertThat(original.isReadable(), is(false));
+        assertThat(original.isWritable(), is(false));
+        assertThat(original.isExecutable(), is(false));
+        assertThat(original.isHidden(), is(false));
         original.setCreationTime(1L);
         original.setLastModifiedTime(2L);
         original.setLastAccessTime(3L);

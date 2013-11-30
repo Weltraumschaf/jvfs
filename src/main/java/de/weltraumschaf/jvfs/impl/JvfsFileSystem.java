@@ -313,8 +313,6 @@ class JvfsFileSystem extends FileSystem {
             final Set<? extends OpenOption> options,
             final FileAttribute<?>... attrs) throws IOException {
         checkClosed();
-        // TODO Implement attrs
-        final JvfsFilePermissions permissions = JvfsFilePermissions.forValue(attrs);
 
         // Writing?
         if (options.contains(StandardOpenOption.CREATE)
@@ -335,6 +333,7 @@ class JvfsFileSystem extends FileSystem {
                 }
             } else {
                 final JvfsFileEntry entry = JvfsFileEntry.newFile(path);
+                entry.setPermissions(JvfsFilePermissions.forValue(attrs));
                 add(entry);
                 return new JvfsSeekableByteChannel(entry);
             }
@@ -412,6 +411,7 @@ class JvfsFileSystem extends FileSystem {
 
             if (!contains(buf.toString())) {
                 final JvfsFileEntry directory = JvfsFileEntry.newDir(buf.toString());
+                directory.setPermissions(JvfsFilePermissions.forValue(attrs));
                 add(directory);
             }
         }

@@ -100,6 +100,10 @@ public final class JvfsCollections {
         return new HashSet<T>();
     }
 
+    public static <T> Set<T> newSet(final Set<T> original) {
+        return new HashSet<T>(original);
+    }
+
     /**
      * Converts given varargs into a list.
      *

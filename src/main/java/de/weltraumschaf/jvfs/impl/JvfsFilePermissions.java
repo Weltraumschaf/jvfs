@@ -12,6 +12,7 @@
 package de.weltraumschaf.jvfs.impl;
 
 import de.weltraumschaf.jvfs.JvfsAssertions;
+import de.weltraumschaf.jvfs.JvfsCollections;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -36,6 +37,10 @@ class JvfsFilePermissions {
      */
     private final Set<PosixFilePermission> permissions;
 
+    public JvfsFilePermissions() {
+        this(JvfsCollections.<PosixFilePermission>newSet());
+    }
+
     /**
      * Dedicated constructor.
      *
@@ -44,7 +49,7 @@ class JvfsFilePermissions {
     public JvfsFilePermissions(final Set<PosixFilePermission> permissions) {
         super();
         JvfsAssertions.notNull(permissions, "permissions");
-        this.permissions = permissions;
+        this.permissions = JvfsCollections.newSet(permissions);
     }
 
     /**
@@ -57,6 +62,19 @@ class JvfsFilePermissions {
     }
 
     /**
+     * Set owners read permission.
+     *
+     * @param readable {@code true} gives permission, else denies
+     */
+    void ownerRead(final boolean readable) {
+        if (readable) {
+            permissions.add(PosixFilePermission.OWNER_READ);
+        } else {
+            permissions.remove(PosixFilePermission.OWNER_READ);
+        }
+    }
+
+    /**
      * Has owner write permission.
      *
      * @return {@code true} if permitted, else {@code false}
@@ -66,12 +84,38 @@ class JvfsFilePermissions {
     }
 
     /**
+     * Set owners write permission.
+     *
+     * @param writable {@code true} gives permission, else denies
+     */
+    void ownerWrite(final boolean writable) {
+        if (writable) {
+            permissions.add(PosixFilePermission.OWNER_WRITE);
+        } else {
+            permissions.remove(PosixFilePermission.OWNER_WRITE);
+        }
+    }
+
+    /**
      * Has owner execute permission.
      *
      * @return {@code true} if permitted, else {@code false}
      */
     boolean ownerExecute() {
         return permissions.contains(PosixFilePermission.OWNER_EXECUTE);
+    }
+
+    /**
+     * Set owners execute permission.
+     *
+     * @param executable {@code true} gives permission, else denies
+     */
+    void ownerExecute(final boolean executable) {
+        if (executable) {
+            permissions.add(PosixFilePermission.OWNER_EXECUTE);
+        } else {
+            permissions.remove(PosixFilePermission.OWNER_EXECUTE);
+        }
     }
 
     /**
@@ -148,17 +192,34 @@ class JvfsFilePermissions {
         return PosixFilePermissions.toString(permissions);
     }
 
+    /**
+     * Factory to create permissions from {@link PosixFilePermissions#asFileAttribute(java.util.Set)}.
+     *
+     * @param attributes may be {@code null}
+     * @return returns {@link JvfsFilePermissions() default permissions}
+     */
     static JvfsFilePermissions forValue(final FileAttribute<?>... attributes) {
-        for (final FileAttribute<?> attribute : attributes) {
-            final String name = attribute.name();
-            final Object value = attribute.value();
+        if (attributes != null) {
+            for (final FileAttribute<?> attribute : attributes) {
+                final String name = attribute.name();
+                final Object value = attribute.value();
 
-            if (NAME.equals(name) && value instanceof Set) {
-                return new JvfsFilePermissions((Set) value);
+                if (NAME.equals(name) && value instanceof Set) {
+                    return new JvfsFilePermissions((Set) value);
+                }
             }
         }
 
-        return null;
+        return new JvfsFilePermissions();
+    }
+
+    /**
+     * Creates a deep copy.
+     *
+     * @return never {@code null}
+     */
+    JvfsFilePermissions copy() {
+        return new JvfsFilePermissions(JvfsCollections.newSet(permissions));
     }
 
 }

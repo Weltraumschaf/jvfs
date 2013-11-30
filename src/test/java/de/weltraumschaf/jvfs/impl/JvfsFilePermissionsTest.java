@@ -11,6 +11,7 @@
  */
 package de.weltraumschaf.jvfs.impl;
 
+import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.HashSet;
@@ -18,6 +19,7 @@ import java.util.Set;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
@@ -256,6 +258,65 @@ public class JvfsFilePermissionsTest {
         permissions.add(PosixFilePermission.OTHERS_WRITE);
         permissions.add(PosixFilePermission.OTHERS_EXECUTE);
         assertThat(new JvfsFilePermissions(permissions).toString(), is(equalTo("rw---xrwx")));
+    }
+
+    @Test
+    public void copy() {
+        final Set<PosixFilePermission> permissions = new HashSet<PosixFilePermission>();
+        permissions.add(PosixFilePermission.OWNER_READ);
+        permissions.add(PosixFilePermission.OWNER_WRITE);
+        permissions.add(PosixFilePermission.GROUP_EXECUTE);
+        final JvfsFilePermissions sut = new JvfsFilePermissions(permissions);
+
+        assertThat(sut.ownerRead(), is(true));
+        assertThat(sut.ownerWrite(), is(true));
+        assertThat(sut.ownerExecute(), is(false));
+        assertThat(sut.groupRead(), is(false));
+        assertThat(sut.groupWrite(), is(false));
+        assertThat(sut.groupExecute(), is(true));
+        assertThat(sut.othersRead(), is(false));
+        assertThat(sut.othersWrite(), is(false));
+        assertThat(sut.othersExecute(), is(false));
+
+        final JvfsFilePermissions copy = sut.copy();
+        assertThat(copy.ownerRead(), is(true));
+        assertThat(copy.ownerWrite(), is(true));
+        assertThat(copy.ownerExecute(), is(false));
+        assertThat(copy.groupRead(), is(false));
+        assertThat(copy.groupWrite(), is(false));
+        assertThat(copy.groupExecute(), is(true));
+        assertThat(copy.othersRead(), is(false));
+        assertThat(copy.othersWrite(), is(false));
+        assertThat(copy.othersExecute(), is(false));
+
+        assertThat(sut, is(equalTo(copy)));
+        assertThat(sut, is(not(sameInstance(copy))));
+    }
+
+    @Test public void forVsalue_withNullCreatesDefault() {
+        final JvfsFilePermissions sut = JvfsFilePermissions.forValue(null);
+        assertThat(sut.ownerRead(), is(false));
+        assertThat(sut.ownerWrite(), is(false));
+        assertThat(sut.ownerExecute(), is(false));
+        assertThat(sut.groupRead(), is(false));
+        assertThat(sut.groupWrite(), is(false));
+        assertThat(sut.groupExecute(), is(false));
+        assertThat(sut.othersRead(), is(false));
+        assertThat(sut.othersWrite(), is(false));
+        assertThat(sut.othersExecute(), is(false));
+    }
+
+    @Test public void forVsalue_withEmptyCreatesDefault() {
+        final JvfsFilePermissions sut = JvfsFilePermissions.forValue(new FileAttribute[] {});
+        assertThat(sut.ownerRead(), is(false));
+        assertThat(sut.ownerWrite(), is(false));
+        assertThat(sut.ownerExecute(), is(false));
+        assertThat(sut.groupRead(), is(false));
+        assertThat(sut.groupWrite(), is(false));
+        assertThat(sut.groupExecute(), is(false));
+        assertThat(sut.othersRead(), is(false));
+        assertThat(sut.othersWrite(), is(false));
+        assertThat(sut.othersExecute(), is(false));
     }
 
 }
