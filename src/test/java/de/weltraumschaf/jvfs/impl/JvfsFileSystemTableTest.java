@@ -18,7 +18,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -100,11 +99,11 @@ public class JvfsFileSystemTableTest {
 
         assertThat(sut.findMountedFilesystem("/foo/baz/snafu"), is(sameInstance(fs3)));
 
-//        assertThat(sut.findMountedFilesystem("/snafu"), is(sameInstance(fs4)));
-//        assertThat(sut.findMountedFilesystem("/snafu/"), is(sameInstance(fs4)));
-//        assertThat(sut.findMountedFilesystem("/snafu/foo"), is(sameInstance(fs4)));
-//        assertThat(sut.findMountedFilesystem("/snafu/bar"), is(sameInstance(fs4)));
-//        assertThat(sut.findMountedFilesystem("/snafu/baz/bar/foo.txt"), is(sameInstance(fs4)));
+        assertThat(sut.findMountedFilesystem("/snafu"), is(sameInstance(fs4)));
+        assertThat(sut.findMountedFilesystem("/snafu/"), is(sameInstance(fs4)));
+        assertThat(sut.findMountedFilesystem("/snafu/foo"), is(sameInstance(fs4)));
+        assertThat(sut.findMountedFilesystem("/snafu/bar"), is(sameInstance(fs4)));
+        assertThat(sut.findMountedFilesystem("/snafu/baz/bar/foo.txt"), is(sameInstance(fs4)));
     }
 
     @Test
@@ -191,25 +190,35 @@ public class JvfsFileSystemTableTest {
     public void list() {
         sut.mount("/", createFs("1"));
         assertThat(sut.list(), is(equalTo(
-            "/    JvfsFileSystem{fileStores=[JvfsFileStore{options=JvfsOptions{id=1, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
+            "/    JvfsFileSystem{fileStores=[JvfsFileStore{"
+                + "options=JvfsOptions{id=1, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
         )));
         sut.mount("/foo/bar", createFs("2"));
         assertThat(sut.list(), is(equalTo(""
-            + "/foo/bar    JvfsFileSystem{fileStores=[JvfsFileStore{options=JvfsOptions{id=2, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
-            + "/    JvfsFileSystem{fileStores=[JvfsFileStore{options=JvfsOptions{id=1, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
+            + "/foo/bar    JvfsFileSystem{fileStores=[JvfsFileStore{"
+                + "options=JvfsOptions{id=2, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
+            + "/    JvfsFileSystem{fileStores=[JvfsFileStore{"
+                + "options=JvfsOptions{id=1, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
         )));
         sut.mount("/foo", createFs("3"));
         assertThat(sut.list(), is(equalTo(""
-            + "/foo/bar    JvfsFileSystem{fileStores=[JvfsFileStore{options=JvfsOptions{id=2, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
-            + "/foo    JvfsFileSystem{fileStores=[JvfsFileStore{options=JvfsOptions{id=3, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
-            + "/    JvfsFileSystem{fileStores=[JvfsFileStore{options=JvfsOptions{id=1, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
+            + "/foo/bar    JvfsFileSystem{fileStores=[JvfsFileStore{"
+                + "options=JvfsOptions{id=2, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
+            + "/foo    JvfsFileSystem{fileStores=[JvfsFileStore{"
+                + "options=JvfsOptions{id=3, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
+            + "/    JvfsFileSystem{fileStores=[JvfsFileStore{"
+                + "options=JvfsOptions{id=1, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
         )));
         sut.mount("/snafu", createFs("4"));
         assertThat(sut.list(), is(equalTo(""
-            + "/snafu    JvfsFileSystem{fileStores=[JvfsFileStore{options=JvfsOptions{id=4, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
-            + "/foo/bar    JvfsFileSystem{fileStores=[JvfsFileStore{options=JvfsOptions{id=2, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
-            + "/foo    JvfsFileSystem{fileStores=[JvfsFileStore{options=JvfsOptions{id=3, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
-            + "/    JvfsFileSystem{fileStores=[JvfsFileStore{options=JvfsOptions{id=1, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
+            + "/snafu    JvfsFileSystem{fileStores=[JvfsFileStore{"
+                + "options=JvfsOptions{id=4, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
+            + "/foo/bar    JvfsFileSystem{fileStores=[JvfsFileStore{"
+                + "options=JvfsOptions{id=2, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
+            + "/foo    JvfsFileSystem{fileStores=[JvfsFileStore{"
+                + "options=JvfsOptions{id=3, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
+            + "/    JvfsFileSystem{fileStores=[JvfsFileStore{"
+                + "options=JvfsOptions{id=1, capacity=1048576, readonly=false}, fs=JvfsFileSystem}]}\n"
         )));
     }
 
