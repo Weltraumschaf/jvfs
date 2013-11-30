@@ -178,7 +178,7 @@ public final class JvfsFileSystems {
      * @param perms must not be {@code null}
      * @return never {@code nul}
      */
-    public static final FileAttribute<Set<PosixFilePermission>> createFileAttribute(
+    public static FileAttribute<Set<PosixFilePermission>> createFileAttribute(
         final PosixFilePermission ... perms) {
         JvfsAssertions.notNull(perms, "perms");
         final Set<PosixFilePermission> permissions = JvfsCollections.newSet();
