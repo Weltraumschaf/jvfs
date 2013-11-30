@@ -77,7 +77,7 @@ final class JvfsFileStore extends FileStore {
 
     @Override
     public long getTotalSpace() throws IOException {
-        return this.getUsableSpace() + this.getUsedSpace();
+        return options.getCapacity().value();
     }
 
     /**
@@ -91,7 +91,7 @@ final class JvfsFileStore extends FileStore {
 
     @Override
     public long getUsableSpace() throws IOException {
-        return options.getCapacity().value();
+        return getTotalSpace() - getUsedSpace();
     }
 
     @Override

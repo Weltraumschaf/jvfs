@@ -14,13 +14,16 @@ package de.weltraumschaf.jvfs.impl;
 
 import de.weltraumschaf.jvfs.JvfsOptions;
 import java.io.IOException;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.FileAttributeView;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.*;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests for {@link JvfsFileStore}.
@@ -33,8 +36,9 @@ public class JvfsFileStoreTest {
     //CHECKSTYLE:OFF
     public final ExpectedException thrown = ExpectedException.none();
     //CHECKSTYLE:ON
-    private final JvfsFileStore sut = new JvfsFileStore(
-        JvfsOptions.DEFAULT, new JvfsFileSystem(new JvfsFileSystemProvider(), JvfsOptions.DEFAULT));
+    private final JvfsOptions options = JvfsOptions.builder().capacity("1k").create();
+    private final JvfsFileSystem fs = spy(new JvfsFileSystem(new JvfsFileSystemProvider(), options));
+    private final JvfsFileStore sut = new JvfsFileStore(options, fs);
 
     @Test
     public void name() {
@@ -58,29 +62,38 @@ public class JvfsFileStoreTest {
             is(true));
     }
 
-    @Test @Ignore
-    public void getTotalSpace() {
-
+    @Test
+    public void getTotalSpace() throws IOException {
+        assertThat(sut.getTotalSpace(), is(1024L));
+        when(fs.getUsedSpace()).thenReturn(50L);
+        assertThat(sut.getTotalSpace(), is(1024L));
     }
 
     @Test
     public void getUsedSpace() {
         assertThat(sut.getUsedSpace(), is(0L));
+        when(fs.getUsedSpace()).thenReturn(50L);
+        assertThat(sut.getUsedSpace(), is(50L));
     }
 
-    @Test @Ignore
-    public void getUsableSpace() {
-
+    @Test
+    public void getUsableSpace() throws IOException {
+        assertThat(sut.getUsableSpace(), is(1024L));
+        when(fs.getUsedSpace()).thenReturn(50L);
+        assertThat(sut.getUsableSpace(), is(974L));
     }
 
-    @Test @Ignore
-    public void getUnallocatedSpace() {
-
+    @Test
+    public void getUnallocatedSpace() throws IOException {
+        assertThat(sut.getUnallocatedSpace(), is(1024L));
+        when(fs.getUsedSpace()).thenReturn(50L);
+        assertThat(sut.getUnallocatedSpace(), is(974L));
     }
 
-    @Test @Ignore
-    public void supportsFileAttributeView() {
-
+    @Test
+    public void supportsFileAttributeView_byClass() {
+        assertThat(sut.supportsFileAttributeView(BasicFileAttributeView.class), is(true));
+        assertThat(sut.supportsFileAttributeView(FileAttributeView.class), is(false));
     }
 
     @Test
@@ -143,8 +156,8 @@ public class JvfsFileStoreTest {
 
     @Test
     public void testToString() {
-        assertThat(sut.toString(), is(equalTo(
-            "JvfsFileStore{options=JvfsOptions{id=, capacity=0, readonly=false}, fs=JvfsFileSystem}")));
+        assertThat(sut.toString(), startsWith(
+            "JvfsFileStore{options=JvfsOptions{id=, capacity=1024, readonly=false}, fs="));
     }
 
 }
