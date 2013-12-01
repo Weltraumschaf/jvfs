@@ -149,7 +149,16 @@ final class JvfsFileEntry {
 
     @Override
     public String toString() {
-        return path;
+        final StringBuilder buffer = new StringBuilder();
+
+        if (isDirectory()) {
+            buffer.append('d');
+        } else {
+            buffer.append('-');
+        }
+
+        buffer.append(permissions).append(' ').append(path);
+        return buffer.toString();
     }
 
     /**
@@ -379,4 +388,7 @@ final class JvfsFileEntry {
         this.permissions = permissions;
     }
 
+    JvfsFilePermissions getPermissions() {
+        return permissions;
+    }
 }

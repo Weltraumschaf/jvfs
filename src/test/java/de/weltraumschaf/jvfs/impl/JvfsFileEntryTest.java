@@ -57,7 +57,10 @@ public class JvfsFileEntryTest {
     public void testToString() {
         assertThat(
             JvfsFileEntry.newFile("foo").toString(),
-            is(equalTo("foo")));
+            is(equalTo("---------- foo")));
+        assertThat(
+            JvfsFileEntry.newDir("foo").toString(),
+            is(equalTo("d--------- foo")));
     }
 
     @Test

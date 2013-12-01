@@ -152,4 +152,30 @@ public class JvfsFileSystemTest {
         final PathMatcher m = JvfsPathMatcher.newMatcher(regex);
         assertThat(sut.getPathMatcher(regex), is(equalTo(m)));
     }
+
+    @Test
+    public void add() {
+        final JvfsFileEntry file = JvfsFileEntry.newFile("/foo/bar/baz");
+        file.setReadable(true);
+        file.setWritable(true);
+        file.setExecutable(true);
+        sut.add(file);
+
+        final JvfsFileEntry root = sut.get("/");
+        assertThat(root.isDirectory(), is(true));
+        assertThat(root.isReadable(), is(true));
+        assertThat(root.isWritable(), is(true));
+        assertThat(root.isExecutable(), is(true));
+        final JvfsFileEntry foo = sut.get("/foo");
+        assertThat(foo.isDirectory(), is(true));
+        assertThat(foo.isReadable(), is(true));
+        assertThat(foo.isWritable(), is(true));
+        assertThat(foo.isExecutable(), is(true));
+        final JvfsFileEntry bar = sut.get("/foo/bar");
+        assertThat(bar.isDirectory(), is(true));
+        assertThat(bar.isReadable(), is(true));
+        assertThat(bar.isWritable(), is(true));
+        assertThat(bar.isExecutable(), is(true));
+        assertThat(sut.get("/foo/bar/baz"), is(sameInstance(file)));
+    }
 }

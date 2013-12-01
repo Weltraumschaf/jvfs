@@ -93,7 +93,7 @@ final class JvfsFileAttributes implements BasicFileAttributes {
 
     @Override
     public Object fileKey() {
-        return entry.toString();
+        return entry.getPath();
     }
 
 }

@@ -57,6 +57,7 @@ class JvfsFileSystem extends FileSystem {
      * Supported views.
      */
     private static final Set<String> SUPPORTED_ATTRIBUTE_VIEWS = JvfsCollections.newSet();
+
     static {
         SUPPORTED_ATTRIBUTE_VIEWS.add(JvfsFileAttributeView.BASIC_VIEW_NAME);
     }
@@ -199,7 +200,6 @@ class JvfsFileSystem extends FileSystem {
                 + '}';
     }
 
-
     /**
      * Checks if the {@link JvfsFileSystem} is closed, and throws a {@link ClosedFileSystemException} if so.
      */
@@ -240,7 +240,27 @@ class JvfsFileSystem extends FileSystem {
      */
     void add(final JvfsFileEntry entry) {
         JvfsAssertions.notNull(entry, "entry");
-        // TODO Check parent direcotries.
+        final List<String> names = JvfsPathUtil.tokenize(entry.getPath());
+        names.remove(names.size() - 1);
+
+        if (!attic.containsKey(JvfsFileSystems.DIR_SEP)) {
+            final JvfsFileEntry root = JvfsFileEntry.newDir(JvfsFileSystems.DIR_SEP);
+            root.setPermissions(entry.getPermissions());
+            attic.put(JvfsFileSystems.DIR_SEP, root);
+        }
+
+        final StringBuilder buffer = new StringBuilder();
+
+        for (final String name : names) {
+            buffer.append(JvfsFileSystems.DIR_SEP).append(name);
+
+            if (!attic.containsKey(buffer.toString())) {
+                final JvfsFileEntry dir = JvfsFileEntry.newDir(buffer.toString());
+                dir.setPermissions(entry.getPermissions());
+                attic.put(buffer.toString(), dir);
+            }
+        }
+
         attic.put(entry.getPath(), entry);
     }
 
@@ -437,7 +457,7 @@ class JvfsFileSystem extends FileSystem {
 
         //CHECKSTYLE:OFF
         if (entry.isDirectory() && false) {
-        //CHECKSTYLE:ON
+            //CHECKSTYLE:ON
             // TODO Implement check if empty.
             throw new DirectoryNotEmptyException(path);
         }
@@ -468,7 +488,7 @@ class JvfsFileSystem extends FileSystem {
      * @throws IOException if source does not exist
      */
     void setTimes(final String path, final FileTime mtime, final FileTime atime, final FileTime ctime)
-        throws IOException {
+            throws IOException {
         checkClosed();
         assertFileExists(path);
         final JvfsFileEntry entry = get(path);
@@ -557,7 +577,7 @@ class JvfsFileSystem extends FileSystem {
     long getUsedSpace() {
         long usedBytes = 0L;
 
-        final Iterator<Map.Entry<String, JvfsFileEntry>> it  = attic.entrySet().iterator();
+        final Iterator<Map.Entry<String, JvfsFileEntry>> it = attic.entrySet().iterator();
 
         while (it.hasNext()) {
             final JvfsFileEntry file = it.next().getValue();
@@ -571,6 +591,5 @@ class JvfsFileSystem extends FileSystem {
 
         return usedBytes;
     }
-
 
 }
