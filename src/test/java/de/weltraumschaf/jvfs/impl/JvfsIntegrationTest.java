@@ -25,7 +25,9 @@ import org.apache.commons.io.IOUtils;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import org.junit.After;
 import static org.junit.Assert.assertThat;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -36,15 +38,27 @@ import org.junit.Test;
  */
 public class JvfsIntegrationTest {
 
+    private final Path root = Paths.get(URI.create("jvfs:///"));
+
+    @Before
+    public void assertRootType() {
+        assertThat(root, is(instanceOf(JvfsPath.class)));
+    }
+
+    @After
+    public void clearFileSystem() {
+        ((JvfsFileSystem) root.getFileSystem()).clear();
+    }
+
     @Test
     public void createWriteAndReadFiles() throws URISyntaxException, IOException {
-        final Path foo = Paths.get(URI.create("jvfs:///tmp/foo"));
+        final Path foo = root.resolve("foo");
         assertThat(foo, is(instanceOf(JvfsPath.class)));
         Files.createFile(foo);
-        final Path bar = Paths.get(URI.create("jvfs:///tmp/bar"));
+        final Path bar = root.resolve("bar");
         assertThat(bar, is(instanceOf(JvfsPath.class)));
         Files.createFile(bar);
-        final Path baz = Paths.get(URI.create("jvfs:///tmp/baz"));
+        final Path baz = root.resolve("baz");
         assertThat(baz, is(instanceOf(JvfsPath.class)));
         Files.createFile(baz);
 
@@ -67,13 +81,12 @@ public class JvfsIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void createFile() throws IOException {
-        final Path root = Paths.get(URI.create("jvfs:///"));
         final Path foo = Files.createFile(root.resolve("foo"), JvfsFileSystems.createFileAttribute(
             PosixFilePermission.OWNER_READ,
             PosixFilePermission.OWNER_WRITE,
             PosixFilePermission.OWNER_EXECUTE));
+        assertThat(foo, is(instanceOf(JvfsPath.class)));
         assertThat(foo.toString(), is(equalTo("/foo")));
         assertThat(foo.isAbsolute(), is(true));
         assertThat(Files.isDirectory(foo), is(false));
@@ -92,11 +105,11 @@ public class JvfsIntegrationTest {
 
     @Test
     public void createDirecotries() throws IOException {
-        final Path root = Paths.get(URI.create("jvfs:///"));
         final Path foo = Files.createDirectories(root.resolve("foo"), JvfsFileSystems.createFileAttribute(
             PosixFilePermission.OWNER_READ,
             PosixFilePermission.OWNER_WRITE,
             PosixFilePermission.OWNER_EXECUTE));
+        assertThat(foo, is(instanceOf(JvfsPath.class)));
         assertThat(foo.toString(), is(equalTo("/foo")));
         assertThat(foo.isAbsolute(), is(true));
         assertThat(Files.isDirectory(foo), is(true));

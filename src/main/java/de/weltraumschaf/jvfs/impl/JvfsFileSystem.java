@@ -242,7 +242,9 @@ class JvfsFileSystem extends FileSystem {
         JvfsAssertions.notNull(entry, "entry");
         JvfsFileEntry previous = null;
 
-        if (!attic.containsKey(JvfsFileSystems.DIR_SEP)) {
+        if (attic.containsKey(JvfsFileSystems.DIR_SEP)) {
+            previous = attic.get(JvfsFileSystems.DIR_SEP);
+        } else {
             final JvfsFileEntry root = JvfsFileEntry.newDir(JvfsFileSystems.DIR_SEP);
             root.setPermissions(entry.getPermissions());
             previous = root;
@@ -586,4 +588,7 @@ class JvfsFileSystem extends FileSystem {
         return usedBytes;
     }
 
+    void clear() {
+        attic.clear();
+    }
 }
