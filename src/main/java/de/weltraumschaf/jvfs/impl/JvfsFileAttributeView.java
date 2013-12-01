@@ -74,7 +74,7 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
         JvfsAssertions.notEmpty(attribute, "attribute");
         JvfsAssertions.notNull(value, "value");
 
-        switch (AttrID.valueOf(attribute)) {
+        switch (Names.valueOf(attribute)) {
             case creationTime:
                 setTimes(null, null, (FileTime) value);
                 break;
@@ -110,14 +110,18 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
         final Map<String, Object> map = JvfsCollections.newMap();
 
         if ("*".equals(attributes.trim())) {
-            for (AttrID id : AttrID.values()) {
+            for (Names id : Names.values()) {
+                if (id == Names._unknown) {
+                    continue;
+                }
+
                 map.put(id.name(), attribute(id, attrs));
             }
         } else {
             final String[] as = attributes.trim().split(",");
 
             for (String a : as) {
-                map.put(a, attribute(AttrID.valueOf(a.trim()), attrs));
+                map.put(a, attribute(Names.valueOf(a.trim()), attrs));
             }
         }
 
@@ -131,7 +135,7 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
      * @param attrs must not {@literal null}
      * @return {@literal null} if unsupported id given
      */
-    Object attribute(final AttrID id, final BasicFileAttributes attrs) {
+    Object attribute(final Names id, final BasicFileAttributes attrs) {
         assert id != null : "id must be defined";
         assert attrs != null : "attrs must be defined";
 
@@ -171,7 +175,7 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
     /**
      * Names of attributes.
      */
-    private static enum AttrID {
+    static enum Names {
         /** Size attribute. */
         size,
         /** Creation time attribute. */
@@ -189,6 +193,10 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
         /** Is other file attribute. */
         isOther,
         /** File key attribute. */
-        fileKey
+        fileKey,
+        /** Only for testing. */
+        //CHECKSTYLE:OFF
+        _unknown;
+        //CHECKSTYLE:ON
     };
 }

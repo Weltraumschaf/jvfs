@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Rule;
@@ -182,5 +183,38 @@ public class JvfsFileAttributeViewTest {
             hasEntry("creationTime", (Object) FileTime.from(0L, TimeUnit.SECONDS)),
             hasEntry("size", (Object) 0L)
         ));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void readAttributes_byNames_oneName() throws IOException {
+        Map<String, Object> attrs = sut.readAttributes("isDirectory");
+        assertThat(attrs.size(), is(1));
+        assertThat(attrs, allOf(
+            hasEntry("isDirectory", (Object) false)
+        ));
+
+        attrs = sut.readAttributes("creationTime");
+        assertThat(attrs.size(), is(1));
+        assertThat(attrs, allOf(
+            hasEntry("creationTime", (Object) FileTime.from(0L, TimeUnit.SECONDS))
+        ));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void readAttributes_byNames_multipleNames() throws IOException {
+        Map<String, Object> attrs = sut.readAttributes("isDirectory,creationTime,size");
+        assertThat(attrs.size(), is(3));
+        assertThat(attrs, allOf(
+            hasEntry("isDirectory", (Object) false),
+            hasEntry("creationTime", (Object) FileTime.from(0L, TimeUnit.SECONDS)),
+            hasEntry("size", (Object) 0L)
+        ));
+    }
+
+    @Test
+    public void attribute_returnsNullIfUnknown() {
+        assertThat(sut.attribute(JvfsFileAttributeView.Names._unknown, attributes), is(nullValue()));
     }
 }
