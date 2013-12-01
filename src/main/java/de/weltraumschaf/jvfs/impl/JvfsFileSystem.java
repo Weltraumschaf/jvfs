@@ -299,7 +299,6 @@ class JvfsFileSystem extends FileSystem {
             final Set<? extends OpenOption> options,
             final FileAttribute<?>... attrs) throws IOException {
         JvfsAssertions.notEmpty(path, "path");
-        // XXX: All checks done by newByteChannel.
         checkClosed();
         final boolean forWrite = options.contains(StandardOpenOption.WRITE)
                 || options.contains(StandardOpenOption.APPEND);
@@ -453,10 +452,7 @@ class JvfsFileSystem extends FileSystem {
         assertFileExists(path);
         final JvfsFileEntry entry = get(path);
 
-        //CHECKSTYLE:OFF
-        if (entry.isDirectory() && false) {
-            //CHECKSTYLE:ON
-            // TODO Implement check if empty.
+        if (entry.isDirectory() && entry.hasChildren()) {
             throw new DirectoryNotEmptyException(path);
         }
 
