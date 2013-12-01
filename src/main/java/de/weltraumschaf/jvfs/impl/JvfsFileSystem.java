@@ -26,6 +26,7 @@ import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
+import java.nio.file.InvalidPathException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -144,6 +145,11 @@ class JvfsFileSystem extends FileSystem {
     @Override
     public Path getPath(final String first, final String... more) {
         this.checkClosed();
+
+        if (!JvfsPathUtil.isValid(first) || !JvfsPathUtil.isValid(more)) {
+            throw new InvalidPathException(first, "Invalid input!");
+        }
+
         JvfsAssertions.notNull(first, "first");
         final String merged = this.merge(first, more);
         return new JvfsPath(merged, this);
