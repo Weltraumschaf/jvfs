@@ -74,6 +74,9 @@ public class JvfsPathMatcherTest {
         assertThat(
             JvfsPathMatcher.newMatcher("glob:[Ff]oobar*.java").getPattern(),
             is(equalTo("^[[^/]&&[Ff]]oobar[^/]*\\.java$")));
+        assertThat(
+            JvfsPathMatcher.newMatcher("glob:image.{gif,jpg,png}").getPattern(),
+            is(equalTo("^image\\.(?:(?:gif)|(?:jpg)|(?:png))$")));
     }
 
     @Test
