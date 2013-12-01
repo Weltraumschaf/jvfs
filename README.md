@@ -5,7 +5,6 @@ JVFS is an in-memory file system for Java. See [project site][1] for more inform
 ## Todo
 
 - Tests
-    - JvfsPath
     - JvfsPathMatcher
 
 [1]: http://weltraumschaf.github.io/jvfs/

@@ -155,6 +155,24 @@ public class JvfsPathTest {
     }
 
     @Test
+    public void subpath_throwsExceptionIfBeginIndexGreaterThanTokenCount() {
+        thrown.expect(IllegalArgumentException.class);
+        new JvfsPath(createPath(false, "foo", "bar", "baz"), fs).subpath(5, 7);
+    }
+
+    @Test
+    public void subpath_throwsExceptionIfBeginIndexEqualsTokenCount() {
+        thrown.expect(IllegalArgumentException.class);
+        new JvfsPath(createPath(false, "foo", "bar", "baz"), fs).subpath(2, 7);
+    }
+
+    @Test
+    public void subpath_throwsExceptionIfEndIndexGreaterThanTokenCount() {
+        thrown.expect(IllegalArgumentException.class);
+        new JvfsPath(createPath(false, "foo", "bar", "baz"), fs).subpath(0, 7);
+    }
+
+    @Test
     public void subpath() {
         assertThat(new JvfsPath(createPath(false, "foo", "bar", "baz"), fs).subpath(0, 1),
             is(equalTo((Path) new JvfsPath(createPath(false, "foo"), fs))));
@@ -328,6 +346,8 @@ public class JvfsPathTest {
     public void toUri() throws URISyntaxException {
         assertThat(new JvfsPath(createPath(false, "foo", "bar", "baz"), fs).toUri(),
             is(equalTo(new URI("jvfs:///foo/bar/baz"))));
+        assertThat(new JvfsPath(createPath(true, "foo", "bar", "baz"), fs).toUri(),
+            is(equalTo(new URI("jvfs:///foo/bar/baz"))));
     }
 
     @Test
@@ -492,4 +512,13 @@ public class JvfsPathTest {
         verify(sut, times(1)).setTimes(time3, null, null);
     }
 
+    @Test
+    public void setTimes() throws IOException {
+        final JvfsPath sut = spy(new JvfsPath(createPath(true, "bar"), fs));
+        final FileTime time1 = FileTime.from(1L, TimeUnit.SECONDS);
+        final FileTime time2 = FileTime.from(2L, TimeUnit.SECONDS);
+        final FileTime time3 = FileTime.from(3L, TimeUnit.SECONDS);
+        sut.setTimes(time1, time2, time3);
+        verify(fs, times(1)).setTimes(sut.toString(), time1, time2, time3);
+    }
 }
