@@ -114,7 +114,7 @@ final class JvfsPathMatcher implements PathMatcher {
         JvfsAssertions.notEmpty(syntaxAndPattern, "syntaxAndPattern");
         final int pos = syntaxAndPattern.indexOf(':');
 
-        if (pos <= 0 || pos == syntaxAndPattern.length()) {
+        if (pos <= 0 || pos == syntaxAndPattern.length() - 1) {
             throw new IllegalArgumentException(syntaxAndPattern);
         }
 
