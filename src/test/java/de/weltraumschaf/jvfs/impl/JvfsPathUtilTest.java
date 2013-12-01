@@ -55,4 +55,29 @@ public class JvfsPathUtilTest {
             contains("foo", ".", "bar", "..", "baz"));
     }
 
+    @Test
+    public void isValid_oneNullThrowsException() {
+        thrown.expect(NullPointerException.class);
+        JvfsPathUtil.isValid((String) null);
+    }
+
+    @Test
+    public void isValid_onePath() {
+        assertThat(JvfsPathUtil.isValid("foobar"), is(true));
+        assertThat(JvfsPathUtil.isValid("fooBAR12"), is(true));
+        assertThat(JvfsPathUtil.isValid("foo.bar"), is(true));
+        assertThat(JvfsPathUtil.isValid("foo-bar"), is(true));
+        assertThat(JvfsPathUtil.isValid("foo_bar"), is(true));
+        assertThat(JvfsPathUtil.isValid("foo/bar"), is(true));
+
+        assertThat(JvfsPathUtil.isValid("foo+bar"), is(false));
+        assertThat(JvfsPathUtil.isValid("foo bar"), is(false));
+    }
+
+
+    @Test
+    public void isValid_multiNullThrowsException() {
+        thrown.expect(NullPointerException.class);
+        JvfsPathUtil.isValid((String[]) null);
+    }
 }

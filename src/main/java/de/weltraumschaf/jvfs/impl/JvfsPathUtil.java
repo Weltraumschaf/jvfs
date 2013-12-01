@@ -95,4 +95,32 @@ final class JvfsPathUtil {
         return sb.toString();
     }
 
+    /**
+     * Validates paths for valid characters.
+     *
+     * @param paths must not be {@code null}
+     * @return {@code true} if all paths are valid, else {@code false}
+     */
+    static boolean isValid(final String... paths) {
+        JvfsAssertions.notNull(paths, "paths");
+
+        for (final String path : paths) {
+            if (!isValid(path)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates a path for valid characters.
+     *
+     * @param path must not be {@code null}
+     * @return {@code true} if path is valid, else {@code false}
+     */
+    static boolean isValid(final String path) {
+        JvfsAssertions.notNull(path, "path");
+        return path.matches("[\\w-_./]*"); // path is all word-characters plus - or . or _
+    }
 }
