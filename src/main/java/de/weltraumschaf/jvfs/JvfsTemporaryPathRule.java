@@ -11,6 +11,7 @@
  */
 package de.weltraumschaf.jvfs;
 
+import de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import static java.nio.file.FileVisitResult.CONTINUE;
@@ -18,6 +19,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Objects;
+import org.apache.log4j.Logger;
 import org.junit.rules.ExternalResource;
 
 /**
@@ -47,6 +50,10 @@ import org.junit.rules.ExternalResource;
 public class JvfsTemporaryPathRule extends ExternalResource {
 
     /**
+     * Logging facility.
+     */
+    private static final Logger LOG = Logger.getLogger(JvfsTemporaryPathRule.class);
+    /**
      * Root folder.
      */
     private Path folder;
@@ -62,14 +69,22 @@ public class JvfsTemporaryPathRule extends ExternalResource {
     protected void after() {
         try {
             delete();
-        } catch (IOException ex) {
-            //CHECKSTYLE:OFF
-            System.err.println(String.format("Can't delete temporary folder '%s'!", folder.toString()));
-            //CHECKSTYLE:ON
+        } catch (final IOException e) {
+            logError(String.format("Can't delete temporary folder '%s'!", Objects.toString(folder)), e);
         }
     }
 
-    // testing purposes only
+    /**
+     * Logs IOExceptions.
+     *
+     * @param message must not be {@code nul} or empty
+     * @param e may be {@code null}
+     */
+    protected void logError(final String message, final IOException e) {
+        JvfsAssertions.notEmpty(message, "message");
+        LOG.error(message, e);
+    }
+
     /**
      * for testing purposes only.
      *

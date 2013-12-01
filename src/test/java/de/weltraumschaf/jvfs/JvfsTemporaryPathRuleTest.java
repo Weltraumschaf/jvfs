@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -45,6 +46,27 @@ public class JvfsTemporaryPathRuleTest {
         verify(spy, times(1)).create();
         spy.after();
         verify(spy, times(1)).delete();
+    }
+
+    @Test
+    public void recursiveDelete_throwsExceptionIfRootIsNull() throws IOException {
+        thrown.expect(NullPointerException.class);
+        thrown.expectMessage("Parameter 'dir' must not be null!");
+        sut.delete();
+    }
+
+    @Test @Ignore
+    public void recursiveDelete() {
+
+    }
+
+    @Test
+    public void afterThrowsException() throws Throwable {
+        final JvfsTemporaryPathRule spy = spy(sut);
+        final IOException e = new IOException();
+        doThrow(e).when(spy).delete();
+        spy.after();
+        verify(spy, times(1)).logError("Can't delete temporary folder 'null'!", e);
     }
 
     @Test
