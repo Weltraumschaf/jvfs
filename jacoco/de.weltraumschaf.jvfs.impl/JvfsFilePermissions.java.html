@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JvfsFilePermissions.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JVFS</a> &gt; <a href="index.html" class="el_package">de.weltraumschaf.jvfs.impl</a> &gt; <span class="el_source">JvfsFilePermissions.java</span></div><h1>JvfsFilePermissions.java</h1><pre class="source lang-java linenums">/*
+ *  LICENSE
+ *
+ * &quot;THE BEER-WARE LICENSE&quot; (Revision 43):
+ * &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt; wrote this file.
+ * As long as you retain this notice you can do whatever you want with
+ * this stuff. If we meet some day, and you think this stuff is worth it,
+ * you can buy me a non alcohol-free beer in return.
+ *
+ * Copyright (C) 2012 &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt;
+ */
+package de.weltraumschaf.jvfs.impl;
+
+import de.weltraumschaf.jvfs.JvfsAssertions;
+import de.weltraumschaf.jvfs.JvfsCollections;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Set;
+
+/**
+ * Holds the file permissions.
+ *
+ * Based on a set of {@link PosixFilePermission}.
+ *
+ * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
+ */
+class JvfsFilePermissions {
+
+    /**
+     * Name to identify Posix file permission attribute.
+     */
+    private static final String NAME = &quot;posix:permissions&quot;;
+
+    /**
+     * Holds the permissions.
+     */
+    private final Set&lt;PosixFilePermission&gt; permissions;
+
+    /**
+     * Convenience constructor to create default permissions.
+     *
+     * All defaults are {@code false}.
+     */
+    public JvfsFilePermissions() {
+<span class="fc" id="L46">        this(JvfsCollections.&lt;PosixFilePermission&gt;newSet());</span>
+<span class="fc" id="L47">    }</span>
+
+    /**
+     * Dedicated constructor.
+     *
+     * @param permissions must not be {@code null}
+     */
+    public JvfsFilePermissions(final Set&lt;PosixFilePermission&gt; permissions) {
+<span class="fc" id="L55">        super();</span>
+<span class="fc" id="L56">        JvfsAssertions.notNull(permissions, &quot;permissions&quot;);</span>
+<span class="fc" id="L57">        this.permissions = JvfsCollections.newSet(permissions);</span>
+<span class="fc" id="L58">    }</span>
+
+    /**
+     * Has owner read permission.
+     *
+     * @return {@code true} if permitted, else {@code false}
+     */
+    boolean ownerRead() {
+<span class="fc" id="L66">        return permissions.contains(PosixFilePermission.OWNER_READ);</span>
+    }
+
+    /**
+     * Set owners read permission.
+     *
+     * @param readable {@code true} gives permission, else denies
+     */
+    void ownerRead(final boolean readable) {
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (readable) {</span>
+<span class="fc" id="L76">            permissions.add(PosixFilePermission.OWNER_READ);</span>
+        } else {
+<span class="fc" id="L78">            permissions.remove(PosixFilePermission.OWNER_READ);</span>
+        }
+<span class="fc" id="L80">    }</span>
+
+    /**
+     * Has owner write permission.
+     *
+     * @return {@code true} if permitted, else {@code false}
+     */
+    boolean ownerWrite() {
+<span class="fc" id="L88">        return permissions.contains(PosixFilePermission.OWNER_WRITE);</span>
+    }
+
+    /**
+     * Set owners write permission.
+     *
+     * @param writable {@code true} gives permission, else denies
+     */
+    void ownerWrite(final boolean writable) {
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if (writable) {</span>
+<span class="fc" id="L98">            permissions.add(PosixFilePermission.OWNER_WRITE);</span>
+        } else {
+<span class="fc" id="L100">            permissions.remove(PosixFilePermission.OWNER_WRITE);</span>
+        }
+<span class="fc" id="L102">    }</span>
+
+    /**
+     * Has owner execute permission.
+     *
+     * @return {@code true} if permitted, else {@code false}
+     */
+    boolean ownerExecute() {
+<span class="fc" id="L110">        return permissions.contains(PosixFilePermission.OWNER_EXECUTE);</span>
+    }
+
+    /**
+     * Set owners execute permission.
+     *
+     * @param executable {@code true} gives permission, else denies
+     */
+    void ownerExecute(final boolean executable) {
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (executable) {</span>
+<span class="fc" id="L120">            permissions.add(PosixFilePermission.OWNER_EXECUTE);</span>
+        } else {
+<span class="fc" id="L122">            permissions.remove(PosixFilePermission.OWNER_EXECUTE);</span>
+        }
+<span class="fc" id="L124">    }</span>
+
+    /**
+     * Has group read permission.
+     *
+     * @return {@code true} if permitted, else {@code false}
+     */
+    boolean groupRead() {
+<span class="fc" id="L132">        return permissions.contains(PosixFilePermission.GROUP_READ);</span>
+    }
+
+    /**
+     * Has group write permission.
+     *
+     * @return {@code true} if permitted, else {@code false}
+     */
+    boolean groupWrite() {
+<span class="fc" id="L141">        return permissions.contains(PosixFilePermission.GROUP_WRITE);</span>
+    }
+
+    /**
+     * Has group execute permission.
+     *
+     * @return {@code true} if permitted, else {@code false}
+     */
+    boolean groupExecute() {
+<span class="fc" id="L150">        return permissions.contains(PosixFilePermission.GROUP_EXECUTE);</span>
+    }
+
+    /**
+     * Has others read permission.
+     *
+     * @return {@code true} if permitted, else {@code false}
+     */
+    boolean othersRead() {
+<span class="fc" id="L159">        return permissions.contains(PosixFilePermission.OTHERS_READ);</span>
+    }
+
+    /**
+     * Has others write permission.
+     *
+     * @return {@code true} if permitted, else {@code false}
+     */
+    boolean othersWrite() {
+<span class="fc" id="L168">        return permissions.contains(PosixFilePermission.OTHERS_WRITE);</span>
+    }
+
+    /**
+     * Has others execute permission.
+     *
+     * @return {@code true} if permitted, else {@code false}
+     */
+    boolean othersExecute() {
+<span class="fc" id="L177">        return permissions.contains(PosixFilePermission.OTHERS_EXECUTE);</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="fc" id="L182">        return permissions.hashCode();</span>
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+<span class="fc bfc" id="L187" title="All 2 branches covered.">        if (!(obj instanceof JvfsFilePermissions)) {</span>
+<span class="fc" id="L188">            return false;</span>
+        }
+
+<span class="fc" id="L191">        final JvfsFilePermissions other = (JvfsFilePermissions) obj;</span>
+<span class="fc" id="L192">        return permissions.equals(other.permissions);</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="fc" id="L197">        return PosixFilePermissions.toString(permissions);</span>
+    }
+
+    /**
+     * Factory to create permissions from {@link PosixFilePermissions#asFileAttribute(java.util.Set)}.
+     *
+     * @param attributes may be {@code null}
+     * @return returns {@link #JvfsFilePermissions() default permissions}
+     */
+    static JvfsFilePermissions forValue(final FileAttribute&lt;?&gt;... attributes) {
+<span class="fc bfc" id="L207" title="All 2 branches covered.">        if (attributes != null) {</span>
+<span class="pc bfc" id="L208" title="All 2 branches covered.">            for (final FileAttribute&lt;?&gt; attribute : attributes) {</span>
+<span class="fc" id="L209">                final String name = attribute.name();</span>
+<span class="fc" id="L210">                final Object value = attribute.value();</span>
+
+<span class="pc bpc" id="L212" title="2 of 4 branches missed.">                if (NAME.equals(name) &amp;&amp; value instanceof Set) {</span>
+                    @SuppressWarnings(&quot;unchecked&quot;) // Checked via #NAME
+<span class="fc" id="L214">                    final JvfsFilePermissions perms = new JvfsFilePermissions((Set) value);</span>
+<span class="fc" id="L215">                    return perms;</span>
+                }
+            }
+        }
+
+<span class="fc" id="L220">        return new JvfsFilePermissions();</span>
+    }
+
+    /**
+     * Creates a deep copy.
+     *
+     * @return never {@code null}
+     */
+    JvfsFilePermissions copy() {
+<span class="fc" id="L229">        return new JvfsFilePermissions(JvfsCollections.newSet(permissions));</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

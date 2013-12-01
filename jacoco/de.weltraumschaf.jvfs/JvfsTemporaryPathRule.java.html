@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>JvfsTemporaryPathRule.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JVFS</a> &gt; <a href="index.html" class="el_package">de.weltraumschaf.jvfs</a> &gt; <span class="el_source">JvfsTemporaryPathRule.java</span></div><h1>JvfsTemporaryPathRule.java</h1><pre class="source lang-java linenums">/*
+ *  LICENSE
+ *
+ * &quot;THE BEER-WARE LICENSE&quot; (Revision 43):
+ * &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt; wrote this file.
+ * As long as you retain this notice you can do whatever you want with
+ * this stuff. If we meet some day, and you think this stuff is worth it,
+ * you can buy me a non alcohol-free beer in return.
+ *
+ * Copyright (C) 2012 &quot;Sven Strittmatter&quot; &lt;weltraumschaf@googlemail.com&gt;
+ */
+package de.weltraumschaf.jvfs;
+
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import static java.nio.file.FileVisitResult.CONTINUE;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import org.junit.rules.ExternalResource;
+
+/**
+ * The TemporaryFolder Rule allows creation of files and folders that are guaranteed to be deleted when the test method
+ * finishes (whether it passes or fails):
+ *
+ * &lt;pre&gt;
+ * public static class HasTempFolder {
+ *      &amp;#064;Rule
+      public JvfsTemporaryPathRule folder= new JvfsTemporaryPathRule();
+
+      &amp;#064;Test
+ *      public void testUsingTempFolder() throws IOException {
+ *          final Path createdFile= folder.newFile(&amp;quot;myfile.txt&amp;quot;);
+ *          final Path createdFolder= folder.newFolder(&amp;quot;subfolder&amp;quot;);
+ *          // ...
+ *      }
+ * }
+ * &lt;/pre&gt;
+ *
+ * Inspired by {@code org.junit.rules.TemporaryFolder} from &lt;a href=&quot;http://junit.org/&quot;&gt;JUnit&lt;/a&gt;.
+ * This class enhances the original in that way that it uses Java 7 {@link java.nio.file.Files NIO API}
+ * instead of the old {@link java.lang.File file API}.
+ *
+ * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
+ */
+<span class="fc" id="L47">public class JvfsTemporaryPathRule extends ExternalResource {</span>
+
+    /**
+     * Root folder.
+     */
+    private Path folder;
+
+    @Override
+    //CHECKSTYLE:OFF
+    protected void before() throws Throwable {
+    //CHECKSTYLE:ON
+<span class="fc" id="L58">        create();</span>
+<span class="fc" id="L59">    }</span>
+
+    @Override
+    protected void after() {
+        try {
+<span class="fc" id="L64">            delete();</span>
+<span class="nc" id="L65">        } catch (IOException ex) {</span>
+            //CHECKSTYLE:OFF
+<span class="nc" id="L67">            System.err.println(String.format(&quot;Can't delete temporary folder '%s'!&quot;, folder.toString()));</span>
+            //CHECKSTYLE:ON
+<span class="fc" id="L69">        }</span>
+<span class="fc" id="L70">    }</span>
+
+    // testing purposes only
+    /**
+     * for testing purposes only.
+     *
+     * Do not use.
+     *
+     * @throws IOException on any I/O error
+     */
+    public void create() throws IOException {
+<span class="fc" id="L81">        folder = Files.createTempDirectory(&quot;junit&quot;);</span>
+<span class="fc" id="L82">        Files.delete(folder);</span>
+<span class="fc" id="L83">        Files.createDirectories(folder);</span>
+<span class="fc" id="L84">    }</span>
+
+    /**
+     * Returns a new fresh file with the given name under the temporary folder.
+     *
+     * @param fileName must not be {@code null} or empty
+     * @return never {@code null}
+     * @throws IOException IOException on any I/O error
+     */
+    public Path newFile(final String fileName) throws IOException {
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (null == fileName) {</span>
+<span class="fc" id="L95">            throw new NullPointerException(&quot;Parameter 'fileName' must not be null!&quot;);</span>
+        }
+
+<span class="fc bfc" id="L98" title="All 2 branches covered.">        if (fileName.isEmpty()) {</span>
+<span class="fc" id="L99">            throw new IllegalArgumentException(&quot;Parameter 'fileName' must not be empty!&quot;);</span>
+        }
+
+<span class="fc" id="L102">        return Files.createFile(folder.resolve(fileName));</span>
+    }
+
+    /**
+     * Returns a new fresh folder with the given name under the temporary folder.
+     *
+     * @param folderName must not be {@code null} or empty
+     * @return never {@code null}
+     * @throws IOException IOException on any I/O error
+     */
+    public Path newFolder(final String folderName) throws IOException {
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (null == folderName) {</span>
+<span class="fc" id="L114">            throw new NullPointerException(&quot;Parameter 'folderName' must not be null!&quot;);</span>
+        }
+
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (folderName.isEmpty()) {</span>
+<span class="fc" id="L118">            throw new IllegalArgumentException(&quot;Parameter 'folderName' must not be empty!&quot;);</span>
+        }
+
+<span class="fc" id="L121">        return Files.createDirectory(folder.resolve(folderName));</span>
+    }
+
+    /**
+     * Get the location of this temporary folder.
+     *
+     * @return never {@code null}
+     */
+    public Path getRoot() {
+<span class="fc" id="L130">        return folder;</span>
+    }
+
+    /**
+     * Delete all files and folders under the temporary folder.
+     *
+     * Usually not called directly, since it is automatically
+     * applied by the {@link org.junit.Rule}.
+     *
+     * @throws IOException on any I/O error
+     */
+    public void delete() throws IOException {
+<span class="fc" id="L142">        recursiveDelete(folder);</span>
+<span class="fc" id="L143">    }</span>
+
+    /**
+     * Walks directory recursively and deletes all files.
+     *
+     * @param dir must not be {@code null}
+     * @throws IOException on any I/O error
+     */
+    private void recursiveDelete(final Path dir) throws IOException {
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">        if (null == dir) {</span>
+<span class="nc" id="L153">            throw new NullPointerException(&quot;Parameter 'dir' must not be null!&quot;);</span>
+        }
+
+<span class="fc" id="L156">        Files.walkFileTree(dir, new SimpleFileVisitor&lt;Path&gt;() {</span>
+
+            @Override
+            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+<span class="fc" id="L160">                Files.delete(file);</span>
+<span class="fc" id="L161">                return CONTINUE;</span>
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">                if (exc == null) {</span>
+<span class="fc" id="L167">                    Files.delete(dir);</span>
+<span class="fc" id="L168">                    return CONTINUE;</span>
+                } else {
+<span class="nc" id="L170">                    throw exc;</span>
+                }
+            }
+
+        });
+<span class="fc" id="L175">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

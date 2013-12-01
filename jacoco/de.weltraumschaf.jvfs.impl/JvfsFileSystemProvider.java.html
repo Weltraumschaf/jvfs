@@ -34,6 +34,7 @@ import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileAttributeView;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import org.apache.log4j.Logger;
 
@@ -45,16 +46,16 @@ import org.apache.log4j.Logger;
  *
  * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
  */
-<span class="pc bpc" id="L48" title="1 of 2 branches missed.">public class JvfsFileSystemProvider extends FileSystemProvider {</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">public class JvfsFileSystemProvider extends FileSystemProvider {</span>
 
     /**
      * Logging facility.
      */
-<span class="fc" id="L53">    private static final Logger LOG = Logger.getLogger(JvfsFileSystemProvider.class);</span>
+<span class="fc" id="L54">    private static final Logger LOG = Logger.getLogger(JvfsFileSystemProvider.class);</span>
     /**
      * Holds the file systems.
      */
-<span class="fc" id="L57">    private final JvfsFileSystemTable fstab = new JvfsFileSystemTable();</span>
+<span class="fc" id="L58">    private final JvfsFileSystemTable fstab = new JvfsFileSystemTable();</span>
     /**
      * If true a root file system will be mounted if one is requested and nothing is mounted ({@link #fstab} is empty).
      */
@@ -64,8 +65,8 @@ import org.apache.log4j.Logger;
      * Dedicated constructor.
      */
     public JvfsFileSystemProvider() {
-<span class="fc" id="L67">        this(true);</span>
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L68">        this(true);</span>
+<span class="fc" id="L69">    }</span>
 
     /**
      * Constructor with auto mount option.
@@ -73,40 +74,40 @@ import org.apache.log4j.Logger;
      * @param autoMount {@code true} if a root file system will be auto mounted on first access
      */
     public JvfsFileSystemProvider(final boolean autoMount) {
-<span class="fc" id="L76">        super();</span>
-<span class="fc" id="L77">        this.autoMount = autoMount;</span>
-<span class="fc" id="L78">    }</span>
+<span class="fc" id="L77">        super();</span>
+<span class="fc" id="L78">        this.autoMount = autoMount;</span>
+<span class="fc" id="L79">    }</span>
 
     @Override
     public String getScheme() {
-<span class="fc" id="L82">        return JvfsFileSystems.PROTOCOL_JVFS;</span>
+<span class="fc" id="L83">        return JvfsFileSystems.PROTOCOL_JVFS;</span>
     }
 
     @Override
     public FileSystem newFileSystem(final URI uri, final Map&lt;String, ?&gt; env) throws IOException {
-<span class="fc" id="L87">        LOG.debug(&quot;Create new file system for &quot; + uri.toString());</span>
-<span class="fc" id="L88">        checkUri(uri);</span>
-<span class="fc" id="L89">        final JvfsMountPoint mountPount = new JvfsMountPoint(uri.getPath());</span>
-<span class="fc" id="L90">        final JvfsFileSystem fs = new JvfsFileSystem(this, JvfsOptions.forValue((Map&lt;String, ?&gt;) env));</span>
-<span class="fc" id="L91">        fstab.mount(mountPount, fs);</span>
-<span class="fc" id="L92">        return fs;</span>
+<span class="fc" id="L88">        LOG.debug(&quot;Create new file system for &quot; + uri.toString());</span>
+<span class="fc" id="L89">        checkUri(uri);</span>
+<span class="fc" id="L90">        final JvfsMountPoint mountPount = new JvfsMountPoint(uri.getPath());</span>
+<span class="fc" id="L91">        final JvfsFileSystem fs = new JvfsFileSystem(this, JvfsOptions.forValue((Map&lt;String, ?&gt;) env));</span>
+<span class="fc" id="L92">        fstab.mount(mountPount, fs);</span>
+<span class="fc" id="L93">        return fs;</span>
     }
 
     @Override
     public FileSystem getFileSystem(final URI uri) {
-<span class="fc" id="L97">        LOG.debug(&quot;Geting file system for &quot; + uri.toString());</span>
-<span class="fc" id="L98">        checkUri(uri);</span>
+<span class="fc" id="L98">        LOG.debug(&quot;Geting file system for &quot; + uri.toString());</span>
+<span class="fc" id="L99">        checkUri(uri);</span>
 
         try {
-<span class="nc" id="L101">            return fstab.get(new JvfsMountPoint(uri.getPath()));</span>
-<span class="fc" id="L102">        } catch (final FileSystemNotFoundException e) {</span>
-<span class="pc bpc" id="L103" title="1 of 2 branches missed.">            if (!autoMount) {</span>
-<span class="nc" id="L104">                throw e;</span>
+<span class="fc" id="L102">            return fstab.get(new JvfsMountPoint(uri.getPath()));</span>
+<span class="fc" id="L103">        } catch (final FileSystemNotFoundException e) {</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">            if (!autoMount) {</span>
+<span class="nc" id="L105">                throw e;</span>
             }
             try {
-<span class="fc" id="L107">                return newFileSystem(uri, JvfsOptions.DEFAULT.getEnv());</span>
-<span class="nc" id="L108">            } catch (IOException ex) {</span>
-<span class="nc" id="L109">                throw new RuntimeException(e);</span>
+<span class="fc" id="L108">                return newFileSystem(uri, JvfsOptions.DEFAULT.getEnv());</span>
+<span class="nc" id="L109">            } catch (IOException ex) {</span>
+<span class="nc" id="L110">                throw new RuntimeException(e);</span>
             }
         }
     }
@@ -129,33 +130,32 @@ import org.apache.log4j.Logger;
      * @param uri must not be {@literal null}
      */
     void checkUri(final URI uri) {
-<span class="pc bpc" id="L132" title="2 of 4 branches missed.">        assert null != uri : &quot;uri must not be null&quot;;</span>
+<span class="pc bpc" id="L133" title="2 of 4 branches missed.">        assert null != uri : &quot;uri must not be null&quot;;</span>
 
-<span class="pc bpc" id="L134" title="1 of 2 branches missed.">        if (!uri.getScheme().equalsIgnoreCase(getScheme())) {</span>
-<span class="nc" id="L135">            throw new IllegalArgumentException(&quot;URI does not match this provider!&quot;);</span>
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">        if (!uri.getScheme().equalsIgnoreCase(getScheme())) {</span>
+<span class="nc" id="L136">            throw new IllegalArgumentException(&quot;URI does not match this provider!&quot;);</span>
         }
 
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">        if (uri.getAuthority() != null) {</span>
-<span class="nc" id="L139">            throw new IllegalArgumentException(&quot;Authority component present!&quot;);</span>
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">        if (uri.getAuthority() != null) {</span>
+<span class="nc" id="L140">            throw new IllegalArgumentException(&quot;Authority component present!&quot;);</span>
         }
 
-<span class="pc bpc" id="L142" title="2 of 4 branches missed.">        if (uri.getPath() == null || uri.getPath().isEmpty()) {</span>
-<span class="nc" id="L143">            throw new IllegalArgumentException(&quot;Path component is undefined!&quot;);</span>
+<span class="pc bpc" id="L143" title="2 of 4 branches missed.">        if (uri.getPath() == null || uri.getPath().isEmpty()) {</span>
+<span class="nc" id="L144">            throw new IllegalArgumentException(&quot;Path component is undefined!&quot;);</span>
         }
 
-<span class="pc bpc" id="L146" title="1 of 2 branches missed.">        if (uri.getQuery() != null) {</span>
-<span class="nc" id="L147">            throw new IllegalArgumentException(&quot;Query component present!&quot;);</span>
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">        if (uri.getQuery() != null) {</span>
+<span class="nc" id="L148">            throw new IllegalArgumentException(&quot;Query component present!&quot;);</span>
         }
 
-<span class="pc bpc" id="L150" title="1 of 2 branches missed.">        if (uri.getFragment() != null) {</span>
-<span class="nc" id="L151">            throw new IllegalArgumentException(&quot;Fragment component present!&quot;);</span>
+<span class="pc bpc" id="L151" title="1 of 2 branches missed.">        if (uri.getFragment() != null) {</span>
+<span class="nc" id="L152">            throw new IllegalArgumentException(&quot;Fragment component present!&quot;);</span>
         }
-<span class="fc" id="L153">    }</span>
+<span class="fc" id="L154">    }</span>
 
     @Override
     public Path getPath(final URI uri) {
-        // TODO Read API doc and react correct for not mounted fs.
-<span class="nc" id="L158">        return new JvfsPath(uri.getPath(), fstab.findMountedFilesystem(uri.getPath()));</span>
+<span class="fc" id="L158">        return new JvfsPath(uri.getPath(), (JvfsFileSystem) getFileSystem(uri));</span>
     }
 
     @Override
@@ -277,6 +277,16 @@ import org.apache.log4j.Logger;
 
 <span class="fc" id="L278">        return (JvfsPath) obj;</span>
     }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L283">        return this.getClass().getSimpleName() + &quot;{&quot;</span>
+                + &quot;fstab=&quot; + Objects.toString(fstab) + &quot;, &quot;
+                + &quot;autoMount=&quot; + Objects.toString(autoMount)
+                + '}';
+    }
+
+
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

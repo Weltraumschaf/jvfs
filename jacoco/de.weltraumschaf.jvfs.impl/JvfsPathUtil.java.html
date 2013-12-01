@@ -95,5 +95,33 @@ import java.util.StringTokenizer;
 <span class="fc" id="L95">        return sb.toString();</span>
     }
 
+    /**
+     * Validates paths for valid characters.
+     *
+     * @param paths must not be {@code null}
+     * @return {@code true} if all paths are valid, else {@code false}
+     */
+    static boolean isValid(final String... paths) {
+<span class="fc" id="L105">        JvfsAssertions.notNull(paths, &quot;paths&quot;);</span>
+
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        for (final String path : paths) {</span>
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">            if (!isValid(path)) {</span>
+<span class="nc" id="L109">                return false;</span>
+            }
+        }
+
+<span class="fc" id="L113">        return true;</span>
+    }
+
+    /**
+     * Validates a path for valid characters.
+     *
+     * @param path must not be {@code null}
+     * @return {@code true} if path is valid, else {@code false}
+     */
+    static boolean isValid(final String path) {
+<span class="fc" id="L123">        JvfsAssertions.notNull(path, &quot;path&quot;);</span>
+<span class="fc" id="L124">        return path.matches(&quot;[\\w-_./]*&quot;); // path is all word-characters plus - or . or _</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>
