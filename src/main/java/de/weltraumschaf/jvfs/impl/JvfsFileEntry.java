@@ -419,6 +419,10 @@ final class JvfsFileEntry {
         return children;
     }
 
+    void addChild(final JvfsFileEntry child) {
+        children.add(child);
+    }
+
     boolean hasParent() {
         return null!= parent;
     }

@@ -260,11 +260,13 @@ class JvfsFileSystem extends FileSystem {
                 final JvfsFileEntry dir = JvfsFileEntry.newDir(buffer.toString());
                 dir.setPermissions(entry.getPermissions());
                 dir.setParent(previous);
+                previous.addChild(dir);
                 previous = dir;
                 attic.put(buffer.toString(), dir);
             }
         }
 
+        previous.addChild(entry);
         entry.setParent(previous);
         attic.put(entry.getPath(), entry);
     }

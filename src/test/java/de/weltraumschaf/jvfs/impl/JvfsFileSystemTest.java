@@ -170,9 +170,9 @@ public class JvfsFileSystemTest {
         assertThat(root.isReadable(), is(true));
         assertThat(root.isWritable(), is(true));
         assertThat(root.isExecutable(), is(true));
-//        assertThat(root.hasChildren(), is(true));
-//        assertThat(root.getChildren().size(), is(1));
-//        assertThat(root.getChildren(), hasItem(foo));
+        assertThat(root.hasChildren(), is(true));
+        assertThat(root.getChildren().size(), is(1));
+        assertThat(root.getChildren(), hasItem(foo));
         assertThat(root.hasParent(), is(false));
         assertThat(root.getParent(), is(nullValue()));
 
@@ -180,9 +180,9 @@ public class JvfsFileSystemTest {
         assertThat(foo.isReadable(), is(true));
         assertThat(foo.isWritable(), is(true));
         assertThat(foo.isExecutable(), is(true));
-//        assertThat(foo.hasChildren(), is(true));
-//        assertThat(foo.getChildren().size(), is(1));
-//        assertThat(foo.getChildren(), hasItem(bar));
+        assertThat(foo.hasChildren(), is(true));
+        assertThat(foo.getChildren().size(), is(1));
+        assertThat(foo.getChildren(), hasItem(bar));
         assertThat(foo.hasParent(), is(true));
         assertThat(foo.getParent(), is(sameInstance(root)));
 
@@ -190,15 +190,15 @@ public class JvfsFileSystemTest {
         assertThat(bar.isReadable(), is(true));
         assertThat(bar.isWritable(), is(true));
         assertThat(bar.isExecutable(), is(true));
-//        assertThat(bar.hasChildren(), is(true));
-//        assertThat(bar.getChildren().size(), is(1));
-//        assertThat(bar.getChildren(), hasItem(baz));
+        assertThat(bar.hasChildren(), is(true));
+        assertThat(bar.getChildren().size(), is(1));
+        assertThat(bar.getChildren(), hasItem(baz));
         assertThat(bar.hasParent(), is(true));
         assertThat(bar.getParent(), is(sameInstance(foo)));
 
         assertThat(sut.get("/foo/bar/baz"), is(sameInstance(baz)));
-//        assertThat(baz.hasChildren(), is(false));
-//        assertThat(baz.hasParent(), is(true));
+        assertThat(baz.hasChildren(), is(false));
+        assertThat(baz.hasParent(), is(true));
         assertThat(baz.getParent(), is(sameInstance(bar)));
     }
 }
