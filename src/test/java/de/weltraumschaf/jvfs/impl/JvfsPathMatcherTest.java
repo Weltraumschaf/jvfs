@@ -19,6 +19,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
+import static org.mockito.Mockito.mock;
 
 /**
  * Tests for {@link JvfsPathMatcher}.
@@ -161,6 +162,18 @@ public class JvfsPathMatcherTest {
     }
 
     @Test
+    public void newMatcher_globSyntax_throwsExcpetionIfClassNotClosed() {
+        thrown.expect(PatternSyntaxException.class);
+        JvfsPathMatcher.newMatcher("glob:[foo");
+    }
+
+    @Test
+    public void newMatcher_globSyntax_throwsExcpetionIfRangeAlreadyStarted() {
+        thrown.expect(PatternSyntaxException.class);
+        JvfsPathMatcher.newMatcher("glob:[a--d]");
+    }
+
+    @Test
     public void newMatcher_globSyntax_throwsExcpetionIfGroupNested() {
         thrown.expect(PatternSyntaxException.class);
         JvfsPathMatcher.newMatcher("glob:image.{gif,jpg,png{a,b,c}}");
@@ -173,20 +186,33 @@ public class JvfsPathMatcherTest {
     }
 
     @Test
-    public void newMatcher_globSyntax_throwsExcpetionIfRangeAlreadyStarted() {
-        thrown.expect(PatternSyntaxException.class);
-        JvfsPathMatcher.newMatcher("glob:[a--d]");
-    }
-
-    @Test
     public void newMatcher_globSyntax_throwsExcpetionIfRangeInvalid() {
         thrown.expect(PatternSyntaxException.class);
         JvfsPathMatcher.newMatcher("glob:[d-a]");
     }
 
     @Test
+    public void newMatcher_globSyntax_throwsExcpetionIfUnescapingEscape() {
+        thrown.expect(PatternSyntaxException.class);
+        JvfsPathMatcher.newMatcher("glob:foo\\");
+    }
+
+    @Test
     public void newMatcher_javaRegexSyntax() {
         final JvfsPathMatcher m = JvfsPathMatcher.newMatcher("regex:^*\\.java$");
         assertThat(m.getPattern(), is(equalTo("^*\\.java$")));
+    }
+
+    @Test
+    public void matches() {
+        final JvfsPathMatcher m = JvfsPathMatcher.newMatcher("glob:*.{jpg,gif,png}");
+        assertThat(
+            m.matches(new JvfsPath("baz.jpg", mock(JvfsFileSystem.class))), is(true));
+        assertThat(
+            m.matches(new JvfsPath("baz.gif", mock(JvfsFileSystem.class))), is(true));
+        assertThat(
+            m.matches(new JvfsPath("baz.png", mock(JvfsFileSystem.class))), is(true));
+        assertThat(
+            m.matches(new JvfsPath("baz.txt", mock(JvfsFileSystem.class))), is(false));
     }
 }
