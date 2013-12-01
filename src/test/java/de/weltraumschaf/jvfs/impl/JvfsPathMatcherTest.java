@@ -114,6 +114,9 @@ public class JvfsPathMatcherTest {
     @Test
     public void newMatcher_globSyntax() {
         assertThat(
+            JvfsPathMatcher.newMatcher("glob:foo,bar").getPattern(),
+            is(equalTo("^foo,bar$")));
+        assertThat(
             JvfsPathMatcher.newMatcher("glob:?oo*.java").getPattern(),
             is(equalTo("^[^/]oo[^/]*\\.java$")));
         assertThat(
@@ -141,11 +144,20 @@ public class JvfsPathMatcherTest {
             JvfsPathMatcher.newMatcher("glob:[-d]oobar*.java").getPattern(),
             is(equalTo("^[[^/]&&[-d]]oobar[^/]*\\.java$")));
         assertThat(
+            JvfsPathMatcher.newMatcher("glob:[\\[&&]").getPattern(),
+            is(equalTo("^[[^/]&&[\\\\\\[\\&&]]$")));
+        assertThat(
             JvfsPathMatcher.newMatcher("glob:image.{gif,jpg,png}").getPattern(),
             is(equalTo("^image\\.(?:(?:gif)|(?:jpg)|(?:png))$")));
         assertThat(
             JvfsPathMatcher.newMatcher("glob:foo\\{}bar").getPattern(),
             is(equalTo("^foo\\{}bar$")));
+    }
+
+    @Test
+    public void newMatcher_globSyntax_throwsExcpetionIfExplicitNameSeparatorInClass() {
+        thrown.expect(PatternSyntaxException.class);
+        JvfsPathMatcher.newMatcher("glob:[/foo]");
     }
 
     @Test
@@ -158,6 +170,18 @@ public class JvfsPathMatcherTest {
     public void newMatcher_globSyntax_throwsExcpetionIfGroupNotClosed() {
         thrown.expect(PatternSyntaxException.class);
         JvfsPathMatcher.newMatcher("glob:image.{gif,jpg,png");
+    }
+
+    @Test
+    public void newMatcher_globSyntax_throwsExcpetionIfRangeAlreadyStarted() {
+        thrown.expect(PatternSyntaxException.class);
+        JvfsPathMatcher.newMatcher("glob:[a--d]");
+    }
+
+    @Test
+    public void newMatcher_globSyntax_throwsExcpetionIfRangeInvalid() {
+        thrown.expect(PatternSyntaxException.class);
+        JvfsPathMatcher.newMatcher("glob:[d-a]");
     }
 
     @Test
