@@ -27,7 +27,7 @@ import org.junit.rules.ExpectedException;
 import static org.mockito.Mockito.*;
 
 /**
- * Tests for {2link JvfsPath}.
+ * Tests for {@link JvfsPath}.
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
@@ -205,24 +205,64 @@ public class JvfsPathTest {
         assertThat(sut.normalize(), is(equalTo((Path) new JvfsPath(createPath(false, "foo", "baz"), fs))));
     }
 
-    @Test @Ignore
+    @Test
     public void resolve_Path() {
+        final Path sut = new JvfsPath(createPath(true, "foo"), fs);
+        final Path other = new JvfsPath(createPath(true, "bar"), fs);
+        assertThat(sut.resolve(other), is(sameInstance(other)));
+        assertThat(sut.resolve(new JvfsPath(createPath(false, ""), fs)), is(sameInstance(sut)));
+        assertThat(sut.resolve(new JvfsPath(createPath(false, "bar"), fs)),
+            is(equalTo((Path) new JvfsPath(createPath(true, "foo", "bar"), fs))));
     }
 
-    @Test @Ignore
+    @Test
     public void resolve_String() {
+        final Path sut = new JvfsPath(createPath(true, "foo"), fs);
+        assertThat(sut.resolve(JvfsPath.DIR_SEP + "bar"),
+            is(equalTo((Path) new JvfsPath(createPath(true, "bar"), fs))));
+        assertThat(sut.resolve(""), is(sameInstance(sut)));
+        assertThat(sut.resolve("bar"),
+            is(equalTo((Path) new JvfsPath(createPath(true, "foo", "bar"), fs))));
     }
 
-    @Test @Ignore
+    @Test
     public void resolveSibling_Path() {
+        Path sut = new JvfsPath(createPath(true, ""), fs);
+        Path other = new JvfsPath(createPath(false, "bar"), fs);
+        assertThat(sut.resolveSibling(other), is(sameInstance(other)));
+
+        sut = new JvfsPath(createPath(true, "foo"), fs);
+        other = new JvfsPath(createPath(true, "bar"), fs);
+        assertThat(sut.resolveSibling(other), is(sameInstance(other)));
+        assertThat(sut.resolveSibling(new JvfsPath(createPath(false, ""), fs)),
+            is(equalTo((Path) new JvfsPath(createPath(true, ""), fs))));
+
+        assertThat(sut.resolveSibling(new JvfsPath(createPath(false, "bar"), fs)),
+            is(equalTo((Path) new JvfsPath(createPath(true, "bar"), fs))));
     }
 
-    @Test @Ignore
+    @Test
     public void resolveSibling_String() {
+        Path sut = new JvfsPath(createPath(true, ""), fs);
+        assertThat(sut.resolveSibling("bar"),
+            is(equalTo((Path) new JvfsPath(createPath(false, "bar"), fs))));
+
+        sut = new JvfsPath(createPath(true, "foo"), fs);
+        assertThat(sut.resolveSibling(JvfsPath.DIR_SEP + "bar"),
+            is(equalTo((Path) new JvfsPath(createPath(true, "bar"), fs))));
+        assertThat(sut.resolveSibling(""),
+            is(equalTo((Path) new JvfsPath(createPath(true, ""), fs))));
+
+        assertThat(sut.resolveSibling("bar"),
+            is(equalTo((Path) new JvfsPath(createPath(true, "bar"), fs))));
     }
 
-    @Test @Ignore
+    @Test
     public void relativize() {
+        Path sut = new JvfsPath(createPath(true, "a", "b"), fs);
+        Path other = new JvfsPath(createPath(true, "a", "b", "c", "d"), fs);
+        assertThat(sut.relativize(other),
+            is(equalTo((Path) new JvfsPath(createPath(false, "c", "d"), fs))));
     }
 
     @Test
@@ -271,12 +311,41 @@ public class JvfsPathTest {
             is(equalTo(createPath(true, "foo", "bar", "baz"))));
     }
 
-    @Test @Ignore
+    @Test
     public void testHashCode() {
+        final Path sut1 = new JvfsPath(createPath(true, "foo"), fs);
+        final Path sut2 = new JvfsPath(createPath(true, "foo"), fs);
+        final Path sut3 = new JvfsPath(createPath(true, "bar"), fs);
+
+        assertThat(sut1.hashCode(), is(sut1.hashCode()));
+        assertThat(sut1.hashCode(), is(sut2.hashCode()));
+        assertThat(sut2.hashCode(), is(sut1.hashCode()));
+        assertThat(sut2.hashCode(), is(sut2.hashCode()));
+
+        assertThat(sut3.hashCode(), is(sut3.hashCode()));
+        assertThat(sut3.hashCode(), is(not(sut2.hashCode())));
+        assertThat(sut3.hashCode(), is(not(sut1.hashCode())));
     }
 
-    @Test @Ignore
+    @Test
     public void equals() {
+        final Path sut1 = new JvfsPath(createPath(true, "foo"), fs);
+        final Path sut2 = new JvfsPath(createPath(true, "foo"), fs);
+        final Path sut3 = new JvfsPath(createPath(true, "bar"), fs);
+
+        //CHECKSTYLE:OFF
+        assertThat(sut1.equals(null), is(false));
+        assertThat(sut1.equals(""), is(false));
+        //CHECKSTYLE:ON
+
+        assertThat(sut1.equals(sut1), is(true));
+        assertThat(sut1.equals(sut2), is(true));
+        assertThat(sut2.equals(sut1), is(true));
+        assertThat(sut2.equals(sut2), is(true));
+
+        assertThat(sut3.equals(sut3), is(true));
+        assertThat(sut3.equals(sut2), is(false));
+        assertThat(sut3.equals(sut1), is(false));
     }
 
 }
