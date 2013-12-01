@@ -447,8 +447,7 @@ class JvfsPath implements Path {
 
     @Override
     public File toFile() {
-        // XXX Consider returning own implementation, because File will may circumvent JVFS.
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("JVFS only supports Java 7 NIO API!");
     }
 
     @Override
