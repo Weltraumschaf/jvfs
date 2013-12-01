@@ -96,7 +96,7 @@ final class JvfsFileAttributeView implements BasicFileAttributeView {
      * Examples:
      * <ul>
      * <li>{@literal "*"}: Read all basic-file-attributes.</li>
-     * <li>{@literal "size,lastModifiedTime,lastAccessTime" }:
+     * <li>{@literal "size,lastModifiedTime,lastAccessTime"}:
      * Reads the file size, last modified time, and last access time attributes.</li>
      * </ul>
      *

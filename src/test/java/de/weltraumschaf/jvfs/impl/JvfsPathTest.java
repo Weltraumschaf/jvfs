@@ -22,7 +22,10 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import org.junit.Rule;
@@ -295,17 +298,30 @@ public class JvfsPathTest {
     }
 
     @Test
+    public void relativize_throwsExceptionIfNotJvfsType() {
+        thrown.expect(IllegalArgumentException.class);
+        new JvfsPath(createPath(true, "a", "b"), fs).relativize(mock(Path.class));
+    }
+
+    @Test
+    public void relativize_equalsReturnEmpty() {
+        Path sut = new JvfsPath(createPath(true, "a", "b"), fs);
+        assertThat(sut.relativize(new JvfsPath(createPath(true, "a", "b"), fs)),
+            is(equalTo((Path) new JvfsPath("", fs))));
+    }
+
+    @Test
     public void register_3args() throws Exception {
         thrown.expect(UnsupportedOperationException.class);
         new JvfsPath(createPath(false, "foo"), fs).register(
-            (WatchService) null, (WatchEvent.Kind<?>[]) null, (WatchEvent.Modifier) null);
+            mock(WatchService.class), new WatchEvent.Kind<?>[0], new WatchEvent.Modifier[0]);
     }
 
     @Test
     public void register_WatchService_WatchEventKindArr() throws Exception {
         thrown.expect(UnsupportedOperationException.class);
         new JvfsPath(createPath(false, "foo"), fs).register(
-            (WatchService) null, (WatchEvent.Kind<?>[]) null);
+            mock(WatchService.class), new WatchEvent.Kind<?>[0]);
     }
 
     @Test
@@ -437,6 +453,43 @@ public class JvfsPathTest {
         final JvfsFileAttributes attrs = mock(JvfsFileAttributes.class);
         when(fs.getFileAttributes(sut.toString())).thenReturn(attrs);
         assertThat(sut.getAttributes(), is(sameInstance((BasicFileAttributes) attrs)));
+    }
+
+    @Test
+    public void readAttributes() throws IOException {
+        final JvfsPath sut = new JvfsPath(createPath(true, "bar"), fs);
+        when(fs.getFileAttributes(sut.toString()))
+            .thenReturn(new JvfsFileAttributes(JvfsFileEntry.newFile(DIR_SEP + "bar")));
+        final Map<String, Object> attrs = sut.readAttributes("isDirectory,creationTime,size");
+        assertThat(attrs.size(), is(3));
+        assertThat(attrs, allOf(
+            hasEntry("isDirectory", (Object) false),
+            hasEntry("creationTime", (Object) FileTime.from(0L, TimeUnit.SECONDS)),
+            hasEntry("size", (Object) 0L)
+        ));
+    }
+
+    @Test
+    public void setAttribute_throwsExceptionIfReadonlyAttribute() throws IOException {
+        final JvfsPath sut = new JvfsPath(createPath(true, "bar"), fs);
+        thrown.expect(UnsupportedOperationException.class);
+        sut.setAttribute("size", 23);
+    }
+
+    @Test
+    public void setAttribute() throws IOException {
+        final JvfsPath sut = spy(new JvfsPath(createPath(true, "bar"), fs));
+        final FileTime time1 = FileTime.from(1L, TimeUnit.SECONDS);
+        sut.setAttribute("creationTime", time1);
+        verify(sut, times(1)).setTimes(null, null, time1);
+
+        final FileTime time2 = FileTime.from(2L, TimeUnit.SECONDS);
+        sut.setAttribute("lastAccessTime", time2);
+        verify(sut, times(1)).setTimes(null, time2, null);
+
+        final FileTime time3 = FileTime.from(3L, TimeUnit.SECONDS);
+        sut.setAttribute("lastModifiedTime", time3);
+        verify(sut, times(1)).setTimes(time3, null, null);
     }
 
 }
