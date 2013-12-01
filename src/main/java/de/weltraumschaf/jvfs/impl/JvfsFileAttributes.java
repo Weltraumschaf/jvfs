@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-final class JvfsFileAttributes implements BasicFileAttributes {
+class JvfsFileAttributes implements BasicFileAttributes {
 
     /**
      * Wrapped file system entry.

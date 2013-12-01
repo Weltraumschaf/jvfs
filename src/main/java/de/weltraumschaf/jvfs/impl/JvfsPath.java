@@ -441,13 +441,14 @@ class JvfsPath implements Path {
 
     @Override
     public Path toRealPath(final LinkOption... options) throws IOException {
+        // TODO Implement real path.
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public File toFile() {
-        // XXX Consider returning own implementation, because File will may be circumvent JVFS.
-        return new File(toString());
+        // XXX Consider returning own implementation, because File will may circumvent JVFS.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -504,20 +505,7 @@ class JvfsPath implements Path {
         }
 
         final JvfsPath other = (JvfsPath) obj;
-
-        if (this.jvfs != other.jvfs) {
-            return false;
-        }
-
-        if (path == null) {
-            if (other.path != null) {
-                return false;
-            }
-        } else if (!path.equals(other.path)) {
-            return false;
-        }
-
-        return true;
+        return JvfsObject.equal(jvfs, other.jvfs) && JvfsObject.equal(path, other.path);
     }
 
     /**

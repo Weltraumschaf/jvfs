@@ -13,14 +13,18 @@
 package de.weltraumschaf.jvfs.impl;
 
 import de.weltraumschaf.jvfs.JvfsFileSystems;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystem;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
+import java.nio.file.WatchService;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Iterator;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -104,6 +108,8 @@ public class JvfsPathTest {
         assertThat(new JvfsPath(createPath(false, "foo", "bar"), fs).getParent(), is((Path) new JvfsPath("foo", fs)));
         assertThat(new JvfsPath(createPath(true, "foo", "bar"), fs).getParent(),
             is((Path) new JvfsPath(DIR_SEP + "foo", fs)));
+        assertThat(new JvfsPath(createPath(true, "foo", "bar", "baz", "snafu"), fs).getParent(),
+            is((Path) new JvfsPath(DIR_SEP + "foo" + DIR_SEP + "bar" + DIR_SEP + "baz", fs)));
     }
 
     @Test
@@ -112,7 +118,9 @@ public class JvfsPathTest {
         assertThat(new JvfsPath("foo", fs).getNameCount(), is(1));
         assertThat(new JvfsPath(DIR_SEP, fs).getNameCount(), is(0));
         assertThat(new JvfsPath(createPath(false, "foo", "bar"), fs).getNameCount(), is(2));
+        assertThat(new JvfsPath(createPath(true, "foo", "bar"), fs).getNameCount(), is(2));
         assertThat(new JvfsPath(createPath(false, "foo", "bar", "baz"), fs).getNameCount(), is(3));
+        assertThat(new JvfsPath(createPath(true, "foo", "bar", "baz"), fs).getNameCount(), is(3));
     }
 
     @Test
@@ -200,6 +208,27 @@ public class JvfsPathTest {
     }
 
     @Test
+    public void endsWith_Path_differentFileSystems() {
+        final Path sut1 = new JvfsPath(createPath(false, "foo", "bar", "baz"), fs);
+        final Path sut2 = new JvfsPath(createPath(false, "foo", "bar", "baz"), mock(JvfsFileSystem.class));
+        assertThat(sut1.endsWith(sut2), is(false));
+    }
+
+    @Test
+    public void endsWith_Path_otherLongerThanOwn() {
+        final Path sut1 = new JvfsPath(createPath(false, "foo"), fs);
+        final Path sut2 = new JvfsPath(createPath(false, "foo", "bar", "baz"), fs);
+        assertThat(sut1.endsWith(sut2), is(false));
+    }
+
+    @Test
+    public void endsWith_Path_differentComponentSize() {
+        final Path sut1 = new JvfsPath(createPath(false, "foo", "bar", "baz"), fs);
+        final Path sut2 = new JvfsPath(createPath(true, "bar", "baz"), fs);
+        assertThat(sut1.endsWith(sut2), is(false));
+    }
+
+    @Test
     public void normalize() {
         final Path sut = new JvfsPath(createPath(false, "foo", ".", "bar", "..", "baz"), fs);
         assertThat(sut.normalize(), is(equalTo((Path) new JvfsPath(createPath(false, "foo", "baz"), fs))));
@@ -268,13 +297,15 @@ public class JvfsPathTest {
     @Test
     public void register_3args() throws Exception {
         thrown.expect(UnsupportedOperationException.class);
-        new JvfsPath(createPath(false, "foo"), fs).register(null, null, (WatchEvent.Modifier) null);
+        new JvfsPath(createPath(false, "foo"), fs).register(
+            (WatchService) null, (WatchEvent.Kind<?>[]) null, (WatchEvent.Modifier) null);
     }
 
     @Test
     public void register_WatchService_WatchEventKindArr() throws Exception {
         thrown.expect(UnsupportedOperationException.class);
-        new JvfsPath(createPath(false, "foo"), fs).register(null, (WatchEvent.Kind<?>) null);
+        new JvfsPath(createPath(false, "foo"), fs).register(
+            (WatchService) null, (WatchEvent.Kind<?>[]) null);
     }
 
     @Test
@@ -283,28 +314,63 @@ public class JvfsPathTest {
             is(equalTo(new URI("jvfs:///foo/bar/baz"))));
     }
 
-    @Test @Ignore
+    @Test
     public void toAbsolutePath() {
-        Path root = new JvfsPath(createPath(true, "a", "b"), fs);
-        Path absolute = new JvfsPath(createPath(true, "a", "b", "c", "d"), fs);
-        Path relative = root.relativize(absolute);
-        assertThat(relative.toAbsolutePath(), is(equalTo(absolute)));
+        assertThat(
+            new JvfsPath(createPath(true, "a", "b"), fs).toAbsolutePath().toString(),
+            is(equalTo("/a/b")));
+        assertThat(
+            new JvfsPath(createPath(false, "a", "b"), fs).toAbsolutePath().toString(),
+            is(equalTo("/a/b")));
     }
 
-    @Test @Ignore
+    @Test
     public void toRealPath() throws Exception {
+        thrown.expect(UnsupportedOperationException.class);
+        new JvfsPath(createPath(true, "a", "b"), fs).toRealPath();
     }
 
-    @Test @Ignore
+    @Test
     public void toFile() {
+        thrown.expect(UnsupportedOperationException.class);
+        new JvfsPath(createPath(true, "a", "b"), fs).toFile();
     }
 
-    @Test @Ignore
+    @Test
     public void iterator() {
+        final Path sut = new JvfsPath(createPath(true, "a", "b", "c", "d"), fs);
+        final Iterator<Path> it = sut.iterator();
+
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.next().toString(), is(equalTo("a")));
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.next().toString(), is(equalTo("b")));
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.next().toString(), is(equalTo("c")));
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.next().toString(), is(equalTo("d")));
+        assertThat(it.hasNext(), is(false));
     }
 
-    @Test @Ignore
+    @Test
     public void compareTo() {
+        final Path sut1 = new JvfsPath(createPath(true, "a", "b"), fs);
+        final Path sut2 = new JvfsPath(createPath(true, "a", "b"), fs);
+        assertThat(sut1.compareTo(sut1), is(0));
+        assertThat(sut1.compareTo(sut2), is(0));
+        assertThat(sut2.compareTo(sut1), is(0));
+        assertThat(sut2.compareTo(sut2), is(0));
+
+        final Path sut3 = new JvfsPath(createPath(true, "c", "d"), fs);
+        assertThat(sut1.compareTo(sut3), is(-2));
+        assertThat(sut3.compareTo(sut1), is(2));
+
+        final Path sut4 = new JvfsPath(createPath(true, "a", "b", "c", "d"), fs);
+        assertThat(sut1.compareTo(sut4), is(-4));
+        assertThat(sut4.compareTo(sut1), is(4));
+
+        assertThat(sut3.compareTo(sut4), is(2));
+        assertThat(sut4.compareTo(sut3), is(-2));
     }
 
     @Test
@@ -350,6 +416,27 @@ public class JvfsPathTest {
         assertThat(sut3.equals(sut3), is(true));
         assertThat(sut3.equals(sut2), is(false));
         assertThat(sut3.equals(sut1), is(false));
+
+        final Path sut4 = new JvfsPath(createPath(true, "bar"), mock(JvfsFileSystem.class));
+        assertThat(sut4.equals(sut4), is(true));
+        assertThat(sut3.equals(sut4), is(false));
+        assertThat(sut4.equals(sut3), is(false));
+    }
+
+    @Test
+    public void getAttributes_throwsExceptionIfFileNotExists() throws IOException {
+        final JvfsPath sut = new JvfsPath(createPath(true, "bar"), fs);
+        when(fs.getFileAttributes(sut.toString())).thenReturn(null);
+        thrown.expect(NoSuchFileException.class);
+        sut.getAttributes();
+    }
+
+    @Test
+    public void getAttributes() throws IOException {
+        final JvfsPath sut = new JvfsPath(createPath(true, "bar"), fs);
+        final JvfsFileAttributes attrs = mock(JvfsFileAttributes.class);
+        when(fs.getFileAttributes(sut.toString())).thenReturn(attrs);
+        assertThat(sut.getAttributes(), is(sameInstance((BasicFileAttributes) attrs)));
     }
 
 }
