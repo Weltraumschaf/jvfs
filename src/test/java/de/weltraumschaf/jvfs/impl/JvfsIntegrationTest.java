@@ -83,10 +83,10 @@ public class JvfsIntegrationTest {
         final Path parent = foo.getParent();
         assertThat(parent.toString(), is(equalTo("/")));
         assertThat(parent.isAbsolute(), is(true));
-//        assertThat(Files.isDirectory(parent), is(true));
-//        assertThat(Files.isReadable(parent), is(true));
-//        assertThat(Files.isWritable(parent), is(true));
-//        assertThat(Files.isExecutable(parent), is(true));
+        assertThat(Files.isDirectory(parent), is(true));
+        assertThat(Files.isReadable(parent), is(true));
+        assertThat(Files.isWritable(parent), is(true));
+        assertThat(Files.isExecutable(parent), is(true));
     }
 
     @Test
