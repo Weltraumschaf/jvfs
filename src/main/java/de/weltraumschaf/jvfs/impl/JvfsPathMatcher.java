@@ -14,7 +14,6 @@ package de.weltraumschaf.jvfs.impl;
 import de.weltraumschaf.jvfs.JvfsAssertions;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
-import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
