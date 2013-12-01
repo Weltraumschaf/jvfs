@@ -31,6 +31,12 @@ public class JvfsPathMatcherTest {
     //CHECKSTYLE:ON
 
     @Test
+    public void testToString() {
+        final JvfsPathMatcher m = JvfsPathMatcher.newMatcher("glob:*.java");
+        assertThat(m.toString(), is(equalTo(m.getPattern())));
+    }
+
+    @Test
     public void newMatcher_throwsExceptionIfSyntaxAndPatternIsNull() {
         thrown.expect(NullPointerException.class);
         JvfsPathMatcher.newMatcher(null);
@@ -49,9 +55,25 @@ public class JvfsPathMatcherTest {
     }
 
     @Test
-    public void newMatcher_globSyntaxt() {
-        final JvfsPathMatcher m = JvfsPathMatcher.newMatcher("glob:*.java");
-        assertThat(m.getPattern(), is(equalTo("^[^/]*\\.java$")));
+    public void newMatcher_globSyntax() {
+        assertThat(
+            JvfsPathMatcher.newMatcher("glob:?oo*.java").getPattern(),
+            is(equalTo("^[^/]oo[^/]*\\.java$")));
+        assertThat(
+            JvfsPathMatcher.newMatcher("glob:*.java").getPattern(),
+            is(equalTo("^[^/]*\\.java$")));
+        assertThat(
+            JvfsPathMatcher.newMatcher("glob:**.java").getPattern(),
+            is(equalTo("^.*\\.java$")));
+        assertThat(
+            JvfsPathMatcher.newMatcher("glob:/foo/*.java").getPattern(),
+            is(equalTo("^/foo/[^/]*\\.java$")));
+        assertThat(
+            JvfsPathMatcher.newMatcher("glob:foo\\ bar*.java").getPattern(),
+            is(equalTo("^foo bar[^/]*\\.java$")));
+        assertThat(
+            JvfsPathMatcher.newMatcher("glob:[Ff]oobar*.java").getPattern(),
+            is(equalTo("^[[^/]&&[Ff]]oobar[^/]*\\.java$")));
     }
 
     @Test
