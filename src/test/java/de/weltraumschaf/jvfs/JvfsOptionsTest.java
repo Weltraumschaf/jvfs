@@ -39,6 +39,14 @@ public class JvfsOptionsTest {
     }
 
     @Test
+    public void withEmptyMap() {
+        final JvfsOptions sut = new JvfsOptions(JvfsCollections.<String, Object>newMap());
+        assertThat(sut.getCapacity(), is(equalTo(JvfsQuantity.forValue(0L))));
+        assertThat(sut.isReadonly(), is(false));
+        assertThat(sut.identifier(), is(equalTo("")));
+    }
+
+    @Test
     public void createByBuilder() {
         final JvfsOptions opts = JvfsOptions.builder()
                 .readonly(true)
@@ -270,4 +278,5 @@ public class JvfsOptionsTest {
         assertThat(JvfsOptions.Option.READONLY.key(), is(equalTo("readonly")));
         assertThat(JvfsOptions.Option.ID.key(), is(equalTo("id")));
     }
+
 }
