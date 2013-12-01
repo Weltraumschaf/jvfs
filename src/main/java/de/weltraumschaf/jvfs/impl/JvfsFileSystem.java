@@ -257,6 +257,7 @@ class JvfsFileSystem extends FileSystem {
             buffer.append(JvfsFileSystems.DIR_SEP).append(name);
 
             if (!attic.containsKey(buffer.toString())) {
+                assert previous != null;
                 final JvfsFileEntry dir = JvfsFileEntry.newDir(buffer.toString());
                 dir.setPermissions(entry.getPermissions());
                 dir.setParent(previous);
@@ -266,6 +267,7 @@ class JvfsFileSystem extends FileSystem {
             }
         }
 
+        assert previous != null;
         previous.addChild(entry);
         entry.setParent(previous);
         attic.put(entry.getPath(), entry);

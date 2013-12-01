@@ -60,7 +60,13 @@ final class JvfsFileEntry {
      * Holds the file permissions.
      */
     private JvfsFilePermissions permissions = new JvfsFilePermissions();
+    /**
+     * Contains children if it is a directory.
+     */
     private Set<JvfsFileEntry> children = JvfsCollections.newSet();
+    /**
+     * Contains the parent directory, except if it is the root.
+     */
     private JvfsFileEntry parent;
 
     /**
@@ -90,6 +96,13 @@ final class JvfsFileEntry {
         this(path, direcotry, null);
     }
 
+    /**
+     * Hidden: Use either {@link #newDir(java.lang.String)} or {@link #newFile(java.lang.String)}.
+     *
+     * @param path must not be {@literal null} or empty
+     * @param direcotry {@literal true} if it is a directory, else {@literal false}
+     * @param parent may be {@code null} for root
+     */
     private JvfsFileEntry(final String path, final boolean direcotry, final JvfsFileEntry parent) {
         this(path, direcotry, new byte[0], parent);
     }
@@ -100,6 +113,7 @@ final class JvfsFileEntry {
      * @param path must not be {@literal null} or empty
      * @param direcotry {@literal true} if it is a directory, else {@literal false}
      * @param content must not be {@code null}
+     * @param parent may be {@code null} for root
      */
     JvfsFileEntry(final String path, final boolean direcotry, final byte[] content, final JvfsFileEntry parent) {
         super();
