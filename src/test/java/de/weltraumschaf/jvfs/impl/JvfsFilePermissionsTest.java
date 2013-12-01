@@ -403,7 +403,7 @@ public class JvfsFilePermissionsTest {
 
     @SuppressWarnings("unchecked")
     @Test public void forVsalue_withNullCreatesDefault() {
-        final JvfsFilePermissions sut = JvfsFilePermissions.forValue(null);
+        final JvfsFilePermissions sut = JvfsFilePermissions.forValue((FileAttribute[]) null);
         assertThat(sut.ownerRead(), is(false));
         assertThat(sut.ownerWrite(), is(false));
         assertThat(sut.ownerExecute(), is(false));

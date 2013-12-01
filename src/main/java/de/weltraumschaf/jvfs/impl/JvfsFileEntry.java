@@ -407,6 +407,11 @@ final class JvfsFileEntry {
         return permissions;
     }
 
+    /**
+     * Whether a entry has child entries.
+     *
+     * @return {@literal true} if entry is a directory and children were added, else {@literal false}
+     */
     boolean hasChildren() {
         if (isDirectory()) {
             return children.size() > 0;
@@ -415,22 +420,54 @@ final class JvfsFileEntry {
         return false;
     }
 
+    /**
+     * Get the children.
+     *
+     * @return never {@code null}, always empty if not a directory
+     */
     Set<JvfsFileEntry> getChildren() {
         return children;
     }
 
+    /**
+     * Add a child entry.
+     *
+     * Throws an {@link IllegalStateException} if it is not a directory.
+     *
+     * @param child must not be {@code null}
+     */
     void addChild(final JvfsFileEntry child) {
-        children.add(child);
+        if (isDirectory()) {
+            JvfsAssertions.notNull(child, "child");
+            children.add(child);
+        }
+
+        throw new IllegalStateException("Cant add child to non direcotry!");
     }
 
+    /**
+     * Whether the entry has a parent.
+     *
+     * @return {@code true} except for root
+     */
     boolean hasParent() {
-        return null!= parent;
+        return null != parent;
     }
 
+    /**
+     * Get the parent entry.
+     *
+     * @return {@code null} for the root
+     */
     JvfsFileEntry getParent() {
         return parent;
     }
 
+    /**
+     * Set the parent.
+     *
+     * @param dir may be {@code null}, must be directory if not {@code null}
+     */
     void setParent(final JvfsFileEntry dir) {
         if (dir != null && !dir.isDirectory()) {
             throw new IllegalArgumentException("Parent must be a directory!");
