@@ -388,6 +388,11 @@ final class JvfsFileEntry {
         this.permissions = permissions;
     }
 
+    /**
+     * Get all file permissions as a bulk action.
+     *
+     * @return never {@code null}
+     */
     JvfsFilePermissions getPermissions() {
         return permissions;
     }

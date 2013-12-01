@@ -11,7 +11,6 @@
  */
 package de.weltraumschaf.jvfs;
 
-import de.weltraumschaf.jvfs.impl.JvfsFileSystemProvider;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import static java.nio.file.FileVisitResult.CONTINUE;

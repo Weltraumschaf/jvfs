@@ -204,7 +204,7 @@ public class JvfsFileAttributeViewTest {
     @Test
     @SuppressWarnings("unchecked")
     public void readAttributes_byNames_multipleNames() throws IOException {
-        Map<String, Object> attrs = sut.readAttributes("isDirectory,creationTime,size");
+        final Map<String, Object> attrs = sut.readAttributes("isDirectory,creationTime,size");
         assertThat(attrs.size(), is(3));
         assertThat(attrs, allOf(
             hasEntry("isDirectory", (Object) false),
