@@ -12,6 +12,8 @@
 package de.weltraumschaf.jvfs.impl;
 
 import de.weltraumschaf.jvfs.JvfsAssertions;
+import de.weltraumschaf.jvfs.JvfsCollections;
+import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -58,6 +60,8 @@ final class JvfsFileEntry {
      * Holds the file permissions.
      */
     private JvfsFilePermissions permissions = new JvfsFilePermissions();
+    private Set<JvfsFileEntry> children = JvfsCollections.newSet();
+    private JvfsFileEntry parent;
 
     /**
      * Copy constructor.
@@ -67,12 +71,13 @@ final class JvfsFileEntry {
      * @param src must not be {@literal null}
      */
     private JvfsFileEntry(final JvfsFileEntry src) {
-        this(src.path, src.direcotry, src.getContent());
+        this(src.path, src.direcotry, src.getContent().clone(), src.getParent());
         this.lastModifiedTime = src.getLastModifiedTime();
         this.lastAccessTime = src.getLastAccessTime();
         this.creationTime = src.getCreationTime();
         this.permissions = src.permissions.copy();
         this.hidden = src.isHidden();
+        this.children = JvfsCollections.newSet(src.children);
     }
 
     /**
@@ -82,7 +87,11 @@ final class JvfsFileEntry {
      * @param direcotry {@literal true} if it is a directory, else {@literal false}
      */
     private JvfsFileEntry(final String path, final boolean direcotry) {
-        this(path, direcotry, new byte[0]);
+        this(path, direcotry, null);
+    }
+
+    private JvfsFileEntry(final String path, final boolean direcotry, final JvfsFileEntry parent) {
+        this(path, direcotry, new byte[0], parent);
     }
 
     /**
@@ -92,7 +101,7 @@ final class JvfsFileEntry {
      * @param direcotry {@literal true} if it is a directory, else {@literal false}
      * @param content must not be {@code null}
      */
-    JvfsFileEntry(final String path, final boolean direcotry, final byte[] content) {
+    JvfsFileEntry(final String path, final boolean direcotry, final byte[] content, final JvfsFileEntry parent) {
         super();
         assert path != null : "path must not be null";
         assert !path.isEmpty() : "path must not be empty";
@@ -101,6 +110,7 @@ final class JvfsFileEntry {
         this.path = path;
         this.direcotry = direcotry;
         this.content = content;
+        this.parent = parent;
     }
 
     /**
@@ -395,5 +405,33 @@ final class JvfsFileEntry {
      */
     JvfsFilePermissions getPermissions() {
         return permissions;
+    }
+
+    boolean hasChildren() {
+        if (isDirectory()) {
+            return children.size() > 0;
+        }
+
+        return false;
+    }
+
+    Set<JvfsFileEntry> getChildren() {
+        return children;
+    }
+
+    boolean hasParent() {
+        return null!= parent;
+    }
+
+    JvfsFileEntry getParent() {
+        return parent;
+    }
+
+    void setParent(final JvfsFileEntry dir) {
+        if (dir != null && !dir.isDirectory()) {
+            throw new IllegalArgumentException("Parent must be a directory!");
+        }
+
+        parent = dir;
     }
 }

@@ -240,16 +240,18 @@ class JvfsFileSystem extends FileSystem {
      */
     void add(final JvfsFileEntry entry) {
         JvfsAssertions.notNull(entry, "entry");
-        final List<String> names = JvfsPathUtil.tokenize(entry.getPath());
-        names.remove(names.size() - 1);
+        JvfsFileEntry previous = null;
 
         if (!attic.containsKey(JvfsFileSystems.DIR_SEP)) {
             final JvfsFileEntry root = JvfsFileEntry.newDir(JvfsFileSystems.DIR_SEP);
             root.setPermissions(entry.getPermissions());
+            previous = root;
             attic.put(JvfsFileSystems.DIR_SEP, root);
         }
 
         final StringBuilder buffer = new StringBuilder();
+        final List<String> names = JvfsPathUtil.tokenize(entry.getPath());
+        names.remove(names.size() - 1);
 
         for (final String name : names) {
             buffer.append(JvfsFileSystems.DIR_SEP).append(name);
@@ -257,10 +259,13 @@ class JvfsFileSystem extends FileSystem {
             if (!attic.containsKey(buffer.toString())) {
                 final JvfsFileEntry dir = JvfsFileEntry.newDir(buffer.toString());
                 dir.setPermissions(entry.getPermissions());
+                dir.setParent(previous);
+                previous = dir;
                 attic.put(buffer.toString(), dir);
             }
         }
 
+        entry.setParent(previous);
         attic.put(entry.getPath(), entry);
     }
 

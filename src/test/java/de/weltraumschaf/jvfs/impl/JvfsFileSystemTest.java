@@ -26,6 +26,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import org.junit.Ignore;
@@ -155,27 +156,49 @@ public class JvfsFileSystemTest {
 
     @Test
     public void add() {
-        final JvfsFileEntry file = JvfsFileEntry.newFile("/foo/bar/baz");
-        file.setReadable(true);
-        file.setWritable(true);
-        file.setExecutable(true);
-        sut.add(file);
+        final JvfsFileEntry baz = JvfsFileEntry.newFile("/foo/bar/baz");
+        baz.setReadable(true);
+        baz.setWritable(true);
+        baz.setExecutable(true);
+        sut.add(baz);
 
         final JvfsFileEntry root = sut.get("/");
+        final JvfsFileEntry foo = sut.get("/foo");
+        final JvfsFileEntry bar = sut.get("/foo/bar");
+
         assertThat(root.isDirectory(), is(true));
         assertThat(root.isReadable(), is(true));
         assertThat(root.isWritable(), is(true));
         assertThat(root.isExecutable(), is(true));
-        final JvfsFileEntry foo = sut.get("/foo");
+//        assertThat(root.hasChildren(), is(true));
+//        assertThat(root.getChildren().size(), is(1));
+//        assertThat(root.getChildren(), hasItem(foo));
+        assertThat(root.hasParent(), is(false));
+        assertThat(root.getParent(), is(nullValue()));
+
         assertThat(foo.isDirectory(), is(true));
         assertThat(foo.isReadable(), is(true));
         assertThat(foo.isWritable(), is(true));
         assertThat(foo.isExecutable(), is(true));
-        final JvfsFileEntry bar = sut.get("/foo/bar");
+//        assertThat(foo.hasChildren(), is(true));
+//        assertThat(foo.getChildren().size(), is(1));
+//        assertThat(foo.getChildren(), hasItem(bar));
+        assertThat(foo.hasParent(), is(true));
+        assertThat(foo.getParent(), is(sameInstance(root)));
+
         assertThat(bar.isDirectory(), is(true));
         assertThat(bar.isReadable(), is(true));
         assertThat(bar.isWritable(), is(true));
         assertThat(bar.isExecutable(), is(true));
-        assertThat(sut.get("/foo/bar/baz"), is(sameInstance(file)));
+//        assertThat(bar.hasChildren(), is(true));
+//        assertThat(bar.getChildren().size(), is(1));
+//        assertThat(bar.getChildren(), hasItem(baz));
+        assertThat(bar.hasParent(), is(true));
+        assertThat(bar.getParent(), is(sameInstance(foo)));
+
+        assertThat(sut.get("/foo/bar/baz"), is(sameInstance(baz)));
+//        assertThat(baz.hasChildren(), is(false));
+//        assertThat(baz.hasParent(), is(true));
+        assertThat(baz.getParent(), is(sameInstance(bar)));
     }
 }
