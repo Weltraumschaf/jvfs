@@ -440,6 +440,7 @@ final class JvfsFileEntry {
         if (isDirectory()) {
             JvfsAssertions.notNull(child, "child");
             children.add(child);
+            return;
         }
 
         throw new IllegalStateException("Cant add child to non direcotry!");
