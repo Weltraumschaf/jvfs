@@ -9,7 +9,6 @@
  *
  * Copyright (C) 2012 "Sven Strittmatter" <weltraumschaf@googlemail.com>
  */
-
 package de.weltraumschaf.jvfs.impl;
 
 import java.lang.reflect.Constructor;
@@ -44,15 +43,25 @@ public class JvfsPathUtilTest {
     @Test
     public void normalize() {
         assertThat(
-            JvfsPathUtil.normalize(JvfsPathUtil.tokenize("foo/./bar/../baz"), false),
-            is(equalTo("foo/baz")));
+                JvfsPathUtil.normalize(JvfsPathUtil.tokenize("foo/./bar/../baz"), false),
+                is(equalTo("foo/baz")));
+        assertThat(
+                JvfsPathUtil.normalize(JvfsPathUtil.tokenize("foo/./bar/../baz"), true),
+                is(equalTo("/foo/baz")));
+    }
+
+    @Test
+    public void normalize_beyondRoot() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Cannot specify to go back \"../\" past the root");
+        JvfsPathUtil.normalize(JvfsPathUtil.tokenize("foo/bar/../../../../baz"), false);
     }
 
     @Test
     public void tokenize() {
         assertThat(
-            JvfsPathUtil.tokenize("foo/./bar/../baz"),
-            contains("foo", ".", "bar", "..", "baz"));
+                JvfsPathUtil.tokenize("foo/./bar/../baz"),
+                contains("foo", ".", "bar", "..", "baz"));
     }
 
     @Test
@@ -74,10 +83,22 @@ public class JvfsPathUtilTest {
         assertThat(JvfsPathUtil.isValid("foo bar"), is(false));
     }
 
-
     @Test
     public void isValid_multiNullThrowsException() {
         thrown.expect(NullPointerException.class);
         JvfsPathUtil.isValid((String[]) null);
+    }
+
+    @Test
+    public void isValid_multiPath() {
+        assertThat(
+            JvfsPathUtil.isValid("foobar", "fooBAR12", "foo.bar", "foo-bar", "foo_bar", "foo/bar"),
+            is(true));
+        assertThat(
+            JvfsPathUtil.isValid(
+                "foobar", "fooBAR12",
+                "foo+bar", // bad one
+                "foo.bar", "foo-bar", "foo_bar", "foo/bar"),
+            is(false));
     }
 }

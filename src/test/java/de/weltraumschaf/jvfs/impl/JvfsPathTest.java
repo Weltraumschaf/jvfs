@@ -285,6 +285,10 @@ public class JvfsPathTest {
 
     @Test @Ignore
     public void toAbsolutePath() {
+        Path root = new JvfsPath(createPath(true, "a", "b"), fs);
+        Path absolute = new JvfsPath(createPath(true, "a", "b", "c", "d"), fs);
+        Path relative = root.relativize(absolute);
+        assertThat(relative.toAbsolutePath(), is(equalTo(absolute)));
     }
 
     @Test @Ignore
