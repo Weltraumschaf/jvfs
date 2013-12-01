@@ -67,6 +67,7 @@ public class JvfsIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void createFile() throws IOException {
         final Path root = Paths.get(URI.create("jvfs:///"));
         final Path foo = Files.createFile(root.resolve("foo"), JvfsFileSystems.createFileAttribute(
@@ -90,14 +91,26 @@ public class JvfsIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void createDirecotries() throws IOException {
-        final Path foo = Files.createDirectories(Paths.get(URI.create("jvfs:///tmp/foo")));
+        final Path root = Paths.get(URI.create("jvfs:///"));
+        final Path foo = Files.createDirectories(root.resolve("foo"), JvfsFileSystems.createFileAttribute(
+            PosixFilePermission.OWNER_READ,
+            PosixFilePermission.OWNER_WRITE,
+            PosixFilePermission.OWNER_EXECUTE));
+        assertThat(foo.toString(), is(equalTo("/foo")));
         assertThat(foo.isAbsolute(), is(true));
         assertThat(Files.isDirectory(foo), is(true));
         assertThat(Files.isReadable(foo), is(true));
         assertThat(Files.isWritable(foo), is(true));
         assertThat(Files.isExecutable(foo), is(true));
+
+        final Path parent = foo.getParent();
+        assertThat(parent.toString(), is(equalTo("/")));
+        assertThat(parent.isAbsolute(), is(true));
+        assertThat(Files.isDirectory(parent), is(true));
+        assertThat(Files.isReadable(parent), is(true));
+        assertThat(Files.isWritable(parent), is(true));
+        assertThat(Files.isExecutable(parent), is(true));
     }
 
     @Test

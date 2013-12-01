@@ -45,7 +45,7 @@ public final class JvfsOptions {
      *
      * @param env must not be {@literal null}
      */
-    private JvfsOptions(final Map<String, ?> env) {
+    JvfsOptions(final Map<String, ?> env) {
         super();
         JvfsAssertions.notNull(env, "env");
         this.env = env;
@@ -126,7 +126,7 @@ public final class JvfsOptions {
             } else if (value instanceof Boolean) {
                 return (Boolean) value;
             } else {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException(Objects.toString(value));
             }
 
         }
@@ -150,11 +150,24 @@ public final class JvfsOptions {
             } else if (value instanceof Long) {
                 return JvfsQuantity.forValue((Long) value);
             } else {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException(Objects.toString(value));
             }
         }
 
         return Builder.DEFAULT_CAPACITY;
+    }
+
+    /**
+     * Get the id of the file system.
+     *
+     * @return never {@literal null}, empty string by default
+     */
+    public String identifier() {
+        if (env.containsKey(Option.ID.key)) {
+            return Objects.toString(env.get(Option.ID.key));
+        }
+
+        return Builder.DEFAULT_ID;
     }
 
     /**

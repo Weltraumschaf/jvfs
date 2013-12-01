@@ -11,6 +11,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.concurrent.ConcurrentMap;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -78,12 +80,45 @@ public class JvfsCollectionsTest {
     }
 
     @Test
+    public void newConcurrentMap() {
+        final Map<Object, Object> m = JvfsCollections.newConcurrentMap();
+        assertThat(m, is(instanceOf(ConcurrentMap.class)));
+        assertThat(m, is(not(nullValue())));
+        assertThat(m, is(not(sameInstance(JvfsCollections.newConcurrentMap()))));
+        assertThat(m, is(not(sameInstance(JvfsCollections.newConcurrentMap()))));
+        assertThat(m, is(not(sameInstance(JvfsCollections.newConcurrentMap()))));
+    }
+
+    @Test
+    public void newConcurrentSortedMap() {
+        final Map<Object, Object> m = JvfsCollections.newConcurrentSortedMap();
+        assertThat(m, is(not(nullValue())));
+        assertThat(m, is(instanceOf(ConcurrentMap.class)));
+        assertThat(m, is(instanceOf(SortedMap.class)));
+        assertThat(m, is(not(sameInstance(JvfsCollections.newConcurrentSortedMap()))));
+        assertThat(m, is(not(sameInstance(JvfsCollections.newConcurrentSortedMap()))));
+        assertThat(m, is(not(sameInstance(JvfsCollections.newConcurrentSortedMap()))));
+    }
+
+    @Test
     public void newSet() {
         final Set<Object> s = JvfsCollections.newSet();
         assertThat(s, is(not(nullValue())));
         assertThat(s, is(not(sameInstance(JvfsCollections.newSet()))));
         assertThat(s, is(not(sameInstance(JvfsCollections.newSet()))));
         assertThat(s, is(not(sameInstance(JvfsCollections.newSet()))));
+    }
+
+    @Test
+    public void newSet_copy() {
+        final Set<String> s = JvfsCollections.newSet();
+        s.add("foo");
+        s.add("bar");
+        s.add("baz");
+
+        final Set<String> copy = JvfsCollections.newSet(s);
+        assertThat(copy, is(not(sameInstance(s))));
+        assertThat(copy, containsInAnyOrder("foo", "bar", "baz"));
     }
 
     @Test

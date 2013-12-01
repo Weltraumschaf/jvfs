@@ -428,20 +428,9 @@ class JvfsFileSystem extends FileSystem {
      */
     void createDirectory(final String path, final FileAttribute<?>... attrs) throws IOException {
         checkClosed();
-        assertFileExists(path);
-        final List<String> names = JvfsPathUtil.tokenize(path);
-        names.remove(names.size() - 1);
-        final StringBuilder buf = new StringBuilder();
-
-        for (final String name : names) {
-            buf.append(JvfsFileSystems.DIR_SEP).append(name);
-
-            if (!contains(buf.toString())) {
-                final JvfsFileEntry directory = JvfsFileEntry.newDir(buf.toString());
-                directory.setPermissions(JvfsFilePermissions.forValue(attrs));
-                add(directory);
-            }
-        }
+        final JvfsFileEntry directory = JvfsFileEntry.newDir(path);
+        directory.setPermissions(JvfsFilePermissions.forValue(attrs));
+        add(directory);
     }
 
     /**
