@@ -20,6 +20,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.spi.FileSystemProvider;
+import java.util.ArrayList;
 import java.util.List;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -29,7 +30,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import org.junit.Ignore;
+//import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -79,9 +80,11 @@ public class JvfsFileSystemTest {
     }
 
     @Test
-    @Ignore
     public void getRootDirectories() {
-
+        final List<Path> dirs = (List<Path>) sut.getRootDirectories();
+        assertThat(dirs, hasSize(1));
+        assertThat(dirs.get(0).getFileSystem(), is(sameInstance((FileSystem) sut)));
+        assertThat(dirs.get(0).toString(), is(equalTo(JvfsPath.DIR_SEP)));
     }
 
     @Test

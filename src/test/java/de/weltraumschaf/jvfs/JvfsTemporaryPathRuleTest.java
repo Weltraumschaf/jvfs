@@ -30,7 +30,6 @@ import static org.mockito.Mockito.*;
  *
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
-//@Ignore
 public class JvfsTemporaryPathRuleTest {
 
     @Rule
