@@ -18,6 +18,7 @@ import java.nio.file.ClosedFileSystemException;
 import java.nio.file.FileStore;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.List;
 import static org.hamcrest.Matchers.equalTo;
@@ -136,5 +137,19 @@ public class JvfsFileSystemTest {
         path = sut.getPath("/foo", "bar", "baz");
         assertThat(path.toString(), is(equalTo("/foo/bar/baz")));
         assertThat(path.getFileSystem(), is(sameInstance((FileSystem) sut)));
+    }
+
+    @Test
+    public void getPathMatcher_glob() {
+        final String regex = "glob:*.java";
+        final PathMatcher m = JvfsPathMatcher.newMatcher(regex);
+        assertThat(sut.getPathMatcher(regex), is(equalTo(m)));
+    }
+
+    @Test
+    public void getPathMatcher_java() {
+        final String regex = "regex:^*\\.java$";
+        final PathMatcher m = JvfsPathMatcher.newMatcher(regex);
+        assertThat(sut.getPathMatcher(regex), is(equalTo(m)));
     }
 }

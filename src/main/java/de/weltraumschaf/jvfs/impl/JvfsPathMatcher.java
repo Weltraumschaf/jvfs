@@ -14,6 +14,7 @@ package de.weltraumschaf.jvfs.impl;
 import de.weltraumschaf.jvfs.JvfsAssertions;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -79,6 +80,26 @@ final class JvfsPathMatcher implements PathMatcher {
      */
     String getPattern() {
         return pattern.pattern();
+    }
+
+    @Override
+    public int hashCode() {
+        return getPattern().hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof JvfsPathMatcher)) {
+            return false;
+        }
+
+        final JvfsPathMatcher other = (JvfsPathMatcher) obj;
+        return getPattern().equals(other.getPattern());
+    }
+
+    @Override
+    public String toString() {
+        return pattern.toString();
     }
 
     /**
