@@ -291,8 +291,8 @@ public class JvfsPathTest {
 
     @Test
     public void relativize() {
-        Path sut = new JvfsPath(createPath(true, "a", "b"), fs);
-        Path other = new JvfsPath(createPath(true, "a", "b", "c", "d"), fs);
+        final Path sut = new JvfsPath(createPath(true, "a", "b"), fs);
+        final Path other = new JvfsPath(createPath(true, "a", "b", "c", "d"), fs);
         assertThat(sut.relativize(other),
             is(equalTo((Path) new JvfsPath(createPath(false, "c", "d"), fs))));
     }
@@ -305,7 +305,7 @@ public class JvfsPathTest {
 
     @Test
     public void relativize_equalsReturnEmpty() {
-        Path sut = new JvfsPath(createPath(true, "a", "b"), fs);
+        final Path sut = new JvfsPath(createPath(true, "a", "b"), fs);
         assertThat(sut.relativize(new JvfsPath(createPath(true, "a", "b"), fs)),
             is(equalTo((Path) new JvfsPath("", fs))));
     }
