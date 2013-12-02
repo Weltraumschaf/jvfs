@@ -206,8 +206,22 @@ public class JvfsIntegrationTest {
     }
 
     @Test
-    @Ignore
-    public void fileAttributes() {
+    public void fileAttributes() throws IOException {
+        final Path dir = Files.createDirectories(root.resolve("foo"), JvfsFileSystems.createFileAttribute(
+            PosixFilePermission.OWNER_READ,
+            PosixFilePermission.OWNER_WRITE));
+        assertThat(Files.isDirectory(dir), is(true));
+        assertThat(Files.isExecutable(dir), is(false));
+        assertThat(Files.isReadable(dir), is(true));
+        assertThat(Files.isWritable(dir), is(true));
+
+        final Path file = Files.createFile(root.resolve("bar"), JvfsFileSystems.createFileAttribute(
+            PosixFilePermission.OWNER_READ,
+            PosixFilePermission.OWNER_EXECUTE));
+        assertThat(Files.isDirectory(file), is(true));
+        assertThat(Files.isExecutable(file), is(true));
+        assertThat(Files.isReadable(file), is(true));
+        assertThat(Files.isWritable(file), is(false));
     }
 
 }
