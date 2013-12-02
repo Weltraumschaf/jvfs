@@ -145,6 +145,8 @@ public class JvfsIntegrationTest {
 
         final Path bar = root.resolve("bar");
         Files.copy(foo, bar);
+        assertThat(Files.exists(foo), is(true));
+        assertThat(Files.exists(bar), is(true));
 
         final InputStream in = Files.newInputStream(bar);
         assertThat(IOUtils.toString(in), is("foo"));
@@ -163,8 +165,9 @@ public class JvfsIntegrationTest {
 
         final Path bar = root.resolve("bar");
         Files.move(foo, bar);
+        assertThat(Files.exists(foo), is(false));
+        assertThat(Files.exists(bar), is(true));
 
-        // TODO Assert /foo does not exists anymore.
         final InputStream in = Files.newInputStream(bar);
         assertThat(IOUtils.toString(in), is("foo"));
         IOUtils.closeQuietly(in);
