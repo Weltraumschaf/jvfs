@@ -538,9 +538,11 @@ class JvfsFileSystem extends FileSystem {
             throw new FileAlreadyExistsException(target);
         }
 
-        final JvfsFileEntry entry = get(source);
-        attic.remove(entry.getPath());
-        add(entry);
+        synchronized (attic) {
+            final JvfsFileEntry entry = get(source);
+            attic.remove(entry.getPath());
+            add(entry.copy(target));
+        }
     }
 
     /**

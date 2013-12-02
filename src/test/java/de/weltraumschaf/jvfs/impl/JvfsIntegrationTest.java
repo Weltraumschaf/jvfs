@@ -152,7 +152,6 @@ public class JvfsIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void moveFiles() throws IOException {
         final Path foo = Files.createDirectories(root.resolve("foo"), JvfsFileSystems.createFileAttribute(
             PosixFilePermission.OWNER_READ,
@@ -163,7 +162,7 @@ public class JvfsIntegrationTest {
         IOUtils.closeQuietly(out);
 
         final Path bar = root.resolve("bar");
-        Files.move(foo, bar); // FIXME Fix move.
+        Files.move(foo, bar);
 
         // TODO Assert /foo does not exists anymore.
         final InputStream in = Files.newInputStream(bar);
