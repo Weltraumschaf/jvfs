@@ -29,7 +29,6 @@ import static org.hamcrest.Matchers.is;
 import org.junit.After;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -218,7 +217,7 @@ public class JvfsIntegrationTest {
         final Path file = Files.createFile(root.resolve("bar"), JvfsFileSystems.createFileAttribute(
             PosixFilePermission.OWNER_READ,
             PosixFilePermission.OWNER_EXECUTE));
-        assertThat(Files.isDirectory(file), is(true));
+        assertThat(Files.isDirectory(file), is(false));
         assertThat(Files.isExecutable(file), is(true));
         assertThat(Files.isReadable(file), is(true));
         assertThat(Files.isWritable(file), is(false));
