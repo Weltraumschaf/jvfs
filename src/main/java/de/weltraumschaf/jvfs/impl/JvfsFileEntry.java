@@ -103,7 +103,6 @@ final class JvfsFileEntry {
      * @param path must not be {@literal null} or empty
      * @param direcotry {@literal true} if it is a directory, else {@literal false}
      * @param content must not be {@code null}
-     * @param parent may be {@code null} for root
      */
     JvfsFileEntry(final String path, final boolean direcotry, final byte[] content) {
         super();
