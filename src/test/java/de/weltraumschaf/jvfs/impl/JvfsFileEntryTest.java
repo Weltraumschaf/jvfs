@@ -14,6 +14,8 @@ package de.weltraumschaf.jvfs.impl;
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.*;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 
 /**
  * Tests for {@link JvfsFileEntry}.
@@ -21,6 +23,11 @@ import static org.hamcrest.Matchers.*;
  * @author Sven Strittmatter <weltraumschaf@googlemail.com>
  */
 public class JvfsFileEntryTest {
+
+    @Rule
+    //CHECKSTYLE:OFF
+    public final ExpectedException thrown = ExpectedException.none();
+    //CHECKSTYLE:ON
 
     @Test
     public void defaults_dir() {
@@ -37,6 +44,8 @@ public class JvfsFileEntryTest {
         assertThat(dir.size(), is(-1L));
         assertThat(dir.getContent(), is(not(nullValue())));
         assertThat(dir.getParent(), is(nullValue()));
+        assertThat(dir.hasChildren(), is(false));
+        assertThat(dir.getChildren(), hasSize(0));
     }
 
     @Test
@@ -53,6 +62,8 @@ public class JvfsFileEntryTest {
         assertThat(file.size(), is(0L));
         assertThat(file.getContent(), is(not(nullValue())));
         assertThat(file.getParent(), is(nullValue()));
+        assertThat(file.hasChildren(), is(false));
+        assertThat(file.getChildren(), hasSize(0));
     }
 
     @Test
@@ -166,5 +177,53 @@ public class JvfsFileEntryTest {
         assertThat(copy.isWritable(), is(true));
         assertThat(copy.isExecutable(), is(true));
         assertThat(copy.isHidden(), is(true));
+    }
+
+    @Test
+    public void addChild_toNonDirThrowsException() {
+        thrown.expect(IllegalStateException.class);
+        final JvfsFileEntry sut = JvfsFileEntry.newFile("foo");
+        sut.addChild(JvfsFileEntry.newFile("foo"));
+    }
+
+    @Test
+    public void addChild() {
+        final JvfsFileEntry sut = JvfsFileEntry.newDir("foo");
+        assertThat(sut.hasChildren(), is(false));
+        assertThat(sut.getChildren(), hasSize(0));
+
+        final JvfsFileEntry child1 = JvfsFileEntry.newFile("child1");
+        sut.addChild(child1);
+        assertThat(sut.hasChildren(), is(true));
+        assertThat(sut.getChildren(), hasSize(1));
+        assertThat(sut.getChildren(), containsInAnyOrder(child1));
+
+        final JvfsFileEntry child2 = JvfsFileEntry.newFile("child2");
+        sut.addChild(child2);
+        assertThat(sut.hasChildren(), is(true));
+        assertThat(sut.getChildren(), hasSize(2));
+        assertThat(sut.getChildren(), containsInAnyOrder(child1, child2));
+
+        final JvfsFileEntry child3 = JvfsFileEntry.newFile("child3");
+        sut.addChild(child3);
+        assertThat(sut.hasChildren(), is(true));
+        assertThat(sut.getChildren(), hasSize(3));
+        assertThat(sut.getChildren(), containsInAnyOrder(child1, child2, child3));
+    }
+
+    @Test
+    public void setParent_ifParentIsNotDirectory() {
+        thrown.expect(IllegalArgumentException.class);
+        final JvfsFileEntry sut = JvfsFileEntry.newFile("foo");
+        sut.setParent(JvfsFileEntry.newFile("bar"));
+    }
+
+    @Test
+    public void setParent() {
+        final JvfsFileEntry sut = JvfsFileEntry.newFile("foo");
+        assertThat(sut.getParent(), is(nullValue()));
+        final JvfsFileEntry parent = JvfsFileEntry.newDir("bar");
+        sut.setParent(parent);
+        assertThat(sut.getParent(), is(sameInstance(parent)));
     }
 }
