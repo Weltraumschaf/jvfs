@@ -133,12 +133,41 @@ public class JvfsIntegrationTest {
 
     @Test
     @Ignore
-    public void copyFiles() {
+    public void copyFiles() throws IOException {
+        final Path foo = Files.createFile(root.resolve("foo"), JvfsFileSystems.createFileAttribute(
+            PosixFilePermission.OWNER_READ,
+            PosixFilePermission.OWNER_WRITE,
+            PosixFilePermission.OWNER_EXECUTE));
+        final OutputStream out = Files.newOutputStream(foo);
+        IOUtils.write("foo", out);
+        IOUtils.closeQuietly(out);
+
+        final Path bar = root.resolve("bar");
+        Files.copy(foo, bar); // FIXME Fix copy.
+
+        final InputStream in = Files.newInputStream(bar);
+        assertThat(IOUtils.toString(in), is("foo"));
+        IOUtils.closeQuietly(in);
     }
 
     @Test
     @Ignore
-    public void moveFiles() {
+    public void moveFiles() throws IOException {
+        final Path foo = Files.createDirectories(root.resolve("foo"), JvfsFileSystems.createFileAttribute(
+            PosixFilePermission.OWNER_READ,
+            PosixFilePermission.OWNER_WRITE,
+            PosixFilePermission.OWNER_EXECUTE));
+        final OutputStream out = Files.newOutputStream(foo);
+        IOUtils.write("foo", out);
+        IOUtils.closeQuietly(out);
+
+        final Path bar = root.resolve("bar");
+        Files.move(foo, bar); // FIXME Fix move.
+
+        // TODO Assert /foo does not exists anymore.
+        final InputStream in = Files.newInputStream(bar);
+        assertThat(IOUtils.toString(in), is("foo"));
+        IOUtils.closeQuietly(in);
     }
 
     @Test
