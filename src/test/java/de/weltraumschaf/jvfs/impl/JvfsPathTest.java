@@ -12,22 +12,29 @@
 
 package de.weltraumschaf.jvfs.impl;
 
+import de.weltraumschaf.jvfs.JvfsCollections;
 import de.weltraumschaf.jvfs.JvfsFileSystems;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.AccessMode;
+import java.nio.file.CopyOption;
 import java.nio.file.FileSystem;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileTime;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -521,4 +528,100 @@ public class JvfsPathTest {
         sut.setTimes(time1, time2, time3);
         verify(fs, times(1)).setTimes(sut.toString(), time1, time2, time3);
     }
+
+    @Test
+    public void newFileChannel() throws IOException {
+        final JvfsPath sut = new JvfsPath(createPath(true, "bar"), fs);
+        final Set<OpenOption> options = JvfsCollections.newSet();
+        final FileAttribute attr1 = mock(FileAttribute.class);
+        final FileAttribute attr2 = mock(FileAttribute.class);
+        sut.newFileChannel(options, attr1, attr2);
+        verify(fs, times(1)).newFileChannel(sut.toString(), options, attr1, attr2);
+    }
+
+    @Test
+    public void newByteChannel() throws IOException {
+        final JvfsPath sut = new JvfsPath(createPath(true, "bar"), fs);
+        final Set<OpenOption> options = JvfsCollections.newSet();
+        final FileAttribute attr1 = mock(FileAttribute.class);
+        final FileAttribute attr2 = mock(FileAttribute.class);
+        sut.newByteChannel(options, attr1, attr2);
+        verify(fs, times(1)).newByteChannel(sut.toString(), options, attr1, attr2);
+    }
+
+    @Test
+    public void createDirectory() throws IOException {
+        final JvfsPath sut = new JvfsPath(createPath(true, "bar"), fs);
+        final FileAttribute attr1 = mock(FileAttribute.class);
+        final FileAttribute attr2 = mock(FileAttribute.class);
+        sut.createDirectory(attr1, attr2);
+        verify(fs, times(1)).createDirectory(sut.toString(), attr1, attr2);
+    }
+
+    @Test
+    public void delete() throws IOException {
+        final JvfsPath sut = new JvfsPath(createPath(true, "bar"), fs);
+        sut.delete();
+        verify(fs, times(1)).delete(sut.toString());
+    }
+
+    @Test
+    public void copy() throws IOException {
+        final JvfsPath sut = new JvfsPath(createPath(true, "bar"), fs);
+        final JvfsPath target = new JvfsPath(createPath(true, "bar"), fs);
+        final CopyOption option1 = mock(CopyOption.class);
+        final CopyOption option2 = mock(CopyOption.class);
+        sut.copy(target, option1, option2);
+        verify(fs, times(1)).copy(sut.toString(), target.toString(), option1, option2);
+    }
+
+    @Test
+    public void copy_throwsExceptionIfTargetIsNull() throws IOException {
+        thrown.expect(NullPointerException.class);
+        new JvfsPath(createPath(true, "bar"), fs).copy(null);
+    }
+
+    @Test
+    public void move() throws IOException {
+        final JvfsPath sut = new JvfsPath(createPath(true, "bar"), fs);
+        final JvfsPath target = new JvfsPath(createPath(true, "bar"), fs);
+        final CopyOption option1 = mock(CopyOption.class);
+        final CopyOption option2 = mock(CopyOption.class);
+        sut.move(target, option1, option2);
+        verify(fs, times(1)).move(sut.toString(), target.toString(), option1, option2);
+    }
+
+    @Test
+    public void move_throwsExceptionIfTargetIsNull() throws IOException {
+        thrown.expect(NullPointerException.class);
+        new JvfsPath(createPath(true, "bar"), fs).move(null);
+    }
+
+    @Test
+    @Ignore
+    public void isSameFile() {
+
+    }
+
+    @Test
+    public void isHidden() throws IOException {
+        final JvfsPath sut = new JvfsPath(createPath(true, "bar"), fs);
+        sut.isHidden();
+        verify(fs).isHidden(sut.toString());
+    }
+
+    @Test
+    public void getFileStore() {
+        final JvfsPath sut = new JvfsPath(createPath(true, "bar"), fs);
+        sut.getFileStore();
+        verify(fs).getFileStore();
+    }
+
+    @Test
+    public void checkAccess() throws IOException {
+        final JvfsPath sut = new JvfsPath(createPath(true, "bar"), fs);
+        sut.checkAccess(AccessMode.READ, AccessMode.WRITE);
+        verify(fs).checkAccess(sut.toString(), AccessMode.READ, AccessMode.WRITE);
+    }
+
 }
