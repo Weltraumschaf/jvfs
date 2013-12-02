@@ -180,10 +180,10 @@ public final class JvfsFileSystems {
      */
     public static FileAttribute&lt;Set&lt;PosixFilePermission&gt;&gt; createFileAttribute(
         final PosixFilePermission ... perms) {
-<span class="nc" id="L183">        JvfsAssertions.notNull(perms, &quot;perms&quot;);</span>
-<span class="nc" id="L184">        final Set&lt;PosixFilePermission&gt; permissions = JvfsCollections.newSet();</span>
-<span class="nc" id="L185">        permissions.addAll(Arrays.asList(perms));</span>
-<span class="nc" id="L186">        return PosixFilePermissions.asFileAttribute(permissions);</span>
+<span class="fc" id="L183">        JvfsAssertions.notNull(perms, &quot;perms&quot;);</span>
+<span class="fc" id="L184">        final Set&lt;PosixFilePermission&gt; permissions = JvfsCollections.newSet();</span>
+<span class="fc" id="L185">        permissions.addAll(Arrays.asList(perms));</span>
+<span class="fc" id="L186">        return PosixFilePermissions.asFileAttribute(permissions);</span>
     }
 
     /**

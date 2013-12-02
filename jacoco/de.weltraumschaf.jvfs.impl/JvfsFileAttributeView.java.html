@@ -74,7 +74,7 @@ import java.util.Map;
 <span class="fc" id="L74">        JvfsAssertions.notEmpty(attribute, &quot;attribute&quot;);</span>
 <span class="fc" id="L75">        JvfsAssertions.notNull(value, &quot;value&quot;);</span>
 
-<span class="pc bfc" id="L77" title="All 4 branches covered.">        switch (AttrID.valueOf(attribute)) {</span>
+<span class="pc bfc" id="L77" title="All 4 branches covered.">        switch (Names.valueOf(attribute)) {</span>
             case creationTime:
 <span class="fc" id="L79">                setTimes(null, null, (FileTime) value);</span>
 <span class="fc" id="L80">                break;</span>
@@ -96,7 +96,7 @@ import java.util.Map;
      * Examples:
      * &lt;ul&gt;
      * &lt;li&gt;{@literal &quot;*&quot;}: Read all basic-file-attributes.&lt;/li&gt;
-     * &lt;li&gt;{@literal &quot;size,lastModifiedTime,lastAccessTime&quot; }:
+     * &lt;li&gt;{@literal &quot;size,lastModifiedTime,lastAccessTime&quot;}:
      * Reads the file size, last modified time, and last access time attributes.&lt;/li&gt;
      * &lt;/ul&gt;
      *
@@ -109,19 +109,23 @@ import java.util.Map;
 <span class="fc" id="L109">        final BasicFileAttributes attrs = readAttributes();</span>
 <span class="fc" id="L110">        final Map&lt;String, Object&gt; map = JvfsCollections.newMap();</span>
 
-<span class="pc bpc" id="L112" title="1 of 2 branches missed.">        if (&quot;*&quot;.equals(attributes.trim())) {</span>
-<span class="fc bfc" id="L113" title="All 2 branches covered.">            for (AttrID id : AttrID.values()) {</span>
-<span class="fc" id="L114">                map.put(id.name(), attribute(id, attrs));</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        if (&quot;*&quot;.equals(attributes.trim())) {</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">            for (Names id : Names.values()) {</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">                if (id == Names._unknown) {</span>
+<span class="fc" id="L115">                    continue;</span>
+                }
+
+<span class="fc" id="L118">                map.put(id.name(), attribute(id, attrs));</span>
             }
         } else {
-<span class="nc" id="L117">            final String[] as = attributes.trim().split(&quot;,&quot;);</span>
+<span class="fc" id="L121">            final String[] as = attributes.trim().split(&quot;,&quot;);</span>
 
-<span class="nc bnc" id="L119" title="All 2 branches missed.">            for (String a : as) {</span>
-<span class="nc" id="L120">                map.put(a, attribute(AttrID.valueOf(a.trim()), attrs));</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">            for (String a : as) {</span>
+<span class="fc" id="L124">                map.put(a, attribute(Names.valueOf(a.trim()), attrs));</span>
             }
         }
 
-<span class="fc" id="L124">        return map;</span>
+<span class="fc" id="L128">        return map;</span>
     }
 
     /**
@@ -131,31 +135,31 @@ import java.util.Map;
      * @param attrs must not {@literal null}
      * @return {@literal null} if unsupported id given
      */
-    Object attribute(final AttrID id, final BasicFileAttributes attrs) {
-<span class="pc bpc" id="L135" title="2 of 4 branches missed.">        assert id != null : &quot;id must be defined&quot;;</span>
-<span class="pc bpc" id="L136" title="2 of 4 branches missed.">        assert attrs != null : &quot;attrs must be defined&quot;;</span>
+    Object attribute(final Names id, final BasicFileAttributes attrs) {
+<span class="pc bpc" id="L139" title="2 of 4 branches missed.">        assert id != null : &quot;id must be defined&quot;;</span>
+<span class="pc bpc" id="L140" title="2 of 4 branches missed.">        assert attrs != null : &quot;attrs must be defined&quot;;</span>
 
-<span class="pc bpc" id="L138" title="1 of 10 branches missed.">        switch (id) {</span>
+<span class="fc bfc" id="L142" title="All 10 branches covered.">        switch (id) {</span>
             case size:
-<span class="fc" id="L140">                return attrs.size();</span>
+<span class="fc" id="L144">                return attrs.size();</span>
             case creationTime:
-<span class="fc" id="L142">                return attrs.creationTime();</span>
+<span class="fc" id="L146">                return attrs.creationTime();</span>
             case lastAccessTime:
-<span class="fc" id="L144">                return attrs.lastAccessTime();</span>
+<span class="fc" id="L148">                return attrs.lastAccessTime();</span>
             case lastModifiedTime:
-<span class="fc" id="L146">                return attrs.lastModifiedTime();</span>
+<span class="fc" id="L150">                return attrs.lastModifiedTime();</span>
             case isDirectory:
-<span class="fc" id="L148">                return attrs.isDirectory();</span>
+<span class="fc" id="L152">                return attrs.isDirectory();</span>
             case isRegularFile:
-<span class="fc" id="L150">                return attrs.isRegularFile();</span>
+<span class="fc" id="L154">                return attrs.isRegularFile();</span>
             case isSymbolicLink:
-<span class="fc" id="L152">                return attrs.isSymbolicLink();</span>
+<span class="fc" id="L156">                return attrs.isSymbolicLink();</span>
             case isOther:
-<span class="fc" id="L154">                return attrs.isOther();</span>
+<span class="fc" id="L158">                return attrs.isOther();</span>
             case fileKey:
-<span class="fc" id="L156">                return attrs.fileKey();</span>
+<span class="fc" id="L160">                return attrs.fileKey();</span>
             default:
-<span class="nc" id="L158">                return null;</span>
+<span class="fc" id="L162">                return null;</span>
         }
     }
 
@@ -165,31 +169,35 @@ import java.util.Map;
      * @return never {@literal null}
      */
     Path getPath() {
-<span class="fc" id="L168">        return path;</span>
+<span class="fc" id="L172">        return path;</span>
     }
 
     /**
      * Names of attributes.
      */
-<span class="fc" id="L174">    private static enum AttrID {</span>
+<span class="fc" id="L178">    static enum Names {</span>
         /** Size attribute. */
-<span class="fc" id="L176">        size,</span>
+<span class="fc" id="L180">        size,</span>
         /** Creation time attribute. */
-<span class="fc" id="L178">        creationTime,</span>
+<span class="fc" id="L182">        creationTime,</span>
         /** Last access time attribute. */
-<span class="fc" id="L180">        lastAccessTime,</span>
+<span class="fc" id="L184">        lastAccessTime,</span>
         /** Last modification time attribute. */
-<span class="fc" id="L182">        lastModifiedTime,</span>
+<span class="fc" id="L186">        lastModifiedTime,</span>
         /** Is directory attribute. */
-<span class="fc" id="L184">        isDirectory,</span>
+<span class="fc" id="L188">        isDirectory,</span>
         /** Is regular file attribute. */
-<span class="fc" id="L186">        isRegularFile,</span>
+<span class="fc" id="L190">        isRegularFile,</span>
         /** Is symbolic link attribute. */
-<span class="fc" id="L188">        isSymbolicLink,</span>
+<span class="fc" id="L192">        isSymbolicLink,</span>
         /** Is other file attribute. */
-<span class="fc" id="L190">        isOther,</span>
+<span class="fc" id="L194">        isOther,</span>
         /** File key attribute. */
-<span class="fc" id="L192">        fileKey</span>
+<span class="fc" id="L196">        fileKey,</span>
+        /** Only for testing. */
+        //CHECKSTYLE:OFF
+<span class="fc" id="L199">        _unknown;</span>
+        //CHECKSTYLE:ON
     };
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

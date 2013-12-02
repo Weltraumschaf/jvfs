@@ -45,7 +45,7 @@ public final class JvfsOptions {
      *
      * @param env must not be {@literal null}
      */
-    private JvfsOptions(final Map&lt;String, ?&gt; env) {
+    JvfsOptions(final Map&lt;String, ?&gt; env) {
 <span class="fc" id="L49">        super();</span>
 <span class="fc" id="L50">        JvfsAssertions.notNull(env, &quot;env&quot;);</span>
 <span class="fc" id="L51">        this.env = env;</span>
@@ -123,10 +123,10 @@ public final class JvfsOptions {
 
 <span class="fc bfc" id="L124" title="All 2 branches covered.">            if (value instanceof String) {</span>
 <span class="fc" id="L125">                return Boolean.valueOf((String) value);</span>
-<span class="pc bpc" id="L126" title="1 of 2 branches missed.">            } else if (value instanceof Boolean) {</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">            } else if (value instanceof Boolean) {</span>
 <span class="fc" id="L127">                return (Boolean) value;</span>
             } else {
-<span class="nc" id="L129">                throw new IllegalArgumentException();</span>
+<span class="fc" id="L129">                throw new IllegalArgumentException(Objects.toString(value));</span>
             }
 
         }
@@ -147,14 +147,27 @@ public final class JvfsOptions {
 <span class="fc" id="L147">                return (JvfsQuantity) value;</span>
 <span class="fc bfc" id="L148" title="All 2 branches covered.">            } else if (value instanceof String) {</span>
 <span class="fc" id="L149">                return JvfsQuantity.forValue((String) value);</span>
-<span class="pc bpc" id="L150" title="1 of 2 branches missed.">            } else if (value instanceof Long) {</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">            } else if (value instanceof Long) {</span>
 <span class="fc" id="L151">                return JvfsQuantity.forValue((Long) value);</span>
             } else {
-<span class="nc" id="L153">                throw new IllegalArgumentException();</span>
+<span class="fc" id="L153">                throw new IllegalArgumentException(Objects.toString(value));</span>
             }
         }
 
 <span class="fc" id="L157">        return Builder.DEFAULT_CAPACITY;</span>
+    }
+
+    /**
+     * Get the id of the file system.
+     *
+     * @return never {@literal null}, empty string by default
+     */
+    public String identifier() {
+<span class="fc bfc" id="L166" title="All 2 branches covered.">        if (env.containsKey(Option.ID.key)) {</span>
+<span class="fc" id="L167">            return Objects.toString(env.get(Option.ID.key));</span>
+        }
+
+<span class="fc" id="L170">        return Builder.DEFAULT_ID;</span>
     }
 
     /**
@@ -165,7 +178,7 @@ public final class JvfsOptions {
         /**
          * Default value for capacity option.
          */
-<span class="fc" id="L168">        private static final JvfsQuantity DEFAULT_CAPACITY = JvfsQuantity.EMPTY;</span>
+<span class="fc" id="L181">        private static final JvfsQuantity DEFAULT_CAPACITY = JvfsQuantity.EMPTY;</span>
         /**
          * Default value for readonly option.
          */
@@ -177,22 +190,22 @@ public final class JvfsOptions {
         /**
          * Capacity for created options.
          */
-<span class="fc" id="L180">        private JvfsQuantity capacity = DEFAULT_CAPACITY;</span>
+<span class="fc" id="L193">        private JvfsQuantity capacity = DEFAULT_CAPACITY;</span>
         /**
          * Readonly flag for created options.
          */
-<span class="fc" id="L184">        private boolean readOnly = DEFAULT_READONLY;</span>
+<span class="fc" id="L197">        private boolean readOnly = DEFAULT_READONLY;</span>
         /**
          * Id for created options.
          */
-<span class="fc" id="L188">        private String identifier = DEFAULT_ID;</span>
+<span class="fc" id="L201">        private String identifier = DEFAULT_ID;</span>
 
         /**
          * Use {@link JvfsOptions#builder()} to get instance.
          */
         private Builder() {
-<span class="fc" id="L194">            super();</span>
-<span class="fc" id="L195">        }</span>
+<span class="fc" id="L207">            super();</span>
+<span class="fc" id="L208">        }</span>
 
         /**
          * Set the capacity.
@@ -201,8 +214,8 @@ public final class JvfsOptions {
          * @return builder itself
          */
         public Builder capacity(final String qunatity) {
-<span class="fc" id="L204">            capacity = JvfsQuantity.forValue(qunatity);</span>
-<span class="fc" id="L205">            return this;</span>
+<span class="fc" id="L217">            capacity = JvfsQuantity.forValue(qunatity);</span>
+<span class="fc" id="L218">            return this;</span>
         }
 
         /**
@@ -212,8 +225,8 @@ public final class JvfsOptions {
          * @return builder itself
          */
         public Builder readonly(final boolean flag) {
-<span class="fc" id="L215">            readOnly = flag;</span>
-<span class="fc" id="L216">            return this;</span>
+<span class="fc" id="L228">            readOnly = flag;</span>
+<span class="fc" id="L229">            return this;</span>
         }
 
         /**
@@ -223,9 +236,9 @@ public final class JvfsOptions {
          * @return builder itself
          */
         public Builder identifier(final String id) {
-<span class="fc" id="L226">            JvfsAssertions.notNull(id, &quot;id&quot;);</span>
-<span class="fc" id="L227">            this.identifier = id;</span>
-<span class="fc" id="L228">            return this;</span>
+<span class="fc" id="L239">            JvfsAssertions.notNull(id, &quot;id&quot;);</span>
+<span class="fc" id="L240">            this.identifier = id;</span>
+<span class="fc" id="L241">            return this;</span>
         }
 
         /**
@@ -237,11 +250,11 @@ public final class JvfsOptions {
          * @return never {@literal null}, always new instance
          */
         public JvfsOptions create() {
-<span class="fc" id="L240">            final Map&lt;String, Object&gt; env = JvfsCollections.newMap();</span>
-<span class="fc" id="L241">            env.put(Option.CAPACITY.key, capacity);</span>
-<span class="fc" id="L242">            env.put(Option.READONLY.key, readOnly);</span>
-<span class="fc" id="L243">            env.put(Option.ID.key, identifier);</span>
-<span class="fc" id="L244">            return new JvfsOptions(env);</span>
+<span class="fc" id="L253">            final Map&lt;String, Object&gt; env = JvfsCollections.newMap();</span>
+<span class="fc" id="L254">            env.put(Option.CAPACITY.key, capacity);</span>
+<span class="fc" id="L255">            env.put(Option.READONLY.key, readOnly);</span>
+<span class="fc" id="L256">            env.put(Option.ID.key, identifier);</span>
+<span class="fc" id="L257">            return new JvfsOptions(env);</span>
         }
     }
 
@@ -257,20 +270,20 @@ public final class JvfsOptions {
      * final JvfsOption opts = JvfsOption.forValue(map);
      * &lt;/code&gt;
      */
-<span class="pc bpc" id="L260" title="1 of 2 branches missed.">    public enum Option {</span>
+<span class="pc bpc" id="L273" title="1 of 2 branches missed.">    public enum Option {</span>
 
         /**
          * Key for capacity.
          */
-<span class="fc" id="L265">        CAPACITY(&quot;capacity&quot;),</span>
+<span class="fc" id="L278">        CAPACITY(&quot;capacity&quot;),</span>
         /**
          * Key for readonly flag.
          */
-<span class="fc" id="L269">        READONLY(&quot;readonly&quot;),</span>
+<span class="fc" id="L282">        READONLY(&quot;readonly&quot;),</span>
         /**
          * Key for identifier.
          */
-<span class="fc" id="L273">        ID(&quot;id&quot;);</span>
+<span class="fc" id="L286">        ID(&quot;id&quot;);</span>
         /**
          * The key for the map.
          */
@@ -281,11 +294,11 @@ public final class JvfsOptions {
          *
          * @param key must not be {@literal null} or empty
          */
-<span class="fc" id="L284">        Option(final String key) {</span>
-<span class="pc bpc" id="L285" title="2 of 4 branches missed.">            assert null != key : &quot;key must be specified&quot;;</span>
-<span class="pc bpc" id="L286" title="2 of 4 branches missed.">            assert !key.isEmpty() : &quot;key must not be empty&quot;;</span>
-<span class="fc" id="L287">            this.key = key;</span>
-<span class="fc" id="L288">        }</span>
+<span class="fc" id="L297">        Option(final String key) {</span>
+<span class="pc bpc" id="L298" title="2 of 4 branches missed.">            assert null != key : &quot;key must be specified&quot;;</span>
+<span class="pc bpc" id="L299" title="2 of 4 branches missed.">            assert !key.isEmpty() : &quot;key must not be empty&quot;;</span>
+<span class="fc" id="L300">            this.key = key;</span>
+<span class="fc" id="L301">        }</span>
 
         /**
          * Get the key.
@@ -293,7 +306,7 @@ public final class JvfsOptions {
          * @return never {@literal null} or empty
          */
         public String key() {
-<span class="fc" id="L296">            return key;</span>
+<span class="fc" id="L309">            return key;</span>
         }
 
     }

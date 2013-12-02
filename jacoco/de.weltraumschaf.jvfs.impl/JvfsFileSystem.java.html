@@ -57,9 +57,10 @@ import java.util.concurrent.TimeUnit;
      * Supported views.
      */
 <span class="fc" id="L59">    private static final Set&lt;String&gt; SUPPORTED_ATTRIBUTE_VIEWS = JvfsCollections.newSet();</span>
+
     static {
-<span class="fc" id="L61">        SUPPORTED_ATTRIBUTE_VIEWS.add(JvfsFileAttributeView.BASIC_VIEW_NAME);</span>
-<span class="fc" id="L62">    }</span>
+<span class="fc" id="L62">        SUPPORTED_ATTRIBUTE_VIEWS.add(JvfsFileAttributeView.BASIC_VIEW_NAME);</span>
+<span class="fc" id="L63">    }</span>
     /**
      * Provider which created this {@link JvfsFileSystemProvider}.
      */
@@ -69,7 +70,7 @@ import java.util.concurrent.TimeUnit;
      *
      * The key is the absolute pathname of the file ({@link JvfsFileEntry#path}).
      */
-<span class="fc" id="L72">    private final Map&lt;String, JvfsFileEntry&gt; attic = JvfsCollections.newMap();</span>
+<span class="fc" id="L73">    private final Map&lt;String, JvfsFileEntry&gt; attic = JvfsCollections.newMap();</span>
     /**
      * List of file stores.
      */
@@ -88,71 +89,71 @@ import java.util.concurrent.TimeUnit;
      * @param options must not be {@literal null}
      */
     JvfsFileSystem(final JvfsFileSystemProvider provider, final JvfsOptions options) {
-<span class="fc" id="L91">        super();</span>
-<span class="fc" id="L92">        JvfsAssertions.notNull(provider, &quot;provider&quot;);</span>
-<span class="fc" id="L93">        JvfsAssertions.notNull(options, &quot;options&quot;);</span>
-<span class="fc" id="L94">        this.provider = provider;</span>
-<span class="fc" id="L95">        this.open = true;</span>
-<span class="fc" id="L96">        final FileStore store = new JvfsFileStore(options, this);</span>
-<span class="fc" id="L97">        final List&lt;FileStore&gt; stores = JvfsCollections.newList(1);</span>
-<span class="fc" id="L98">        stores.add(store);</span>
-<span class="fc" id="L99">        this.fileStores = Collections.unmodifiableList(stores);</span>
-<span class="fc" id="L100">    }</span>
+<span class="fc" id="L92">        super();</span>
+<span class="fc" id="L93">        JvfsAssertions.notNull(provider, &quot;provider&quot;);</span>
+<span class="fc" id="L94">        JvfsAssertions.notNull(options, &quot;options&quot;);</span>
+<span class="fc" id="L95">        this.provider = provider;</span>
+<span class="fc" id="L96">        this.open = true;</span>
+<span class="fc" id="L97">        final FileStore store = new JvfsFileStore(options, this);</span>
+<span class="fc" id="L98">        final List&lt;FileStore&gt; stores = JvfsCollections.newList(1);</span>
+<span class="fc" id="L99">        stores.add(store);</span>
+<span class="fc" id="L100">        this.fileStores = Collections.unmodifiableList(stores);</span>
+<span class="fc" id="L101">    }</span>
 
     @Override
     public FileSystemProvider provider() {
-<span class="fc" id="L104">        return provider;</span>
+<span class="fc" id="L105">        return provider;</span>
     }
 
     @Override
     public void close() throws IOException {
-<span class="fc" id="L109">        this.open = false;</span>
-<span class="fc" id="L110">    }</span>
+<span class="fc" id="L110">        this.open = false;</span>
+<span class="fc" id="L111">    }</span>
 
     @Override
     public boolean isOpen() {
-<span class="fc" id="L114">        return this.open;</span>
+<span class="fc" id="L115">        return this.open;</span>
     }
 
     @Override
     public boolean isReadOnly() {
-<span class="fc" id="L119">        return getFileStore().isReadOnly();</span>
+<span class="fc" id="L120">        return getFileStore().isReadOnly();</span>
     }
 
     @Override
     public String getSeparator() {
-<span class="fc" id="L124">        return JvfsFileSystems.DIR_SEP;</span>
+<span class="fc" id="L125">        return JvfsFileSystems.DIR_SEP;</span>
     }
 
     @Override
     public Iterable&lt;Path&gt; getRootDirectories() {
-<span class="nc" id="L129">        this.checkClosed();</span>
-<span class="nc" id="L130">        return JvfsCollections.&lt;Path&gt;asList(new JvfsPath(this));</span>
+<span class="fc" id="L130">        this.checkClosed();</span>
+<span class="fc" id="L131">        return JvfsCollections.&lt;Path&gt;asList(new JvfsPath(this));</span>
     }
 
     @Override
     public Iterable&lt;FileStore&gt; getFileStores() {
-<span class="fc" id="L135">        this.checkClosed();</span>
-<span class="fc" id="L136">        return fileStores;</span>
+<span class="fc" id="L136">        this.checkClosed();</span>
+<span class="fc" id="L137">        return fileStores;</span>
     }
 
     @Override
     public Set&lt;String&gt; supportedFileAttributeViews() {
-<span class="fc" id="L141">        this.checkClosed();</span>
-<span class="fc" id="L142">        return SUPPORTED_ATTRIBUTE_VIEWS;</span>
+<span class="fc" id="L142">        this.checkClosed();</span>
+<span class="fc" id="L143">        return SUPPORTED_ATTRIBUTE_VIEWS;</span>
     }
 
     @Override
     public Path getPath(final String first, final String... more) {
-<span class="fc" id="L147">        this.checkClosed();</span>
+<span class="fc" id="L148">        this.checkClosed();</span>
 
-<span class="pc bpc" id="L149" title="2 of 4 branches missed.">        if (!JvfsPathUtil.isValid(first) || !JvfsPathUtil.isValid(more)) {</span>
-<span class="nc" id="L150">            throw new InvalidPathException(first, &quot;Invalid input!&quot;);</span>
+<span class="pc bpc" id="L150" title="2 of 4 branches missed.">        if (!JvfsPathUtil.isValid(first) || !JvfsPathUtil.isValid(more)) {</span>
+<span class="nc" id="L151">            throw new InvalidPathException(first, &quot;Invalid input!&quot;);</span>
         }
 
-<span class="fc" id="L153">        JvfsAssertions.notNull(first, &quot;first&quot;);</span>
-<span class="fc" id="L154">        final String merged = this.merge(first, more);</span>
-<span class="fc" id="L155">        return new JvfsPath(merged, this);</span>
+<span class="fc" id="L154">        JvfsAssertions.notNull(first, &quot;first&quot;);</span>
+<span class="fc" id="L155">        final String merged = this.merge(first, more);</span>
+<span class="fc" id="L156">        return new JvfsPath(merged, this);</span>
     }
 
     /**
@@ -163,42 +164,41 @@ import java.util.concurrent.TimeUnit;
      * @return never {@literal null}
      */
     private String merge(final String first, final String... more) {
-<span class="pc bpc" id="L166" title="2 of 4 branches missed.">        assert first != null : &quot;first must be specified&quot;;</span>
-<span class="pc bpc" id="L167" title="2 of 4 branches missed.">        assert more != null : &quot;more must be specified&quot;;</span>
+<span class="pc bpc" id="L167" title="2 of 4 branches missed.">        assert first != null : &quot;first must be specified&quot;;</span>
+<span class="pc bpc" id="L168" title="2 of 4 branches missed.">        assert more != null : &quot;more must be specified&quot;;</span>
 
-<span class="fc" id="L169">        final StringBuilder merged = new StringBuilder();</span>
-<span class="fc" id="L170">        merged.append(first);</span>
+<span class="fc" id="L170">        final StringBuilder merged = new StringBuilder();</span>
+<span class="fc" id="L171">        merged.append(first);</span>
 
-<span class="fc bfc" id="L172" title="All 2 branches covered.">        for (final String name : more) {</span>
-<span class="fc" id="L173">            merged.append(JvfsFileSystems.DIR_SEP);</span>
-<span class="fc" id="L174">            merged.append(name);</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        for (final String name : more) {</span>
+<span class="fc" id="L174">            merged.append(JvfsFileSystems.DIR_SEP);</span>
+<span class="fc" id="L175">            merged.append(name);</span>
         }
 
-<span class="fc" id="L177">        return merged.toString();</span>
+<span class="fc" id="L178">        return merged.toString();</span>
     }
 
     @Override
     public PathMatcher getPathMatcher(final String syntaxAndPattern) {
-<span class="fc" id="L182">        return JvfsPathMatcher.newMatcher(syntaxAndPattern);</span>
+<span class="fc" id="L183">        return JvfsPathMatcher.newMatcher(syntaxAndPattern);</span>
     }
 
     @Override
     public UserPrincipalLookupService getUserPrincipalLookupService() {
-<span class="fc" id="L187">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
+<span class="fc" id="L188">        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</span>
     }
 
     @Override
     public WatchService newWatchService() throws IOException {
-<span class="fc" id="L192">        throw new UnsupportedOperationException(&quot;JVFS archives do not support a watch services!&quot;);</span>
+<span class="fc" id="L193">        throw new UnsupportedOperationException(&quot;JVFS archives do not support a watch services!&quot;);</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L197">        return this.getClass().getSimpleName() + '{'</span>
+<span class="fc" id="L198">        return this.getClass().getSimpleName() + '{'</span>
                 + &quot;fileStores=&quot; + Objects.toString(fileStores)
                 + '}';
     }
-
 
     /**
      * Checks if the {@link JvfsFileSystem} is closed, and throws a {@link ClosedFileSystemException} if so.
@@ -216,10 +216,10 @@ import java.util.concurrent.TimeUnit;
      * @throws NoSuchFileException if file does not exists
      */
     private void assertFileExists(final String path) throws NoSuchFileException {
-<span class="nc bnc" id="L219" title="All 2 branches missed.">        if (!contains(path)) {</span>
+<span class="pc bpc" id="L219" title="1 of 2 branches missed.">        if (!contains(path)) {</span>
 <span class="nc" id="L220">            throw new NoSuchFileException(path);</span>
         }
-<span class="nc" id="L222">    }</span>
+<span class="fc" id="L222">    }</span>
 
     /**
      * Get a file entry.
@@ -240,9 +240,40 @@ import java.util.concurrent.TimeUnit;
      */
     void add(final JvfsFileEntry entry) {
 <span class="fc" id="L242">        JvfsAssertions.notNull(entry, &quot;entry&quot;);</span>
-        // TODO Check parent direcotries.
-<span class="fc" id="L244">        attic.put(entry.getPath(), entry);</span>
-<span class="fc" id="L245">    }</span>
+<span class="fc" id="L243">        JvfsFileEntry previous = null;</span>
+
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        if (attic.containsKey(JvfsFileSystems.DIR_SEP)) {</span>
+<span class="fc" id="L246">            previous = attic.get(JvfsFileSystems.DIR_SEP);</span>
+        } else {
+<span class="fc" id="L248">            final JvfsFileEntry root = JvfsFileEntry.newDir(JvfsFileSystems.DIR_SEP);</span>
+<span class="fc" id="L249">            root.setPermissions(entry.getPermissions());</span>
+<span class="fc" id="L250">            previous = root;</span>
+<span class="fc" id="L251">            attic.put(JvfsFileSystems.DIR_SEP, root);</span>
+        }
+
+<span class="fc" id="L254">        final StringBuilder buffer = new StringBuilder();</span>
+<span class="fc" id="L255">        final List&lt;String&gt; names = JvfsPathUtil.tokenize(entry.getPath());</span>
+<span class="fc" id="L256">        names.remove(names.size() - 1);</span>
+
+<span class="fc bfc" id="L258" title="All 2 branches covered.">        for (final String name : names) {</span>
+<span class="fc" id="L259">            buffer.append(JvfsFileSystems.DIR_SEP).append(name);</span>
+
+<span class="pc bpc" id="L261" title="1 of 2 branches missed.">            if (!attic.containsKey(buffer.toString())) {</span>
+<span class="pc bpc" id="L262" title="2 of 4 branches missed.">                assert previous != null;</span>
+<span class="fc" id="L263">                final JvfsFileEntry dir = JvfsFileEntry.newDir(buffer.toString());</span>
+<span class="fc" id="L264">                dir.setPermissions(entry.getPermissions());</span>
+<span class="fc" id="L265">                dir.setParent(previous);</span>
+<span class="fc" id="L266">                previous.addChild(dir);</span>
+<span class="fc" id="L267">                previous = dir;</span>
+<span class="fc" id="L268">                attic.put(buffer.toString(), dir);</span>
+            }
+<span class="fc" id="L270">        }</span>
+
+<span class="pc bpc" id="L272" title="2 of 4 branches missed.">        assert previous != null;</span>
+<span class="fc" id="L273">        previous.addChild(entry);</span>
+<span class="fc" id="L274">        entry.setParent(previous);</span>
+<span class="fc" id="L275">        attic.put(entry.getPath(), entry);</span>
+<span class="fc" id="L276">    }</span>
 
     /**
      * Whether the file system contains a file entry.
@@ -251,9 +282,9 @@ import java.util.concurrent.TimeUnit;
      * @return {@literal true} if entry exists, else {@literal false}
      */
     boolean contains(final String path) {
-<span class="fc" id="L254">        JvfsAssertions.notEmpty(path, &quot;path&quot;);</span>
-<span class="fc" id="L255">        checkClosed();</span>
-<span class="fc" id="L256">        return attic.containsKey(path);</span>
+<span class="fc" id="L285">        JvfsAssertions.notEmpty(path, &quot;path&quot;);</span>
+<span class="fc" id="L286">        checkClosed();</span>
+<span class="fc" id="L287">        return attic.containsKey(path);</span>
     }
 
     /**
@@ -269,41 +300,40 @@ import java.util.concurrent.TimeUnit;
             final String path,
             final Set&lt;? extends OpenOption&gt; options,
             final FileAttribute&lt;?&gt;... attrs) throws IOException {
-<span class="nc" id="L272">        JvfsAssertions.notEmpty(path, &quot;path&quot;);</span>
-        // XXX: All checks done by newByteChannel.
-<span class="nc" id="L274">        checkClosed();</span>
-<span class="nc bnc" id="L275" title="All 4 branches missed.">        final boolean forWrite = options.contains(StandardOpenOption.WRITE)</span>
+<span class="nc" id="L303">        JvfsAssertions.notEmpty(path, &quot;path&quot;);</span>
+<span class="nc" id="L304">        checkClosed();</span>
+<span class="nc bnc" id="L305" title="All 4 branches missed.">        final boolean forWrite = options.contains(StandardOpenOption.WRITE)</span>
                 || options.contains(StandardOpenOption.APPEND);
 
-<span class="nc bnc" id="L278" title="All 2 branches missed.">        if (forWrite) {</span>
-<span class="nc bnc" id="L279" title="All 2 branches missed.">            if (isReadOnly()) {</span>
-<span class="nc" id="L280">                throw new ReadOnlyFileSystemException();</span>
+<span class="nc bnc" id="L308" title="All 2 branches missed.">        if (forWrite) {</span>
+<span class="nc bnc" id="L309" title="All 2 branches missed.">            if (isReadOnly()) {</span>
+<span class="nc" id="L310">                throw new ReadOnlyFileSystemException();</span>
             }
 
-<span class="nc bnc" id="L283" title="All 2 branches missed.">            if (contains(path)) {</span>
-<span class="nc bnc" id="L284" title="All 2 branches missed.">                if (options.contains(StandardOpenOption.CREATE_NEW)) {</span>
-<span class="nc" id="L285">                    throw new FileAlreadyExistsException(path);</span>
+<span class="nc bnc" id="L313" title="All 2 branches missed.">            if (contains(path)) {</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">                if (options.contains(StandardOpenOption.CREATE_NEW)) {</span>
+<span class="nc" id="L315">                    throw new FileAlreadyExistsException(path);</span>
                 }
 
-<span class="nc bnc" id="L288" title="All 2 branches missed.">                if (get(path).isDirectory()) {</span>
-<span class="nc" id="L289">                    throw new FileAlreadyExistsException(&quot;directory &lt;&quot; + path + &quot;&gt; exists&quot;);</span>
+<span class="nc bnc" id="L318" title="All 2 branches missed.">                if (get(path).isDirectory()) {</span>
+<span class="nc" id="L319">                    throw new FileAlreadyExistsException(&quot;directory &lt;&quot; + path + &quot;&gt; exists&quot;);</span>
                 }
             } else {
-<span class="nc bnc" id="L292" title="All 2 branches missed.">                if (!options.contains(StandardOpenOption.CREATE_NEW)) {</span>
-<span class="nc" id="L293">                    throw new NoSuchFileException(path);</span>
+<span class="nc bnc" id="L322" title="All 2 branches missed.">                if (!options.contains(StandardOpenOption.CREATE_NEW)) {</span>
+<span class="nc" id="L323">                    throw new NoSuchFileException(path);</span>
                 }
             }
         } else {
-<span class="nc bnc" id="L297" title="All 2 branches missed.">            if (contains(path)) {</span>
-<span class="nc bnc" id="L298" title="All 2 branches missed.">                if (get(path).isDirectory()) {</span>
-<span class="nc" id="L299">                    throw new NoSuchFileException(path);</span>
+<span class="nc bnc" id="L327" title="All 2 branches missed.">            if (contains(path)) {</span>
+<span class="nc bnc" id="L328" title="All 2 branches missed.">                if (get(path).isDirectory()) {</span>
+<span class="nc" id="L329">                    throw new NoSuchFileException(path);</span>
                 }
             } else {
-<span class="nc" id="L302">                throw new NoSuchFileException(path);</span>
+<span class="nc" id="L332">                throw new NoSuchFileException(path);</span>
             }
         }
 
-<span class="nc" id="L306">        return new JvfsFileChannel(newByteChannel(path, options, attrs));</span>
+<span class="nc" id="L336">        return new JvfsFileChannel(newByteChannel(path, options, attrs));</span>
     }
 
     /**
@@ -319,38 +349,38 @@ import java.util.concurrent.TimeUnit;
             final String path,
             final Set&lt;? extends OpenOption&gt; options,
             final FileAttribute&lt;?&gt;... attrs) throws IOException {
-<span class="fc" id="L322">        checkClosed();</span>
+<span class="fc" id="L352">        checkClosed();</span>
 
         // Writing?
-<span class="pc bpc" id="L325" title="1 of 6 branches missed.">        if (options.contains(StandardOpenOption.CREATE)</span>
+<span class="pc bpc" id="L355" title="1 of 6 branches missed.">        if (options.contains(StandardOpenOption.CREATE)</span>
                 || options.contains(StandardOpenOption.CREATE_NEW)
                 || options.contains(StandardOpenOption.WRITE)) {
-<span class="fc bfc" id="L328" title="All 2 branches covered.">            if (contains(path)) {</span>
-<span class="pc bpc" id="L329" title="1 of 2 branches missed.">                if (options.contains(StandardOpenOption.WRITE)) {</span>
-<span class="fc" id="L330">                    final JvfsFileEntry entry = get(path);</span>
-<span class="fc" id="L331">                    final JvfsSeekableByteChannel channel = new JvfsSeekableByteChannel(entry);</span>
+<span class="fc bfc" id="L358" title="All 2 branches covered.">            if (contains(path)) {</span>
+<span class="pc bpc" id="L359" title="1 of 2 branches missed.">                if (options.contains(StandardOpenOption.WRITE)) {</span>
+<span class="fc" id="L360">                    final JvfsFileEntry entry = get(path);</span>
+<span class="fc" id="L361">                    final JvfsSeekableByteChannel channel = new JvfsSeekableByteChannel(entry);</span>
 
-<span class="pc bpc" id="L333" title="1 of 2 branches missed.">                    if (options.contains(StandardOpenOption.APPEND)) {</span>
-<span class="nc" id="L334">                        channel.position(channel.size());</span>
+<span class="pc bpc" id="L363" title="1 of 2 branches missed.">                    if (options.contains(StandardOpenOption.APPEND)) {</span>
+<span class="nc" id="L364">                        channel.position(channel.size());</span>
                     }
 
-<span class="fc" id="L337">                    return channel;</span>
+<span class="fc" id="L367">                    return channel;</span>
                 } else {
-<span class="nc" id="L339">                    throw new FileAlreadyExistsException(path);</span>
+<span class="nc" id="L369">                    throw new FileAlreadyExistsException(path);</span>
                 }
             } else {
-<span class="fc" id="L342">                final JvfsFileEntry entry = JvfsFileEntry.newFile(path);</span>
-<span class="fc" id="L343">                entry.setPermissions(JvfsFilePermissions.forValue(attrs));</span>
-<span class="fc" id="L344">                add(entry);</span>
-<span class="fc" id="L345">                return new JvfsSeekableByteChannel(entry);</span>
+<span class="fc" id="L372">                final JvfsFileEntry entry = JvfsFileEntry.newFile(path);</span>
+<span class="fc" id="L373">                entry.setPermissions(JvfsFilePermissions.forValue(attrs));</span>
+<span class="fc" id="L374">                add(entry);</span>
+<span class="fc" id="L375">                return new JvfsSeekableByteChannel(entry);</span>
             }
         }
 
-<span class="pc bpc" id="L349" title="1 of 2 branches missed.">        if (contains(path)) {</span>
-<span class="fc" id="L350">            return new JvfsSeekableByteChannel(get(path));</span>
+<span class="pc bpc" id="L379" title="1 of 2 branches missed.">        if (contains(path)) {</span>
+<span class="fc" id="L380">            return new JvfsSeekableByteChannel(get(path));</span>
         }
 
-<span class="nc" id="L353">        throw new NoSuchFileException(path);</span>
+<span class="nc" id="L383">        throw new NoSuchFileException(path);</span>
     }
 
     /**
@@ -361,43 +391,43 @@ import java.util.concurrent.TimeUnit;
      * @throws IOException if path does not exist
      */
     void checkAccess(final String path, final AccessMode... modes) throws IOException {
-<span class="nc" id="L364">        checkClosed();</span>
-<span class="nc" id="L365">        assertFileExists(path);</span>
+<span class="fc" id="L394">        checkClosed();</span>
+<span class="fc" id="L395">        assertFileExists(path);</span>
 
-<span class="nc" id="L367">        boolean r = false;</span>
-<span class="nc" id="L368">        boolean w = false;</span>
-<span class="nc" id="L369">        boolean x = false;</span>
+<span class="fc" id="L397">        boolean r = false;</span>
+<span class="fc" id="L398">        boolean w = false;</span>
+<span class="fc" id="L399">        boolean x = false;</span>
 
-<span class="nc bnc" id="L371" title="All 2 branches missed.">        for (AccessMode mode : modes) {</span>
-<span class="nc bnc" id="L372" title="All 4 branches missed.">            switch (mode) {</span>
+<span class="fc bfc" id="L401" title="All 2 branches covered.">        for (AccessMode mode : modes) {</span>
+<span class="pc bpc" id="L402" title="1 of 4 branches missed.">            switch (mode) {</span>
                 case READ:
-<span class="nc" id="L374">                    r = true;</span>
-<span class="nc" id="L375">                    break;</span>
+<span class="fc" id="L404">                    r = true;</span>
+<span class="fc" id="L405">                    break;</span>
                 case WRITE:
-<span class="nc" id="L377">                    w = true;</span>
-<span class="nc" id="L378">                    break;</span>
+<span class="fc" id="L407">                    w = true;</span>
+<span class="fc" id="L408">                    break;</span>
                 case EXECUTE:
-<span class="nc" id="L380">                    x = true;</span>
-<span class="nc" id="L381">                    break;</span>
+<span class="fc" id="L410">                    x = true;</span>
+<span class="fc" id="L411">                    break;</span>
                 default:
-<span class="nc" id="L383">                    throw new UnsupportedOperationException();</span>
+<span class="nc" id="L413">                    throw new UnsupportedOperationException();</span>
             }
         }
 
-<span class="nc" id="L387">        final JvfsFileEntry entry = get(path);</span>
+<span class="fc" id="L417">        final JvfsFileEntry entry = get(path);</span>
 
-<span class="nc bnc" id="L389" title="All 4 branches missed.">        if (r &amp;&amp; !entry.isReadable()) {</span>
-<span class="nc" id="L390">            throw new AccessDeniedException(path);</span>
+<span class="pc bpc" id="L419" title="1 of 4 branches missed.">        if (r &amp;&amp; !entry.isReadable()) {</span>
+<span class="nc" id="L420">            throw new AccessDeniedException(path);</span>
         }
 
-<span class="nc bnc" id="L393" title="All 6 branches missed.">        if (w &amp;&amp; (isReadOnly() || !entry.isWritable())) {</span>
-<span class="nc" id="L394">            throw new AccessDeniedException(path);</span>
+<span class="pc bpc" id="L423" title="2 of 6 branches missed.">        if (w &amp;&amp; (isReadOnly() || !entry.isWritable())) {</span>
+<span class="nc" id="L424">            throw new AccessDeniedException(path);</span>
         }
 
-<span class="nc bnc" id="L397" title="All 4 branches missed.">        if (x &amp;&amp; !entry.isExecutable()) {</span>
-<span class="nc" id="L398">            throw new AccessDeniedException(path);</span>
+<span class="pc bpc" id="L427" title="1 of 4 branches missed.">        if (x &amp;&amp; !entry.isExecutable()) {</span>
+<span class="nc" id="L428">            throw new AccessDeniedException(path);</span>
         }
-<span class="nc" id="L400">    }</span>
+<span class="fc" id="L430">    }</span>
 
     /**
      * Create a directory.
@@ -407,22 +437,11 @@ import java.util.concurrent.TimeUnit;
      * @throws IOException if path does not exist
      */
     void createDirectory(final String path, final FileAttribute&lt;?&gt;... attrs) throws IOException {
-<span class="nc" id="L410">        checkClosed();</span>
-<span class="nc" id="L411">        assertFileExists(path);</span>
-<span class="nc" id="L412">        final List&lt;String&gt; names = JvfsPathUtil.tokenize(path);</span>
-<span class="nc" id="L413">        names.remove(names.size() - 1);</span>
-<span class="nc" id="L414">        final StringBuilder buf = new StringBuilder();</span>
-
-<span class="nc bnc" id="L416" title="All 2 branches missed.">        for (final String name : names) {</span>
-<span class="nc" id="L417">            buf.append(JvfsFileSystems.DIR_SEP).append(name);</span>
-
-<span class="nc bnc" id="L419" title="All 2 branches missed.">            if (!contains(buf.toString())) {</span>
-<span class="nc" id="L420">                final JvfsFileEntry directory = JvfsFileEntry.newDir(buf.toString());</span>
-<span class="nc" id="L421">                directory.setPermissions(JvfsFilePermissions.forValue(attrs));</span>
-<span class="nc" id="L422">                add(directory);</span>
-            }
-<span class="nc" id="L424">        }</span>
-<span class="nc" id="L425">    }</span>
+<span class="fc" id="L440">        checkClosed();</span>
+<span class="fc" id="L441">        final JvfsFileEntry directory = JvfsFileEntry.newDir(path);</span>
+<span class="fc" id="L442">        directory.setPermissions(JvfsFilePermissions.forValue(attrs));</span>
+<span class="fc" id="L443">        add(directory);</span>
+<span class="fc" id="L444">    }</span>
 
     /**
      * Deletes a file.
@@ -431,19 +450,16 @@ import java.util.concurrent.TimeUnit;
      * @throws IOException if path does not exist
      */
     void delete(final String path) throws IOException {
-<span class="nc" id="L434">        checkClosed();</span>
-<span class="nc" id="L435">        assertFileExists(path);</span>
-<span class="nc" id="L436">        final JvfsFileEntry entry = get(path);</span>
+<span class="nc" id="L453">        checkClosed();</span>
+<span class="nc" id="L454">        assertFileExists(path);</span>
+<span class="nc" id="L455">        final JvfsFileEntry entry = get(path);</span>
 
-        //CHECKSTYLE:OFF
-<span class="nc bnc" id="L439" title="All 2 branches missed.">        if (entry.isDirectory() &amp;&amp; false) {</span>
-        //CHECKSTYLE:ON
-            // TODO Implement check if empty.
-            throw new DirectoryNotEmptyException(path);
+<span class="nc bnc" id="L457" title="All 4 branches missed.">        if (entry.isDirectory() &amp;&amp; entry.hasChildren()) {</span>
+<span class="nc" id="L458">            throw new DirectoryNotEmptyException(path);</span>
         }
 
-<span class="nc" id="L445">        attic.remove(path);</span>
-<span class="nc" id="L446">    }</span>
+<span class="nc" id="L461">        attic.remove(path);</span>
+<span class="nc" id="L462">    }</span>
 
     /**
      * Get the file attributes.
@@ -453,9 +469,9 @@ import java.util.concurrent.TimeUnit;
      * @throws IOException if path does not exist
      */
     JvfsFileAttributes getFileAttributes(final String path) throws IOException {
-<span class="nc" id="L456">        checkClosed();</span>
-<span class="nc" id="L457">        assertFileExists(path);</span>
-<span class="nc" id="L458">        return new JvfsFileAttributes(get(path));</span>
+<span class="fc" id="L472">        checkClosed();</span>
+<span class="fc" id="L473">        assertFileExists(path);</span>
+<span class="fc" id="L474">        return new JvfsFileAttributes(get(path));</span>
     }
 
     /**
@@ -469,22 +485,22 @@ import java.util.concurrent.TimeUnit;
      */
     void setTimes(final String path, final FileTime mtime, final FileTime atime, final FileTime ctime)
         throws IOException {
-<span class="nc" id="L472">        checkClosed();</span>
-<span class="nc" id="L473">        assertFileExists(path);</span>
-<span class="nc" id="L474">        final JvfsFileEntry entry = get(path);</span>
+<span class="nc" id="L488">        checkClosed();</span>
+<span class="nc" id="L489">        assertFileExists(path);</span>
+<span class="nc" id="L490">        final JvfsFileEntry entry = get(path);</span>
 
-<span class="nc bnc" id="L476" title="All 2 branches missed.">        if (null != mtime) {</span>
-<span class="nc" id="L477">            entry.setLastModifiedTime(mtime.to(TimeUnit.SECONDS));</span>
+<span class="nc bnc" id="L492" title="All 2 branches missed.">        if (null != mtime) {</span>
+<span class="nc" id="L493">            entry.setLastModifiedTime(mtime.to(TimeUnit.SECONDS));</span>
         }
 
-<span class="nc bnc" id="L480" title="All 2 branches missed.">        if (null != atime) {</span>
-<span class="nc" id="L481">            entry.setLastAccessTime(atime.to(TimeUnit.SECONDS));</span>
+<span class="nc bnc" id="L496" title="All 2 branches missed.">        if (null != atime) {</span>
+<span class="nc" id="L497">            entry.setLastAccessTime(atime.to(TimeUnit.SECONDS));</span>
         }
 
-<span class="nc bnc" id="L484" title="All 2 branches missed.">        if (null != ctime) {</span>
-<span class="nc" id="L485">            entry.setCreationTime(ctime.to(TimeUnit.SECONDS));</span>
+<span class="nc bnc" id="L500" title="All 2 branches missed.">        if (null != ctime) {</span>
+<span class="nc" id="L501">            entry.setCreationTime(ctime.to(TimeUnit.SECONDS));</span>
         }
-<span class="nc" id="L487">    }</span>
+<span class="nc" id="L503">    }</span>
 
     /**
      * Copy a file from one path to an other one.
@@ -495,15 +511,15 @@ import java.util.concurrent.TimeUnit;
      * @throws IOException if source does not exist
      */
     void copy(final String source, final String target, final CopyOption... options) throws IOException {
-<span class="nc" id="L498">        checkClosed();</span>
-<span class="nc" id="L499">        assertFileExists(source);</span>
+<span class="nc" id="L514">        checkClosed();</span>
+<span class="nc" id="L515">        assertFileExists(source);</span>
 
-<span class="nc bnc" id="L501" title="All 2 branches missed.">        if (contains(target)) {</span>
-<span class="nc" id="L502">            throw new FileAlreadyExistsException(target);</span>
+<span class="nc bnc" id="L517" title="All 2 branches missed.">        if (contains(target)) {</span>
+<span class="nc" id="L518">            throw new FileAlreadyExistsException(target);</span>
         }
 
-<span class="nc" id="L505">        add(get(source).copy());</span>
-<span class="nc" id="L506">    }</span>
+<span class="nc" id="L521">        add(get(source).copy());</span>
+<span class="nc" id="L522">    }</span>
 
     /**
      * Move a file from one path to an other one.
@@ -514,18 +530,18 @@ import java.util.concurrent.TimeUnit;
      * @throws IOException if source does not exist
      */
     void move(final String source, final String target, final CopyOption... options) throws IOException {
-<span class="nc" id="L517">        checkClosed();</span>
-<span class="nc" id="L518">        assertFileExists(source);</span>
-<span class="nc" id="L519">        JvfsAssertions.notEmpty(target, &quot;target&quot;);</span>
+<span class="nc" id="L533">        checkClosed();</span>
+<span class="nc" id="L534">        assertFileExists(source);</span>
+<span class="nc" id="L535">        JvfsAssertions.notEmpty(target, &quot;target&quot;);</span>
 
-<span class="nc bnc" id="L521" title="All 2 branches missed.">        if (contains(target)) {</span>
-<span class="nc" id="L522">            throw new FileAlreadyExistsException(target);</span>
+<span class="nc bnc" id="L537" title="All 2 branches missed.">        if (contains(target)) {</span>
+<span class="nc" id="L538">            throw new FileAlreadyExistsException(target);</span>
         }
 
-<span class="nc" id="L525">        final JvfsFileEntry entry = get(source);</span>
-<span class="nc" id="L526">        attic.remove(entry.getPath());</span>
-<span class="nc" id="L527">        add(entry);</span>
-<span class="nc" id="L528">    }</span>
+<span class="nc" id="L541">        final JvfsFileEntry entry = get(source);</span>
+<span class="nc" id="L542">        attic.remove(entry.getPath());</span>
+<span class="nc" id="L543">        add(entry);</span>
+<span class="nc" id="L544">    }</span>
 
     /**
      * Get the file store.
@@ -533,7 +549,7 @@ import java.util.concurrent.TimeUnit;
      * @return never {@literal null}
      */
     FileStore getFileStore() {
-<span class="fc" id="L536">        return fileStores.get(0);</span>
+<span class="fc" id="L552">        return fileStores.get(0);</span>
     }
 
     /**
@@ -544,9 +560,9 @@ import java.util.concurrent.TimeUnit;
      * @throws IOException if file does not exist
      */
     boolean isHidden(final String path) throws IOException {
-<span class="nc" id="L547">        checkClosed();</span>
-<span class="nc" id="L548">        assertFileExists(path);</span>
-<span class="nc" id="L549">        return get(path).isHidden();</span>
+<span class="nc" id="L563">        checkClosed();</span>
+<span class="nc" id="L564">        assertFileExists(path);</span>
+<span class="nc" id="L565">        return get(path).isHidden();</span>
     }
 
     /**
@@ -555,23 +571,25 @@ import java.util.concurrent.TimeUnit;
      * @return non negative
      */
     long getUsedSpace() {
-<span class="fc" id="L558">        long usedBytes = 0L;</span>
+<span class="fc" id="L574">        long usedBytes = 0L;</span>
 
-<span class="fc" id="L560">        final Iterator&lt;Map.Entry&lt;String, JvfsFileEntry&gt;&gt; it  = attic.entrySet().iterator();</span>
+<span class="fc" id="L576">        final Iterator&lt;Map.Entry&lt;String, JvfsFileEntry&gt;&gt; it = attic.entrySet().iterator();</span>
 
-<span class="pc bpc" id="L562" title="1 of 2 branches missed.">        while (it.hasNext()) {</span>
-<span class="nc" id="L563">            final JvfsFileEntry file = it.next().getValue();</span>
+<span class="pc bpc" id="L578" title="1 of 2 branches missed.">        while (it.hasNext()) {</span>
+<span class="nc" id="L579">            final JvfsFileEntry file = it.next().getValue();</span>
 
-<span class="nc bnc" id="L565" title="All 2 branches missed.">            if (file.isDirectory()) {</span>
-<span class="nc" id="L566">                break;</span>
+<span class="nc bnc" id="L581" title="All 2 branches missed.">            if (file.isDirectory()) {</span>
+<span class="nc" id="L582">                break;</span>
             }
 
-<span class="nc" id="L569">            usedBytes += file.size();</span>
-<span class="nc" id="L570">        }</span>
+<span class="nc" id="L585">            usedBytes += file.size();</span>
+<span class="nc" id="L586">        }</span>
 
-<span class="fc" id="L572">        return usedBytes;</span>
+<span class="fc" id="L588">        return usedBytes;</span>
     }
 
-
+    void clear() {
+<span class="fc" id="L592">        attic.clear();</span>
+<span class="fc" id="L593">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

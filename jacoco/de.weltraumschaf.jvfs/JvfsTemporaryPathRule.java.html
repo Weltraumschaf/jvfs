@@ -18,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Objects;
+import org.apache.log4j.Logger;
 import org.junit.rules.ExternalResource;
 
 /**
@@ -44,8 +46,12 @@ import org.junit.rules.ExternalResource;
  *
  * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
  */
-<span class="fc" id="L47">public class JvfsTemporaryPathRule extends ExternalResource {</span>
+<span class="fc" id="L49">public class JvfsTemporaryPathRule extends ExternalResource {</span>
 
+    /**
+     * Logging facility.
+     */
+<span class="fc" id="L54">    private static final Logger LOG = Logger.getLogger(JvfsTemporaryPathRule.class);</span>
     /**
      * Root folder.
      */
@@ -55,21 +61,29 @@ import org.junit.rules.ExternalResource;
     //CHECKSTYLE:OFF
     protected void before() throws Throwable {
     //CHECKSTYLE:ON
-<span class="fc" id="L58">        create();</span>
-<span class="fc" id="L59">    }</span>
+<span class="fc" id="L64">        create();</span>
+<span class="fc" id="L65">    }</span>
 
     @Override
     protected void after() {
         try {
-<span class="fc" id="L64">            delete();</span>
-<span class="nc" id="L65">        } catch (IOException ex) {</span>
-            //CHECKSTYLE:OFF
-<span class="nc" id="L67">            System.err.println(String.format(&quot;Can't delete temporary folder '%s'!&quot;, folder.toString()));</span>
-            //CHECKSTYLE:ON
-<span class="fc" id="L69">        }</span>
-<span class="fc" id="L70">    }</span>
+<span class="fc" id="L70">            delete();</span>
+<span class="fc" id="L71">        } catch (final IOException e) {</span>
+<span class="fc" id="L72">            logError(String.format(&quot;Can't delete temporary folder '%s'!&quot;, Objects.toString(folder)), e);</span>
+<span class="fc" id="L73">        }</span>
+<span class="fc" id="L74">    }</span>
 
-    // testing purposes only
+    /**
+     * Logs IOExceptions.
+     *
+     * @param message must not be {@code nul} or empty
+     * @param e may be {@code null}
+     */
+    protected void logError(final String message, final IOException e) {
+<span class="fc" id="L83">        JvfsAssertions.notEmpty(message, &quot;message&quot;);</span>
+<span class="fc" id="L84">        LOG.error(message, e);</span>
+<span class="fc" id="L85">    }</span>
+
     /**
      * for testing purposes only.
      *
@@ -78,10 +92,10 @@ import org.junit.rules.ExternalResource;
      * @throws IOException on any I/O error
      */
     public void create() throws IOException {
-<span class="fc" id="L81">        folder = Files.createTempDirectory(&quot;junit&quot;);</span>
-<span class="fc" id="L82">        Files.delete(folder);</span>
-<span class="fc" id="L83">        Files.createDirectories(folder);</span>
-<span class="fc" id="L84">    }</span>
+<span class="fc" id="L95">        folder = Files.createTempDirectory(&quot;junit&quot;);</span>
+<span class="fc" id="L96">        Files.delete(folder);</span>
+<span class="fc" id="L97">        Files.createDirectories(folder);</span>
+<span class="fc" id="L98">    }</span>
 
     /**
      * Returns a new fresh file with the given name under the temporary folder.
@@ -91,15 +105,15 @@ import org.junit.rules.ExternalResource;
      * @throws IOException IOException on any I/O error
      */
     public Path newFile(final String fileName) throws IOException {
-<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (null == fileName) {</span>
-<span class="fc" id="L95">            throw new NullPointerException(&quot;Parameter 'fileName' must not be null!&quot;);</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (null == fileName) {</span>
+<span class="fc" id="L109">            throw new NullPointerException(&quot;Parameter 'fileName' must not be null!&quot;);</span>
         }
 
-<span class="fc bfc" id="L98" title="All 2 branches covered.">        if (fileName.isEmpty()) {</span>
-<span class="fc" id="L99">            throw new IllegalArgumentException(&quot;Parameter 'fileName' must not be empty!&quot;);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        if (fileName.isEmpty()) {</span>
+<span class="fc" id="L113">            throw new IllegalArgumentException(&quot;Parameter 'fileName' must not be empty!&quot;);</span>
         }
 
-<span class="fc" id="L102">        return Files.createFile(folder.resolve(fileName));</span>
+<span class="fc" id="L116">        return Files.createFile(folder.resolve(fileName));</span>
     }
 
     /**
@@ -110,15 +124,15 @@ import org.junit.rules.ExternalResource;
      * @throws IOException IOException on any I/O error
      */
     public Path newFolder(final String folderName) throws IOException {
-<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (null == folderName) {</span>
-<span class="fc" id="L114">            throw new NullPointerException(&quot;Parameter 'folderName' must not be null!&quot;);</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">        if (null == folderName) {</span>
+<span class="fc" id="L128">            throw new NullPointerException(&quot;Parameter 'folderName' must not be null!&quot;);</span>
         }
 
-<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (folderName.isEmpty()) {</span>
-<span class="fc" id="L118">            throw new IllegalArgumentException(&quot;Parameter 'folderName' must not be empty!&quot;);</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        if (folderName.isEmpty()) {</span>
+<span class="fc" id="L132">            throw new IllegalArgumentException(&quot;Parameter 'folderName' must not be empty!&quot;);</span>
         }
 
-<span class="fc" id="L121">        return Files.createDirectory(folder.resolve(folderName));</span>
+<span class="fc" id="L135">        return Files.createDirectory(folder.resolve(folderName));</span>
     }
 
     /**
@@ -127,7 +141,7 @@ import org.junit.rules.ExternalResource;
      * @return never {@code null}
      */
     public Path getRoot() {
-<span class="fc" id="L130">        return folder;</span>
+<span class="fc" id="L144">        return folder;</span>
     }
 
     /**
@@ -139,8 +153,8 @@ import org.junit.rules.ExternalResource;
      * @throws IOException on any I/O error
      */
     public void delete() throws IOException {
-<span class="fc" id="L142">        recursiveDelete(folder);</span>
-<span class="fc" id="L143">    }</span>
+<span class="fc" id="L156">        recursiveDelete(folder);</span>
+<span class="fc" id="L157">    }</span>
 
     /**
      * Walks directory recursively and deletes all files.
@@ -149,29 +163,29 @@ import org.junit.rules.ExternalResource;
      * @throws IOException on any I/O error
      */
     private void recursiveDelete(final Path dir) throws IOException {
-<span class="pc bpc" id="L152" title="1 of 2 branches missed.">        if (null == dir) {</span>
-<span class="nc" id="L153">            throw new NullPointerException(&quot;Parameter 'dir' must not be null!&quot;);</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">        if (null == dir) {</span>
+<span class="fc" id="L167">            throw new NullPointerException(&quot;Parameter 'dir' must not be null!&quot;);</span>
         }
 
-<span class="fc" id="L156">        Files.walkFileTree(dir, new SimpleFileVisitor&lt;Path&gt;() {</span>
+<span class="fc" id="L170">        Files.walkFileTree(dir, new SimpleFileVisitor&lt;Path&gt;() {</span>
 
             @Override
             public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-<span class="fc" id="L160">                Files.delete(file);</span>
-<span class="fc" id="L161">                return CONTINUE;</span>
+<span class="fc" id="L174">                Files.delete(file);</span>
+<span class="fc" id="L175">                return CONTINUE;</span>
             }
 
             @Override
             public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
-<span class="pc bpc" id="L166" title="1 of 2 branches missed.">                if (exc == null) {</span>
-<span class="fc" id="L167">                    Files.delete(dir);</span>
-<span class="fc" id="L168">                    return CONTINUE;</span>
+<span class="pc bpc" id="L180" title="1 of 2 branches missed.">                if (exc == null) {</span>
+<span class="fc" id="L181">                    Files.delete(dir);</span>
+<span class="fc" id="L182">                    return CONTINUE;</span>
                 } else {
-<span class="nc" id="L170">                    throw exc;</span>
+<span class="nc" id="L184">                    throw exc;</span>
                 }
             }
 
         });
-<span class="fc" id="L175">    }</span>
+<span class="fc" id="L189">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

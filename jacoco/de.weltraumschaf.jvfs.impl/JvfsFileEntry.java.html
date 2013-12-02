@@ -12,6 +12,8 @@
 package de.weltraumschaf.jvfs.impl;
 
 import de.weltraumschaf.jvfs.JvfsAssertions;
+import de.weltraumschaf.jvfs.JvfsCollections;
+import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -20,7 +22,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
  */
-<span class="pc bpc" id="L23" title="1 of 2 branches missed.">final class JvfsFileEntry {</span>
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">final class JvfsFileEntry {</span>
 
     /**
      * Absolute path name of the file system entry.
@@ -33,7 +35,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
     /**
      * R/W lock.
      */
-<span class="fc" id="L36">    private final ReadWriteLock rwlock = new ReentrantReadWriteLock();</span>
+<span class="fc" id="L38">    private final ReadWriteLock rwlock = new ReentrantReadWriteLock();</span>
     /**
      * Holds the file data.
      */
@@ -57,7 +59,15 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
     /**
      * Holds the file permissions.
      */
-<span class="fc" id="L60">    private JvfsFilePermissions permissions = new JvfsFilePermissions();</span>
+<span class="fc" id="L62">    private JvfsFilePermissions permissions = new JvfsFilePermissions();</span>
+    /**
+     * Contains children if it is a directory.
+     */
+<span class="fc" id="L66">    private Set&lt;JvfsFileEntry&gt; children = JvfsCollections.newSet();</span>
+    /**
+     * Contains the parent directory, except if it is the root.
+     */
+    private JvfsFileEntry parent;
 
     /**
      * Copy constructor.
@@ -67,13 +77,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @param src must not be {@literal null}
      */
     private JvfsFileEntry(final JvfsFileEntry src) {
-<span class="fc" id="L70">        this(src.path, src.direcotry, src.getContent());</span>
-<span class="fc" id="L71">        this.lastModifiedTime = src.getLastModifiedTime();</span>
-<span class="fc" id="L72">        this.lastAccessTime = src.getLastAccessTime();</span>
-<span class="fc" id="L73">        this.creationTime = src.getCreationTime();</span>
-<span class="fc" id="L74">        this.permissions = src.permissions.copy();</span>
-<span class="fc" id="L75">        this.hidden = src.isHidden();</span>
-<span class="fc" id="L76">    }</span>
+<span class="fc" id="L80">        this(src.path, src.direcotry, src.getContent().clone(), src.getParent());</span>
+<span class="fc" id="L81">        this.lastModifiedTime = src.getLastModifiedTime();</span>
+<span class="fc" id="L82">        this.lastAccessTime = src.getLastAccessTime();</span>
+<span class="fc" id="L83">        this.creationTime = src.getCreationTime();</span>
+<span class="fc" id="L84">        this.permissions = src.permissions.copy();</span>
+<span class="fc" id="L85">        this.hidden = src.isHidden();</span>
+<span class="fc" id="L86">        this.children = JvfsCollections.newSet(src.children);</span>
+<span class="fc" id="L87">    }</span>
 
     /**
      * Hidden: Use either {@link #newDir(java.lang.String)} or {@link #newFile(java.lang.String)}.
@@ -82,8 +93,19 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @param direcotry {@literal true} if it is a directory, else {@literal false}
      */
     private JvfsFileEntry(final String path, final boolean direcotry) {
-<span class="fc" id="L85">        this(path, direcotry, new byte[0]);</span>
-<span class="fc" id="L86">    }</span>
+<span class="fc" id="L96">        this(path, direcotry, null);</span>
+<span class="fc" id="L97">    }</span>
+
+    /**
+     * Hidden: Use either {@link #newDir(java.lang.String)} or {@link #newFile(java.lang.String)}.
+     *
+     * @param path must not be {@literal null} or empty
+     * @param direcotry {@literal true} if it is a directory, else {@literal false}
+     * @param parent may be {@code null} for root
+     */
+    private JvfsFileEntry(final String path, final boolean direcotry, final JvfsFileEntry parent) {
+<span class="fc" id="L107">        this(path, direcotry, new byte[0], parent);</span>
+<span class="fc" id="L108">    }</span>
 
     /**
      * Dedicated constructor.
@@ -91,17 +113,19 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @param path must not be {@literal null} or empty
      * @param direcotry {@literal true} if it is a directory, else {@literal false}
      * @param content must not be {@code null}
+     * @param parent may be {@code null} for root
      */
-    JvfsFileEntry(final String path, final boolean direcotry, final byte[] content) {
-<span class="fc" id="L96">        super();</span>
-<span class="pc bpc" id="L97" title="2 of 4 branches missed.">        assert path != null : &quot;path must not be null&quot;;</span>
-<span class="pc bpc" id="L98" title="2 of 4 branches missed.">        assert !path.isEmpty() : &quot;path must not be empty&quot;;</span>
-<span class="pc bpc" id="L99" title="2 of 4 branches missed.">        assert content != null : &quot;content must not be null&quot;;</span>
+    JvfsFileEntry(final String path, final boolean direcotry, final byte[] content, final JvfsFileEntry parent) {
+<span class="fc" id="L119">        super();</span>
+<span class="pc bpc" id="L120" title="2 of 4 branches missed.">        assert path != null : &quot;path must not be null&quot;;</span>
+<span class="pc bpc" id="L121" title="2 of 4 branches missed.">        assert !path.isEmpty() : &quot;path must not be empty&quot;;</span>
+<span class="pc bpc" id="L122" title="2 of 4 branches missed.">        assert content != null : &quot;content must not be null&quot;;</span>
 
-<span class="fc" id="L101">        this.path = path;</span>
-<span class="fc" id="L102">        this.direcotry = direcotry;</span>
-<span class="fc" id="L103">        this.content = content;</span>
-<span class="fc" id="L104">    }</span>
+<span class="fc" id="L124">        this.path = path;</span>
+<span class="fc" id="L125">        this.direcotry = direcotry;</span>
+<span class="fc" id="L126">        this.content = content;</span>
+<span class="fc" id="L127">        this.parent = parent;</span>
+<span class="fc" id="L128">    }</span>
 
     /**
      * Creates a new directory entry.
@@ -110,7 +134,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return never {@literal null}
      */
     static JvfsFileEntry newDir(final String path) {
-<span class="fc" id="L113">        return new JvfsFileEntry(path, true);</span>
+<span class="fc" id="L137">        return new JvfsFileEntry(path, true);</span>
     }
 
     /**
@@ -120,7 +144,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return never {@literal null}
      */
     static JvfsFileEntry newFile(final String path) {
-<span class="fc" id="L123">        return new JvfsFileEntry(path, false);</span>
+<span class="fc" id="L147">        return new JvfsFileEntry(path, false);</span>
     }
 
     /**
@@ -129,27 +153,36 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return never {@literal null}
      */
     JvfsFileEntry copy() {
-<span class="fc" id="L132">        return new JvfsFileEntry(this);</span>
+<span class="fc" id="L156">        return new JvfsFileEntry(this);</span>
     }
 
     @Override
     public int hashCode() {
-<span class="fc" id="L137">        return path.hashCode();</span>
+<span class="fc" id="L161">        return path.hashCode();</span>
     }
 
     @Override
     public boolean equals(final Object obj) {
-<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (!(obj instanceof JvfsFileEntry)) {</span>
-<span class="fc" id="L143">            return false;</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">        if (!(obj instanceof JvfsFileEntry)) {</span>
+<span class="fc" id="L167">            return false;</span>
         }
 
-<span class="fc" id="L146">        final JvfsFileEntry other = (JvfsFileEntry) obj;</span>
-<span class="fc" id="L147">        return path.equals(other.path);</span>
+<span class="fc" id="L170">        final JvfsFileEntry other = (JvfsFileEntry) obj;</span>
+<span class="fc" id="L171">        return path.equals(other.path);</span>
     }
 
     @Override
     public String toString() {
-<span class="fc" id="L152">        return path;</span>
+<span class="fc" id="L176">        final StringBuilder buffer = new StringBuilder();</span>
+
+<span class="fc bfc" id="L178" title="All 2 branches covered.">        if (isDirectory()) {</span>
+<span class="fc" id="L179">            buffer.append('d');</span>
+        } else {
+<span class="fc" id="L181">            buffer.append('-');</span>
+        }
+
+<span class="fc" id="L184">        buffer.append(permissions).append(' ').append(path);</span>
+<span class="fc" id="L185">        return buffer.toString();</span>
     }
 
     /**
@@ -158,7 +191,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return never {@literal null} or empty
      */
     String getPath() {
-<span class="fc" id="L161">        return path;</span>
+<span class="fc" id="L194">        return path;</span>
     }
 
     /**
@@ -167,7 +200,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return {@literal true} means it is a directory, {@literal false} means file
      */
     boolean isDirectory() {
-<span class="fc" id="L170">        return direcotry;</span>
+<span class="fc" id="L203">        return direcotry;</span>
     }
 
     /**
@@ -176,7 +209,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return {@literal true} if it is hidden, else {@literal false}
      */
     boolean isHidden() {
-<span class="fc" id="L179">        return hidden;</span>
+<span class="fc" id="L212">        return hidden;</span>
     }
 
     /**
@@ -185,7 +218,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return non negative number
      */
     long getLastModifiedTime() {
-<span class="fc" id="L188">        return lastModifiedTime;</span>
+<span class="fc" id="L221">        return lastModifiedTime;</span>
     }
 
     /**
@@ -194,9 +227,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @param timestamp must be non negative
      */
     void setLastModifiedTime(final long timestamp) {
-<span class="fc" id="L197">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
-<span class="fc" id="L198">        this.lastModifiedTime = timestamp;</span>
-<span class="fc" id="L199">    }</span>
+<span class="fc" id="L230">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
+<span class="fc" id="L231">        this.lastModifiedTime = timestamp;</span>
+<span class="fc" id="L232">    }</span>
 
     /**
      * Get last access time in seconds.
@@ -204,7 +237,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return non negative number
      */
     long getLastAccessTime() {
-<span class="fc" id="L207">        return lastAccessTime;</span>
+<span class="fc" id="L240">        return lastAccessTime;</span>
     }
 
     /**
@@ -213,9 +246,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @param timestamp must be non negative
      */
     void setLastAccessTime(final long timestamp) {
-<span class="fc" id="L216">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
-<span class="fc" id="L217">        this.lastAccessTime = timestamp;</span>
-<span class="fc" id="L218">    }</span>
+<span class="fc" id="L249">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
+<span class="fc" id="L250">        this.lastAccessTime = timestamp;</span>
+<span class="fc" id="L251">    }</span>
 
     /**
      * Get last creation in seconds.
@@ -223,7 +256,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return non negative number
      */
     long getCreationTime() {
-<span class="fc" id="L226">        return creationTime;</span>
+<span class="fc" id="L259">        return creationTime;</span>
     }
 
     /**
@@ -232,9 +265,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @param timestamp must be non negative
      */
     void setCreationTime(final long timestamp) {
-<span class="fc" id="L235">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
-<span class="fc" id="L236">        this.creationTime = timestamp;</span>
-<span class="fc" id="L237">    }</span>
+<span class="fc" id="L268">        JvfsAssertions.greaterThanEqual(timestamp, 0, &quot;timestamp&quot;);</span>
+<span class="fc" id="L269">        this.creationTime = timestamp;</span>
+<span class="fc" id="L270">    }</span>
 
     /**
      * Whether the file is readable.
@@ -242,7 +275,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return {@literal true} if readable, else {@literal false}
      */
     boolean isReadable() {
-<span class="fc" id="L245">        return permissions.ownerRead();</span>
+<span class="fc" id="L278">        return permissions.ownerRead();</span>
     }
 
     /**
@@ -251,7 +284,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return {@literal true} if writable, else {@literal false}
      */
     boolean isWritable() {
-<span class="fc" id="L254">        return permissions.ownerWrite();</span>
+<span class="fc" id="L287">        return permissions.ownerWrite();</span>
     }
 
     /**
@@ -260,7 +293,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return {@literal true} if executable, else {@literal false}
      */
     boolean isExecutable() {
-<span class="fc" id="L263">        return permissions.ownerExecute();</span>
+<span class="fc" id="L296">        return permissions.ownerExecute();</span>
     }
 
     /**
@@ -269,8 +302,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @param readable {@code true} for readable, else {@code false}
      */
     public void setReadable(boolean readable) {
-<span class="fc" id="L272">        permissions.ownerRead(readable);</span>
-<span class="fc" id="L273">    }</span>
+<span class="fc" id="L305">        permissions.ownerRead(readable);</span>
+<span class="fc" id="L306">    }</span>
 
     /**
      * Set writable attribute.
@@ -278,8 +311,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @param writable {@code true} for writable, else {@code false}
      */
     public void setWritable(boolean writable) {
-<span class="fc" id="L281">        permissions.ownerWrite(writable);</span>
-<span class="fc" id="L282">    }</span>
+<span class="fc" id="L314">        permissions.ownerWrite(writable);</span>
+<span class="fc" id="L315">    }</span>
 
     /**
      * Set executable attribute.
@@ -287,8 +320,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @param executable {@code true} for executable, else {@code false}
      */
     public void setExecutable(boolean executable) {
-<span class="fc" id="L290">        permissions.ownerExecute(executable);</span>
-<span class="fc" id="L291">    }</span>
+<span class="fc" id="L323">        permissions.ownerExecute(executable);</span>
+<span class="fc" id="L324">    }</span>
 
     /**
      * Set hidden attribute.
@@ -296,8 +329,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @param hidden {@code true} for hidden, else {@code false}
      */
     public void setHidden(boolean hidden) {
-<span class="fc" id="L299">        this.hidden = hidden;</span>
-<span class="fc" id="L300">    }</span>
+<span class="fc" id="L332">        this.hidden = hidden;</span>
+<span class="fc" id="L333">    }</span>
 
     /**
      * Whether it is a symbolic link.
@@ -306,7 +339,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      */
     boolean isSymbolicLink() {
         // TODO Implement symbolic links.
-<span class="fc" id="L309">        return false;</span>
+<span class="fc" id="L342">        return false;</span>
     }
 
     /**
@@ -315,11 +348,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return -1 if it is a directory, else size
      */
     long size() {
-<span class="fc bfc" id="L318" title="All 2 branches covered.">        if (this.isDirectory()) {</span>
-<span class="fc" id="L319">            return -1L;</span>
+<span class="fc bfc" id="L351" title="All 2 branches covered.">        if (this.isDirectory()) {</span>
+<span class="fc" id="L352">            return -1L;</span>
         }
 
-<span class="fc" id="L322">        return content.length;</span>
+<span class="fc" id="L355">        return content.length;</span>
     }
 
     /**
@@ -328,7 +361,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @return never {@literal null}
      */
     byte[] getContent() {
-<span class="fc" id="L331">        return content;</span>
+<span class="fc" id="L364">        return content;</span>
     }
 
     /**
@@ -337,37 +370,37 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @param content must not be {@code null}
      */
     void setContent(final byte[] content) {
-<span class="pc bpc" id="L340" title="2 of 4 branches missed.">        assert content != null : &quot;content must be defined&quot;;</span>
-<span class="fc" id="L341">        this.content = content;</span>
-<span class="fc" id="L342">    }</span>
+<span class="pc bpc" id="L373" title="2 of 4 branches missed.">        assert content != null : &quot;content must be defined&quot;;</span>
+<span class="fc" id="L374">        this.content = content;</span>
+<span class="fc" id="L375">    }</span>
 
     /**
      * Acquire write lock.
      */
     void beginWrite() {
-<span class="fc" id="L348">        rwlock.writeLock().lock();</span>
-<span class="fc" id="L349">    }</span>
+<span class="fc" id="L381">        rwlock.writeLock().lock();</span>
+<span class="fc" id="L382">    }</span>
 
     /**
      * Return write lock.
      */
     void endWrite() {
-<span class="fc" id="L355">        rwlock.writeLock().unlock();</span>
-<span class="fc" id="L356">    }</span>
+<span class="fc" id="L388">        rwlock.writeLock().unlock();</span>
+<span class="fc" id="L389">    }</span>
 
     /**
      * Acquire read lock.
      */
     void beginRead() {
-<span class="fc" id="L362">        rwlock.readLock().lock();</span>
-<span class="fc" id="L363">    }</span>
+<span class="fc" id="L395">        rwlock.readLock().lock();</span>
+<span class="fc" id="L396">    }</span>
 
     /**
      * Return read lock.
      */
     void endRead() {
-<span class="fc" id="L369">        rwlock.readLock().unlock();</span>
-<span class="fc" id="L370">    }</span>
+<span class="fc" id="L402">        rwlock.readLock().unlock();</span>
+<span class="fc" id="L403">    }</span>
 
     /**
      * Set file permissions in bulk operation.
@@ -375,9 +408,87 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
      * @param permissions must not be {@code null}
      */
     void setPermissions(final JvfsFilePermissions permissions) {
-<span class="fc" id="L378">        JvfsAssertions.notNull(permissions, &quot;permissions&quot;);</span>
-<span class="fc" id="L379">        this.permissions = permissions;</span>
-<span class="fc" id="L380">    }</span>
+<span class="fc" id="L411">        JvfsAssertions.notNull(permissions, &quot;permissions&quot;);</span>
+<span class="fc" id="L412">        this.permissions = permissions;</span>
+<span class="fc" id="L413">    }</span>
 
+    /**
+     * Get all file permissions as a bulk action.
+     *
+     * @return never {@code null}
+     */
+    JvfsFilePermissions getPermissions() {
+<span class="fc" id="L421">        return permissions;</span>
+    }
+
+    /**
+     * Whether a entry has child entries.
+     *
+     * @return {@literal true} if entry is a directory and children were added, else {@literal false}
+     */
+    boolean hasChildren() {
+<span class="fc bfc" id="L430" title="All 2 branches covered.">        if (isDirectory()) {</span>
+<span class="pc bpc" id="L431" title="1 of 2 branches missed.">            return children.size() &gt; 0;</span>
+        }
+
+<span class="fc" id="L434">        return false;</span>
+    }
+
+    /**
+     * Get the children.
+     *
+     * @return never {@code null}, always empty if not a directory
+     */
+    Set&lt;JvfsFileEntry&gt; getChildren() {
+<span class="fc" id="L443">        return children;</span>
+    }
+
+    /**
+     * Add a child entry.
+     *
+     * Throws an {@link IllegalStateException} if it is not a directory.
+     *
+     * @param child must not be {@code null}
+     */
+    void addChild(final JvfsFileEntry child) {
+<span class="pc bpc" id="L454" title="1 of 2 branches missed.">        if (isDirectory()) {</span>
+<span class="fc" id="L455">            JvfsAssertions.notNull(child, &quot;child&quot;);</span>
+<span class="fc" id="L456">            children.add(child);</span>
+<span class="fc" id="L457">            return;</span>
+        }
+
+<span class="nc" id="L460">        throw new IllegalStateException(&quot;Cant add child to non direcotry!&quot;);</span>
+    }
+
+    /**
+     * Whether the entry has a parent.
+     *
+     * @return {@code true} except for root
+     */
+    boolean hasParent() {
+<span class="fc bfc" id="L469" title="All 2 branches covered.">        return null != parent;</span>
+    }
+
+    /**
+     * Get the parent entry.
+     *
+     * @return {@code null} for the root
+     */
+    JvfsFileEntry getParent() {
+<span class="fc" id="L478">        return parent;</span>
+    }
+
+    /**
+     * Set the parent.
+     *
+     * @param dir may be {@code null}, must be directory if not {@code null}
+     */
+    void setParent(final JvfsFileEntry dir) {
+<span class="pc bpc" id="L487" title="2 of 4 branches missed.">        if (dir != null &amp;&amp; !dir.isDirectory()) {</span>
+<span class="nc" id="L488">            throw new IllegalArgumentException(&quot;Parent must be a directory!&quot;);</span>
+        }
+
+<span class="fc" id="L491">        parent = dir;</span>
+<span class="fc" id="L492">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

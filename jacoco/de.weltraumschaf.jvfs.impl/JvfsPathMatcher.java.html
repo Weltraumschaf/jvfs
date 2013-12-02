@@ -69,7 +69,7 @@ import java.util.regex.PatternSyntaxException;
 
     @Override
     public boolean matches(final Path path) {
-<span class="nc" id="L72">        return pattern.matcher(path.toString()).matches();</span>
+<span class="fc" id="L72">        return pattern.matcher(path.toString()).matches();</span>
     }
 
     /**
@@ -83,13 +83,13 @@ import java.util.regex.PatternSyntaxException;
 
     @Override
     public int hashCode() {
-<span class="nc" id="L86">        return getPattern().hashCode();</span>
+<span class="fc" id="L86">        return getPattern().hashCode();</span>
     }
 
     @Override
     public boolean equals(final Object obj) {
-<span class="pc bpc" id="L91" title="1 of 2 branches missed.">        if (!(obj instanceof JvfsPathMatcher)) {</span>
-<span class="nc" id="L92">            return false;</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">        if (!(obj instanceof JvfsPathMatcher)) {</span>
+<span class="fc" id="L92">            return false;</span>
         }
 
 <span class="fc" id="L95">        final JvfsPathMatcher other = (JvfsPathMatcher) obj;</span>
@@ -98,7 +98,7 @@ import java.util.regex.PatternSyntaxException;
 
     @Override
     public String toString() {
-<span class="nc" id="L101">        return pattern.toString();</span>
+<span class="fc" id="L101">        return pattern.toString();</span>
     }
 
     /**
@@ -114,8 +114,8 @@ import java.util.regex.PatternSyntaxException;
 <span class="fc" id="L114">        JvfsAssertions.notEmpty(syntaxAndPattern, &quot;syntaxAndPattern&quot;);</span>
 <span class="fc" id="L115">        final int pos = syntaxAndPattern.indexOf(':');</span>
 
-<span class="pc bpc" id="L117" title="2 of 4 branches missed.">        if (pos &lt;= 0 || pos == syntaxAndPattern.length()) {</span>
-<span class="nc" id="L118">            throw new IllegalArgumentException(syntaxAndPattern);</span>
+<span class="fc bfc" id="L117" title="All 4 branches covered.">        if (pos &lt;= 0 || pos == syntaxAndPattern.length() - 1) {</span>
+<span class="fc" id="L118">            throw new IllegalArgumentException(syntaxAndPattern);</span>
         }
 
 <span class="fc" id="L121">        final String syntax = syntaxAndPattern.substring(0, pos).trim();</span>
@@ -144,7 +144,7 @@ import java.util.regex.PatternSyntaxException;
      * @return {@code true} if it is a glob meta character, else {@code false}
      */
     private static boolean isGlobMeta(char c) {
-<span class="nc bnc" id="L147" title="All 2 branches missed.">        return GLOB_META_CHARACTERS.indexOf(c) != -1;</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        return GLOB_META_CHARACTERS.indexOf(c) != -1;</span>
     }
 
     /**
@@ -192,47 +192,47 @@ import java.util.regex.PatternSyntaxException;
 <span class="fc bfc" id="L192" title="All 2 branches covered.">        while (i &lt; globPattern.length()) {</span>
 <span class="fc" id="L193">            final char c = globPattern.charAt(i++);</span>
 
-<span class="pc bpc" id="L195" title="7 of 9 branches missed.">            switch (c) {</span>
+<span class="fc bfc" id="L195" title="All 9 branches covered.">            switch (c) {</span>
                 case '\\':
-<span class="nc" id="L197">                    i = handleEscapeCharacter(regex, globPattern, i);</span>
-<span class="nc" id="L198">                    break;</span>
+<span class="fc" id="L197">                    i = handleEscapeCharacter(regex, globPattern, i);</span>
+<span class="fc" id="L198">                    break;</span>
                 case '/':
-<span class="nc" id="L200">                    regex.append(c);</span>
-<span class="nc" id="L201">                    break;</span>
+<span class="fc" id="L200">                    regex.append(c);</span>
+<span class="fc" id="L201">                    break;</span>
                 case '[':
-<span class="nc" id="L203">                    i = handleClassStartCharacter(regex, globPattern, i);</span>
-<span class="nc" id="L204">                    break;</span>
+<span class="fc" id="L203">                    i = handleClassStartCharacter(regex, globPattern, i);</span>
+<span class="fc" id="L204">                    break;</span>
                 case '{':
-<span class="nc bnc" id="L206" title="All 2 branches missed.">                    if (inGroup) {</span>
-<span class="nc" id="L207">                        throw new PatternSyntaxException(&quot;Cannot nest groups&quot;,</span>
+<span class="fc bfc" id="L206" title="All 2 branches covered.">                    if (inGroup) {</span>
+<span class="fc" id="L207">                        throw new PatternSyntaxException(&quot;Cannot nest groups&quot;,</span>
                                 globPattern, i - 1);
                     }
 
-<span class="nc" id="L211">                    regex.append(&quot;(?:(?:&quot;);</span>
-<span class="nc" id="L212">                    inGroup = true;</span>
-<span class="nc" id="L213">                    break;</span>
+<span class="fc" id="L211">                    regex.append(&quot;(?:(?:&quot;);</span>
+<span class="fc" id="L212">                    inGroup = true;</span>
+<span class="fc" id="L213">                    break;</span>
                 case '}':
-<span class="nc bnc" id="L215" title="All 2 branches missed.">                    if (inGroup) {</span>
-<span class="nc" id="L216">                        regex.append(&quot;))&quot;);</span>
-<span class="nc" id="L217">                        inGroup = false;</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">                    if (inGroup) {</span>
+<span class="fc" id="L216">                        regex.append(&quot;))&quot;);</span>
+<span class="fc" id="L217">                        inGroup = false;</span>
                     } else {
-<span class="nc" id="L219">                        regex.append('}');</span>
+<span class="fc" id="L219">                        regex.append('}');</span>
                     }
 
-<span class="nc" id="L222">                    break;</span>
+<span class="fc" id="L222">                    break;</span>
                 case ',':
-<span class="nc bnc" id="L224" title="All 2 branches missed.">                    if (inGroup) {</span>
-<span class="nc" id="L225">                        regex.append(&quot;)|(?:&quot;);</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">                    if (inGroup) {</span>
+<span class="fc" id="L225">                        regex.append(&quot;)|(?:&quot;);</span>
                     } else {
-<span class="nc" id="L227">                        regex.append(',');</span>
+<span class="fc" id="L227">                        regex.append(',');</span>
                     }
 
-<span class="nc" id="L230">                    break;</span>
+<span class="fc" id="L230">                    break;</span>
                 case '*':
-<span class="pc bpc" id="L232" title="1 of 2 branches missed.">                    if (next(globPattern, i) == '*') {</span>
+<span class="fc bfc" id="L232" title="All 2 branches covered.">                    if (next(globPattern, i) == '*') {</span>
                         // crosses directory boundaries
-<span class="nc" id="L234">                        regex.append(&quot;.*&quot;);</span>
-<span class="nc" id="L235">                        i++;</span>
+<span class="fc" id="L234">                        regex.append(&quot;.*&quot;);</span>
+<span class="fc" id="L235">                        i++;</span>
                     } else {
                         // within directory boundary
 <span class="fc" id="L238">                        regex.append(&quot;[^/]*&quot;);</span>
@@ -240,8 +240,8 @@ import java.util.regex.PatternSyntaxException;
 
 <span class="fc" id="L241">                    break;</span>
                 case '?':
-<span class="nc" id="L243">                    regex.append(&quot;[^/]&quot;);</span>
-<span class="nc" id="L244">                    break;</span>
+<span class="fc" id="L243">                    regex.append(&quot;[^/]&quot;);</span>
+<span class="fc" id="L244">                    break;</span>
                 default:
 <span class="fc bfc" id="L246" title="All 2 branches covered.">                    if (isRegexMeta(c)) {</span>
 <span class="fc" id="L247">                        regex.append('\\');</span>
@@ -251,8 +251,8 @@ import java.util.regex.PatternSyntaxException;
             }
 <span class="fc" id="L252">        }</span>
 
-<span class="pc bpc" id="L254" title="1 of 2 branches missed.">        if (inGroup) {</span>
-<span class="nc" id="L255">            throw new PatternSyntaxException(&quot;Missing '}&quot;, globPattern, i - 1);</span>
+<span class="fc bfc" id="L254" title="All 2 branches covered.">        if (inGroup) {</span>
+<span class="fc" id="L255">            throw new PatternSyntaxException(&quot;Missing '}&quot;, globPattern, i - 1);</span>
         }
 
 <span class="fc" id="L258">        return regex.append('$').toString();</span>
@@ -267,86 +267,86 @@ import java.util.regex.PatternSyntaxException;
      * @return next position to scan
      */
     private static int handleClassStartCharacter(final StringBuilder regex, final String globPattern, final int start) {
-<span class="nc bnc" id="L270" title="All 4 branches missed.">        assert regex != null : &quot;regex must be defined&quot;;</span>
-<span class="nc bnc" id="L271" title="All 4 branches missed.">        assert globPattern != null : &quot;globPattern must be defined&quot;;</span>
-<span class="nc bnc" id="L272" title="All 4 branches missed.">        assert start &gt;= 0 : &quot;start must not be negative&quot;;</span>
-<span class="nc" id="L273">        char c = 0;</span>
-<span class="nc" id="L274">        int position = start;</span>
+<span class="pc bpc" id="L270" title="2 of 4 branches missed.">        assert regex != null : &quot;regex must be defined&quot;;</span>
+<span class="pc bpc" id="L271" title="2 of 4 branches missed.">        assert globPattern != null : &quot;globPattern must be defined&quot;;</span>
+<span class="pc bpc" id="L272" title="2 of 4 branches missed.">        assert start &gt;= 0 : &quot;start must not be negative&quot;;</span>
+<span class="fc" id="L273">        char c = 0;</span>
+<span class="fc" id="L274">        int position = start;</span>
         // don't match name separator in class
-<span class="nc" id="L276">        regex.append(&quot;[[^/]&amp;&amp;[&quot;);</span>
+<span class="fc" id="L276">        regex.append(&quot;[[^/]&amp;&amp;[&quot;);</span>
 
-<span class="nc bnc" id="L278" title="All 2 branches missed.">        if (next(globPattern, position) == '^') {</span>
+<span class="fc bfc" id="L278" title="All 2 branches covered.">        if (next(globPattern, position) == '^') {</span>
             // escape the regex negation char if it appears
-<span class="nc" id="L280">            regex.append(&quot;\\^&quot;);</span>
-<span class="nc" id="L281">            position++;</span>
+<span class="fc" id="L280">            regex.append(&quot;\\^&quot;);</span>
+<span class="fc" id="L281">            position++;</span>
         } else {
             // negation
-<span class="nc bnc" id="L284" title="All 2 branches missed.">            if (next(globPattern, position) == '!') {</span>
-<span class="nc" id="L285">                regex.append('^');</span>
-<span class="nc" id="L286">                position++;</span>
+<span class="fc bfc" id="L284" title="All 2 branches covered.">            if (next(globPattern, position) == '!') {</span>
+<span class="fc" id="L285">                regex.append('^');</span>
+<span class="fc" id="L286">                position++;</span>
             }
 
             // hyphen allowed at start
-<span class="nc bnc" id="L290" title="All 2 branches missed.">            if (next(globPattern, position) == '-') {</span>
-<span class="nc" id="L291">                regex.append('-');</span>
-<span class="nc" id="L292">                position++;</span>
+<span class="fc bfc" id="L290" title="All 2 branches covered.">            if (next(globPattern, position) == '-') {</span>
+<span class="fc" id="L291">                regex.append('-');</span>
+<span class="fc" id="L292">                position++;</span>
             }
         }
 
-<span class="nc" id="L296">        boolean hasRangeStart = false;</span>
-<span class="nc" id="L297">        char last = 0;</span>
-<span class="nc bnc" id="L298" title="All 2 branches missed.">        while (position &lt; globPattern.length()) {</span>
-<span class="nc" id="L299">            c = globPattern.charAt(position++);</span>
-<span class="nc bnc" id="L300" title="All 2 branches missed.">            if (c == ']') {</span>
-<span class="nc" id="L301">                break;</span>
+<span class="fc" id="L296">        boolean hasRangeStart = false;</span>
+<span class="fc" id="L297">        char last = 0;</span>
+<span class="fc bfc" id="L298" title="All 2 branches covered.">        while (position &lt; globPattern.length()) {</span>
+<span class="fc" id="L299">            c = globPattern.charAt(position++);</span>
+<span class="fc bfc" id="L300" title="All 2 branches covered.">            if (c == ']') {</span>
+<span class="fc" id="L301">                break;</span>
             }
 
-<span class="nc bnc" id="L304" title="All 2 branches missed.">            if (c == '/') {</span>
-<span class="nc" id="L305">                throw new PatternSyntaxException(&quot;Explicit 'name separator' in class&quot;,</span>
+<span class="fc bfc" id="L304" title="All 2 branches covered.">            if (c == '/') {</span>
+<span class="fc" id="L305">                throw new PatternSyntaxException(&quot;Explicit 'name separator' in class&quot;,</span>
                         globPattern, position - 1);
             }
 
             // TBD: how to specify ']' in a class?
-<span class="nc bnc" id="L310" title="All 8 branches missed.">            if (c == '\\' || c == '['</span>
+<span class="fc bfc" id="L310" title="All 8 branches covered.">            if (c == '\\' || c == '['</span>
                     || c == '&amp;' &amp;&amp; next(globPattern, position) == '&amp;') {
                 // escape '\', '[' or &quot;&amp;&amp;&quot; for regex class
-<span class="nc" id="L313">                regex.append('\\');</span>
+<span class="fc" id="L313">                regex.append('\\');</span>
             }
 
-<span class="nc" id="L316">            regex.append(c);</span>
+<span class="fc" id="L316">            regex.append(c);</span>
 
-<span class="nc bnc" id="L318" title="All 2 branches missed.">            if (c == '-') {</span>
-<span class="nc bnc" id="L319" title="All 2 branches missed.">                if (!hasRangeStart) {</span>
+<span class="fc bfc" id="L318" title="All 2 branches covered.">            if (c == '-') {</span>
+<span class="pc bpc" id="L319" title="1 of 2 branches missed.">                if (!hasRangeStart) {</span>
 <span class="nc" id="L320">                    throw new PatternSyntaxException(&quot;Invalid range&quot;,</span>
                             globPattern, position - 1);
                 }
 
-<span class="nc" id="L324">                c = next(globPattern, position++);</span>
+<span class="fc" id="L324">                c = next(globPattern, position++);</span>
 
-<span class="nc bnc" id="L326" title="All 4 branches missed.">                if (c == EOL || c == ']') {</span>
+<span class="pc bpc" id="L326" title="2 of 4 branches missed.">                if (c == EOL || c == ']') {</span>
 <span class="nc" id="L327">                    break;</span>
                 }
 
-<span class="nc bnc" id="L330" title="All 2 branches missed.">                if (c &lt; last) {</span>
+<span class="fc bfc" id="L330" title="All 2 branches covered.">                if (c &lt; last) {</span>
                     //CHECKSTYLE:OFF
-<span class="nc" id="L332">                    throw new PatternSyntaxException(&quot;Invalid range&quot;, globPattern, position - 3);</span>
+<span class="fc" id="L332">                    throw new PatternSyntaxException(&quot;Invalid range&quot;, globPattern, position - 3);</span>
                     //CHECKSTYLE:ON
                 }
 
-<span class="nc" id="L336">                regex.append(c);</span>
-<span class="nc" id="L337">                hasRangeStart = false;</span>
+<span class="fc" id="L336">                regex.append(c);</span>
+<span class="fc" id="L337">                hasRangeStart = false;</span>
             } else {
-<span class="nc" id="L339">                hasRangeStart = true;</span>
-<span class="nc" id="L340">                last = c;</span>
+<span class="fc" id="L339">                hasRangeStart = true;</span>
+<span class="fc" id="L340">                last = c;</span>
             }
         }
 
-<span class="nc bnc" id="L344" title="All 2 branches missed.">        if (c != ']') {</span>
-<span class="nc" id="L345">            throw new PatternSyntaxException(&quot;Missing ']&quot;, globPattern, position - 1);</span>
+<span class="fc bfc" id="L344" title="All 2 branches covered.">        if (c != ']') {</span>
+<span class="fc" id="L345">            throw new PatternSyntaxException(&quot;Missing ']&quot;, globPattern, position - 1);</span>
         }
 
-<span class="nc" id="L348">        regex.append(&quot;]]&quot;);</span>
-<span class="nc" id="L349">        return position;</span>
+<span class="fc" id="L348">        regex.append(&quot;]]&quot;);</span>
+<span class="fc" id="L349">        return position;</span>
     }
 
     /**
@@ -358,22 +358,22 @@ import java.util.regex.PatternSyntaxException;
      * @return next position to scan
      */
     private static int handleEscapeCharacter(final StringBuilder regex, final String globPattern, final int start) {
-<span class="nc" id="L361">        int position = start;</span>
+<span class="fc" id="L361">        int position = start;</span>
 
         // escape special characters
-<span class="nc bnc" id="L364" title="All 2 branches missed.">        if (position == globPattern.length()) {</span>
-<span class="nc" id="L365">            throw new PatternSyntaxException(&quot;No character to escape&quot;,</span>
+<span class="fc bfc" id="L364" title="All 2 branches covered.">        if (position == globPattern.length()) {</span>
+<span class="fc" id="L365">            throw new PatternSyntaxException(&quot;No character to escape&quot;,</span>
                     globPattern, position - 1);
         }
 
-<span class="nc" id="L369">        final char next = globPattern.charAt(position++);</span>
+<span class="fc" id="L369">        final char next = globPattern.charAt(position++);</span>
 
-<span class="nc bnc" id="L371" title="All 4 branches missed.">        if (isGlobMeta(next) || isRegexMeta(next)) {</span>
-<span class="nc" id="L372">            regex.append('\\');</span>
+<span class="pc bpc" id="L371" title="1 of 4 branches missed.">        if (isGlobMeta(next) || isRegexMeta(next)) {</span>
+<span class="fc" id="L372">            regex.append('\\');</span>
         }
 
-<span class="nc" id="L375">        regex.append(next);</span>
-<span class="nc" id="L376">        return position;</span>
+<span class="fc" id="L375">        regex.append(next);</span>
+<span class="fc" id="L376">        return position;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>

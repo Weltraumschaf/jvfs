@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Sven Strittmatter &lt;weltraumschaf@googlemail.com&gt;
  */
-<span class="pc bpc" id="L24" title="1 of 2 branches missed.">final class JvfsFileAttributes implements BasicFileAttributes {</span>
+<span class="pc bpc" id="L24" title="1 of 2 branches missed.">class JvfsFileAttributes implements BasicFileAttributes {</span>
 
     /**
      * Wrapped file system entry.
@@ -93,7 +93,7 @@ import java.util.concurrent.TimeUnit;
 
     @Override
     public Object fileKey() {
-<span class="fc" id="L96">        return entry.toString();</span>
+<span class="fc" id="L96">        return entry.getPath();</span>
     }
 
 }

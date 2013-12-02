@@ -1,33 +1,33 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-JVFS,de.weltraumschaf.jvfs,JvfsCollections,4,46,0,0,1,12,1,9,1,9
+JVFS,de.weltraumschaf.jvfs,JvfsCollections,0,50,0,0,0,13,0,10,0,10
 JVFS,de.weltraumschaf.jvfs,JvfsTemporaryPathRule.new SimpleFileVisitor() {...},2,16,1,1,1,6,1,3,0,3
-JVFS,de.weltraumschaf.jvfs,JvfsOptions.Option,21,63,5,5,0,10,7,3,2,3
-JVFS,de.weltraumschaf.jvfs,JvfsFileSystems,58,59,2,0,15,20,7,9,6,9
+JVFS,de.weltraumschaf.jvfs,JvfsOptions.Option,17,67,5,5,0,10,6,4,1,4
+JVFS,de.weltraumschaf.jvfs,JvfsFileSystems,45,72,2,0,11,24,6,10,5,10
 JVFS,de.weltraumschaf.jvfs,JvfsObject,0,33,0,8,0,6,0,8,0,4
 JVFS,de.weltraumschaf.jvfs,JvfsQuantity.Magnitude,12,102,3,7,0,14,4,6,1,4
 JVFS,de.weltraumschaf.jvfs,JvfsQuantity,7,147,3,13,0,35,3,14,0,9
 JVFS,de.weltraumschaf.jvfs,JvfsUnixRule,0,7,0,0,0,5,0,3,0,3
-JVFS,de.weltraumschaf.jvfs,JvfsOptions,8,165,2,18,2,39,2,18,0,10
-JVFS,de.weltraumschaf.jvfs,JvfsTemporaryPathRule,18,93,1,9,3,26,1,13,0,9
-JVFS,de.weltraumschaf.jvfs,JvfsOptions.Builder,0,64,0,0,0,18,0,6,0,6
+JVFS,de.weltraumschaf.jvfs,JvfsOptions,0,192,0,22,0,44,0,22,0,11
+JVFS,de.weltraumschaf.jvfs,JvfsTemporaryPathRule,0,124,0,10,0,33,0,16,0,11
+JVFS,de.weltraumschaf.jvfs,JvfsOptions.Builder,0,63,0,0,0,18,0,6,0,6
 JVFS,de.weltraumschaf.jvfs,JvfsAssertions,0,187,0,18,0,39,0,19,0,10
-JVFS,de.weltraumschaf.jvfs.impl,JvfsPathMatcher,351,183,80,29,82,41,57,16,6,8
+JVFS,de.weltraumschaf.jvfs.impl,JvfsPathMatcher,44,492,20,89,3,120,20,53,0,14
 JVFS,de.weltraumschaf.jvfs.impl,JvfsSeekableByteChannel,62,343,9,35,2,84,9,26,0,13
-JVFS,de.weltraumschaf.jvfs.impl,JvfsFileSystem.new Object() {...},26,0,0,0,1,0,1,0,1,0
-JVFS,de.weltraumschaf.jvfs.impl,JvfsPath.new Iterator() {...},44,0,4,0,8,0,6,0,4,0
+JVFS,de.weltraumschaf.jvfs.impl,JvfsFileSystem.new Object() {...},3,23,0,0,0,1,0,1,0,1
+JVFS,de.weltraumschaf.jvfs.impl,JvfsPath.new Iterator() {...},8,36,1,3,2,6,2,4,1,3
 JVFS,de.weltraumschaf.jvfs.impl,JvfsDefaultFileSystemProvider,359,60,49,9,65,18,46,6,20,3
 JVFS,de.weltraumschaf.jvfs.impl,JvfsFileSystemTable,42,264,6,24,8,57,5,22,0,12
-JVFS,de.weltraumschaf.jvfs.impl,JvfsFileEntry,22,239,9,13,0,74,9,37,0,35
+JVFS,de.weltraumschaf.jvfs.impl,JvfsFileEntry,33,337,13,23,2,98,13,48,0,43
 JVFS,de.weltraumschaf.jvfs.impl,JvfsMountPoint,2,93,1,7,1,20,1,12,0,9
 JVFS,de.weltraumschaf.jvfs.impl,JvfsFileSystemProvider,81,228,10,14,12,53,13,24,3,22
 JVFS,de.weltraumschaf.jvfs.impl,JvfsFileAttributes,7,64,3,5,0,16,3,13,0,12
 JVFS,de.weltraumschaf.jvfs.impl,JvfsFilePermissions,2,171,2,14,0,42,2,25,0,19
-JVFS,de.weltraumschaf.jvfs.impl,JvfsFileAttributeView,50,166,11,23,4,40,10,21,0,9
-JVFS,de.weltraumschaf.jvfs.impl,JvfsFileAttributeView.AttrID,0,108,0,0,0,10,0,4,0,4
-JVFS,de.weltraumschaf.jvfs.impl,JvfsFileSystem,429,290,72,22,104,73,54,27,11,22
+JVFS,de.weltraumschaf.jvfs.impl,JvfsFileAttributeView,17,203,7,29,0,46,7,25,0,9
+JVFS,de.weltraumschaf.jvfs.impl,JvfsFileSystem,298,505,59,47,67,129,47,41,6,28
 JVFS,de.weltraumschaf.jvfs.impl,JvfsFileChannel,125,61,6,0,28,16,12,9,9,9
 JVFS,de.weltraumschaf.jvfs.impl,JvfsFileStore,12,141,6,10,0,24,6,18,0,16
-JVFS,de.weltraumschaf.jvfs.impl,JvfsPathUtil,18,135,6,18,3,32,6,12,0,6
+JVFS,de.weltraumschaf.jvfs.impl,JvfsPathUtil,7,146,3,21,0,35,3,15,0,6
 JVFS,de.weltraumschaf.jvfs.impl,JvfsFileAttributeView.new Object() {...},9,59,0,0,0,1,0,1,0,1
 JVFS,de.weltraumschaf.jvfs.impl,JvfsDirectoryStream,10,9,0,0,2,4,2,1,2,1
-JVFS,de.weltraumschaf.jvfs.impl,JvfsPath,466,548,74,58,79,124,63,54,15,36
+JVFS,de.weltraumschaf.jvfs.impl,JvfsPath,93,911,26,102,10,186,25,90,1,50
+JVFS,de.weltraumschaf.jvfs.impl,JvfsFileAttributeView.Names,0,118,0,0,0,11,0,4,0,4

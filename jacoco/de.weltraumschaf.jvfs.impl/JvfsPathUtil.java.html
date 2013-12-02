@@ -69,20 +69,20 @@ import java.util.StringTokenizer;
 <span class="fc" id="L69">        final int indexDirBack = tokens.indexOf(JvfsPath.DIR_UP);</span>
 
 <span class="fc bfc" id="L71" title="All 2 branches covered.">        if (indexDirBack != -1) {</span>
-<span class="pc bpc" id="L72" title="1 of 2 branches missed.">            if (indexDirBack &gt; 0) {</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">            if (indexDirBack &gt; 0) {</span>
 <span class="fc" id="L73">                tokens.remove(indexDirBack);</span>
 <span class="fc" id="L74">                tokens.remove(indexDirBack - 1);</span>
 <span class="fc" id="L75">                normalize(tokens, absolute);</span>
             } else {
-<span class="nc" id="L77">                throw new IllegalArgumentException(&quot;Cannot specify to go back \&quot;../\&quot; past the root&quot;);</span>
+<span class="fc" id="L77">                throw new IllegalArgumentException(&quot;Cannot specify to go back \&quot;../\&quot; past the root&quot;);</span>
             }
         }
 
         // Nothing left to do; reconstruct
 <span class="fc" id="L82">        final StringBuilder sb = new StringBuilder();</span>
 
-<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        if (absolute) {</span>
-<span class="nc" id="L85">            sb.append(JvfsPath.DIR_SEP);</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        if (absolute) {</span>
+<span class="fc" id="L85">            sb.append(JvfsPath.DIR_SEP);</span>
         }
 
 <span class="fc bfc" id="L88" title="All 2 branches covered.">        for (int i = 0; i &lt; tokens.size(); i++) {</span>
@@ -105,8 +105,8 @@ import java.util.StringTokenizer;
 <span class="fc" id="L105">        JvfsAssertions.notNull(paths, &quot;paths&quot;);</span>
 
 <span class="fc bfc" id="L107" title="All 2 branches covered.">        for (final String path : paths) {</span>
-<span class="pc bpc" id="L108" title="1 of 2 branches missed.">            if (!isValid(path)) {</span>
-<span class="nc" id="L109">                return false;</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">            if (!isValid(path)) {</span>
+<span class="fc" id="L109">                return false;</span>
             }
         }
 
