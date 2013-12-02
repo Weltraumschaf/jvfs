@@ -74,10 +74,11 @@ final class JvfsFileEntry {
      *
      * Hidden: Use {@link #copy()} to create a copy of an entry.
      *
+     * @param path must not be {@code null} or empty
      * @param src must not be {@literal null}
      */
-    private JvfsFileEntry(final JvfsFileEntry src) {
-        this(src.path, src.direcotry, src.getContent().clone(), src.getParent());
+    private JvfsFileEntry(final String path, final JvfsFileEntry src) {
+        this(path, src.direcotry, src.getContent().clone());
         this.lastModifiedTime = src.getLastModifiedTime();
         this.lastAccessTime = src.getLastAccessTime();
         this.creationTime = src.getCreationTime();
@@ -93,18 +94,7 @@ final class JvfsFileEntry {
      * @param direcotry {@literal true} if it is a directory, else {@literal false}
      */
     private JvfsFileEntry(final String path, final boolean direcotry) {
-        this(path, direcotry, null);
-    }
-
-    /**
-     * Hidden: Use either {@link #newDir(java.lang.String)} or {@link #newFile(java.lang.String)}.
-     *
-     * @param path must not be {@literal null} or empty
-     * @param direcotry {@literal true} if it is a directory, else {@literal false}
-     * @param parent may be {@code null} for root
-     */
-    private JvfsFileEntry(final String path, final boolean direcotry, final JvfsFileEntry parent) {
-        this(path, direcotry, new byte[0], parent);
+        this(path, direcotry, new byte[0]);
     }
 
     /**
@@ -115,16 +105,14 @@ final class JvfsFileEntry {
      * @param content must not be {@code null}
      * @param parent may be {@code null} for root
      */
-    JvfsFileEntry(final String path, final boolean direcotry, final byte[] content, final JvfsFileEntry parent) {
+    JvfsFileEntry(final String path, final boolean direcotry, final byte[] content) {
         super();
         assert path != null : "path must not be null";
         assert !path.isEmpty() : "path must not be empty";
         assert content != null : "content must not be null";
-
         this.path = path;
         this.direcotry = direcotry;
         this.content = content;
-        this.parent = parent;
     }
 
     /**
@@ -148,12 +136,22 @@ final class JvfsFileEntry {
     }
 
     /**
-     * Creates complete deep copy.
+     * Creates identical deep copy with a different path.
+     *
+     * @param newPath must not be {@literal null} or empty
+     * @return never {@literal null}
+     */
+    JvfsFileEntry copy(final String newPath) {
+        return new JvfsFileEntry(newPath, this);
+    }
+
+    /**
+     * Creates identical deep copy.
      *
      * @return never {@literal null}
      */
     JvfsFileEntry copy() {
-        return new JvfsFileEntry(this);
+        return new JvfsFileEntry(this.getPath(), this);
     }
 
     @Override

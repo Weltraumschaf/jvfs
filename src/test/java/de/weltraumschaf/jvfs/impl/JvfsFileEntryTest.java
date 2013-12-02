@@ -36,6 +36,7 @@ public class JvfsFileEntryTest {
         assertThat(dir.getCreationTime(), is(0L));
         assertThat(dir.size(), is(-1L));
         assertThat(dir.getContent(), is(not(nullValue())));
+        assertThat(dir.getParent(), is(nullValue()));
     }
 
     @Test
@@ -51,6 +52,7 @@ public class JvfsFileEntryTest {
         assertThat(file.getCreationTime(), is(0L));
         assertThat(file.size(), is(0L));
         assertThat(file.getContent(), is(not(nullValue())));
+        assertThat(file.getParent(), is(nullValue()));
     }
 
     @Test
@@ -114,11 +116,10 @@ public class JvfsFileEntryTest {
 
     @Test
     public void copy() {
+        final JvfsFileEntry root = JvfsFileEntry.newDir("/");
         final JvfsFileEntry original = JvfsFileEntry.newFile("foo");
-        assertThat(original.isReadable(), is(false));
-        assertThat(original.isWritable(), is(false));
-        assertThat(original.isExecutable(), is(false));
-        assertThat(original.isHidden(), is(false));
+        original.setParent(root);
+        assertThat(original.getParent(), is(sameInstance(root)));
         original.setCreationTime(1L);
         original.setLastModifiedTime(2L);
         original.setLastAccessTime(3L);
@@ -128,6 +129,7 @@ public class JvfsFileEntryTest {
         original.setHidden(true);
 
         final JvfsFileEntry copy = original.copy();
+        assertThat(copy.getParent(), is(nullValue()));
         assertThat(copy, is(not(sameInstance(original))));
         assertThat(copy.getPath(), is(equalTo("foo")));
         assertThat(copy.getCreationTime(), is(1L));
@@ -139,4 +141,30 @@ public class JvfsFileEntryTest {
         assertThat(copy.isHidden(), is(true));
     }
 
+    @Test
+    public void copy_withNewPath() {
+        final JvfsFileEntry root = JvfsFileEntry.newDir("/");
+        final JvfsFileEntry original = JvfsFileEntry.newFile("foo");
+        original.setParent(root);
+        assertThat(original.getParent(), is(sameInstance(root)));
+        original.setCreationTime(1L);
+        original.setLastModifiedTime(2L);
+        original.setLastAccessTime(3L);
+        original.setReadable(true);
+        original.setWritable(true);
+        original.setExecutable(true);
+        original.setHidden(true);
+
+        final JvfsFileEntry copy = original.copy("bar");
+        assertThat(copy.getParent(), is(nullValue()));
+        assertThat(copy, is(not(sameInstance(original))));
+        assertThat(copy.getPath(), is(equalTo("bar")));
+        assertThat(copy.getCreationTime(), is(1L));
+        assertThat(copy.getLastModifiedTime(), is(2L));
+        assertThat(copy.getLastAccessTime(), is(3L));
+        assertThat(copy.isReadable(), is(true));
+        assertThat(copy.isWritable(), is(true));
+        assertThat(copy.isExecutable(), is(true));
+        assertThat(copy.isHidden(), is(true));
+    }
 }

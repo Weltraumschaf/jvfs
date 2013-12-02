@@ -518,7 +518,7 @@ class JvfsFileSystem extends FileSystem {
             throw new FileAlreadyExistsException(target);
         }
 
-        add(get(source).copy());
+        add(get(source).copy(target));
     }
 
     /**

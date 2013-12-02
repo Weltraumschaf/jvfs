@@ -345,13 +345,15 @@ class JvfsPath implements Path {
         }
 
         // Else join other to this
-        final StringBuilder sb = new StringBuilder(this.path);
+        final StringBuilder sb = new StringBuilder(path);
+
         if (!this.path.endsWith(DIR_SEP)) {
             sb.append(DIR_SEP);
         }
+
         sb.append(other.toString());
 
-        return new JvfsPath(sb.toString(), this.jvfs);
+        return new JvfsPath(sb.toString(), jvfs);
     }
 
     @Override
