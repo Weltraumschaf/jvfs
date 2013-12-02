@@ -43,11 +43,13 @@ public class JvfsIntegrationTest {
     @Before
     public void assertRootType() {
         assertThat(root, is(instanceOf(JvfsPath.class)));
+        assertThat(((JvfsFileSystem) root.getFileSystem()).getUsedSpace(), is(0L));
     }
 
     @After
     public void clearFileSystem() {
         ((JvfsFileSystem) root.getFileSystem()).clear();
+        assertThat(((JvfsFileSystem) root.getFileSystem()).getUsedSpace(), is(0L));
     }
 
     @Test

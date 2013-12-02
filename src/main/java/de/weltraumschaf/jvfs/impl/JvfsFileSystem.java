@@ -588,6 +588,9 @@ class JvfsFileSystem extends FileSystem {
         return usedBytes;
     }
 
+    /**
+     * Removes all {@link JvfsFileEntry file entries} from the internal store.
+     */
     void clear() {
         attic.clear();
     }
