@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,7 +30,9 @@ import org.junit.After;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * Tests JVFS via the NIO API.
@@ -38,6 +41,10 @@ import org.junit.Test;
  */
 public class JvfsIntegrationTest {
 
+    @Rule
+    //CHECKSTYLE:OFF
+    public final ExpectedException thrown = ExpectedException.none();
+    //CHECKSTYLE:ON
     private final Path root = Paths.get(URI.create("jvfs:///"));
 
     @Before
@@ -129,8 +136,33 @@ public class JvfsIntegrationTest {
     }
 
     @Test
-    @Ignore
-    public void deleteFiles() {
+    public void deleteFile() throws IOException {
+        final Path foo = Files.createFile(root.resolve("foo"));
+        assertThat(Files.exists(foo), is(true));
+        Files.delete(foo);
+        assertThat(Files.exists(foo), is(false));
+    }
+
+    @Test
+    public void deleteDirectory() throws IOException {
+        final Path foo = Files.createDirectory(root.resolve("foo"));
+        assertThat(Files.exists(foo), is(true));
+        Files.delete(foo);
+        assertThat(Files.exists(foo), is(false));
+    }
+
+    @Test
+    public void deleteNotEmptyDirectory() throws IOException {
+        final Path foo = Files.createDirectory(root.resolve("foo"));
+        assertThat(Files.exists(foo), is(true));
+
+        final Path bar = foo.resolve("bar");
+        assertThat(Files.exists(bar), is(false));
+        Files.createFile(bar);
+        assertThat(Files.exists(bar), is(true));
+
+        thrown.expect(DirectoryNotEmptyException.class);
+        Files.delete(foo);
     }
 
     @Test
