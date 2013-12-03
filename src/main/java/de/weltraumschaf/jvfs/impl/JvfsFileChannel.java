@@ -55,7 +55,7 @@ final class JvfsFileChannel extends FileChannel {
         JvfsAssertions.notNull(dsts, "dsts");
         JvfsAssertions.greaterThan(offset, -1, "offset");
         JvfsAssertions.greaterThan(length, -1, "offset");
-        final int max = Math.max(dsts.length, length);
+        final int max = Math.min(dsts.length, length);
         final long start = channel.position();
 
         for (int i = offset; i < max; ++i) {
@@ -82,7 +82,7 @@ final class JvfsFileChannel extends FileChannel {
         JvfsAssertions.notNull(srcs, "srcs");
         JvfsAssertions.greaterThan(offset, -1, "offset");
         JvfsAssertions.greaterThan(length, -1, "offset");
-        final int max = Math.max(srcs.length, length);
+        final int max = Math.min(srcs.length, length);
         final long start = channel.position();
 
         for (int i = offset; i < max; ++i) {
