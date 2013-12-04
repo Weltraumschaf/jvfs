@@ -123,32 +123,32 @@ final class JvfsFileChannel extends FileChannel {
     }
 
     @Override
-    public void force(boolean metaData) throws IOException {
+    public void force(final boolean metaData) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public long transferTo(long position, long count, WritableByteChannel target) throws IOException {
+    public long transferTo(final long position, final long count, final WritableByteChannel target) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public long transferFrom(ReadableByteChannel src, long position, long count) throws IOException {
+    public long transferFrom(final ReadableByteChannel src, final long position, final long count) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public MappedByteBuffer map(MapMode mode, long position, long size) throws IOException {
+    public MappedByteBuffer map(final MapMode mode, final long position, final long size) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public FileLock lock(long position, long size, boolean shared) throws IOException {
+    public FileLock lock(final long position, final long size, final boolean shared) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public FileLock tryLock(long position, long size, boolean shared) throws IOException {
+    public FileLock tryLock(final long position, final long size, final boolean shared) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
